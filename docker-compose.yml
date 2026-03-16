@@ -41,6 +41,18 @@ services:
       - ./docker/mysql/data:/var/lib/mysql
     networks:
       - padel-network
+  # NODE 
+  node:
+    image: node:20-alpine
+    container_name: padel-node
+    volumes:
+      - ./src:/var/www
+    working_dir: /var/www
+    ports:
+      - "5173:5173" 
+    tty: true
+    networks:
+      - padel-network
 
 networks:
   padel-network:

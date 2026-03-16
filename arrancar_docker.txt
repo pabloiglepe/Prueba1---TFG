@@ -1,0 +1,7 @@
+1. Levantar los contenedores: docker-compose up -d --build
+
+2. Apuntamos a src: cd ./src
+
+3. Instalar Laravel dentro de src: docker-compose exec app composer create-project laravel/laravel .
+
+4. Instalar livewire: docker-compose exec app composer require livewire/livewire

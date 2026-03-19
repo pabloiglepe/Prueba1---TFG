@@ -10,6 +10,7 @@ Thumbs.db
 # --- LARAVEL ---
 src/vendor/
 src/node_modules/
+node_modules/
 src/public/build/
 src/public/hot
 src/public/storage

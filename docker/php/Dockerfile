@@ -56,8 +56,8 @@ RUN chmod -R 775 /var/www/storage /var/www/bootstrap/cache
 # SCRIPT DE INICIO (MIGRACIONES AUTOMÁTICAS + NGING + PHP)
 RUN echo "#!/bin/sh\n\
 php artisan migrate --force\n\
-nginx -g 'daemon off;' & \n\
-php-fpm" > /usr/local/bin/start.sh
+php-fpm -D\n\
+nginx -g 'daemon off;'" > /usr/local/bin/start.sh
 
 RUN chmod +x /usr/local/bin/start.sh
 

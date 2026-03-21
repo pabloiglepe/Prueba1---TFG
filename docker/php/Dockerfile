@@ -22,6 +22,22 @@ RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd zip
 # INSTALAR COMPOSER
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
+# CONFIGURACIÓN DE NGINX PARA LARAVEL
+RUN echo 'server { \n\
+    listen 80; \n\
+    root /var/www/public; \n\
+    add_header X-Frame-Options "SAMEORIGIN"; \n\
+    add_header X-Content-Type-Options "nosniff"; \n\
+    index index.php; \n\
+    charset utf-8; \n\
+    location / { try_files $uri $uri/ /index.php?$query_string; } \n\
+    location ~ \.php$ { \n\
+        fastcgi_pass 127.0.0.1:9000; \n\
+        fastcgi_param SCRIPT_FILENAME $realpath_root$fastcgi_script_name; \n\
+        include fastcgi_params; \n\
+    } \n\
+}' > /etc/nginx/sites-available/default
+
 WORKDIR /var/www
 
 # COPIAR EL CÓDIGO
@@ -37,12 +53,16 @@ RUN npm install && npm run build
 RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
 RUN chmod -R 775 /var/www/storage /var/www/bootstrap/cache
 
-# SCRIPT DE INICIO (MIGRACIONES AUTOMÁTICAS)
-RUN echo "#!/bin/sh\nphp artisan migrate --force\nphp-fpm" > /usr/local/bin/start.sh
+# SCRIPT DE INICIO (MIGRACIONES AUTOMÁTICAS + NGING + PHP)
+RUN echo "#!/bin/sh\n\
+php artisan migrate --force\n\
+nginx -g 'daemon off;' & \n\
+php-fpm" > /usr/local/bin/start.sh
+
 RUN chmod +x /usr/local/bin/start.sh
 
 # VOLVER AL USUARIO WWW-DATA
 USER www-data
 
-EXPOSE 9000
+EXPOSE 80
 CMD ["/usr/local/bin/start.sh"]

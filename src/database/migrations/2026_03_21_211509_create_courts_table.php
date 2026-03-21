@@ -11,9 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('roles', function (Blueprint $table) {
+        Schema::create('courts', function (Blueprint $table) {
             $table->id();
-            $table->string('name', 10)->unique();
+            $table->string('name', 30);
+            $table->enum('type', ['cristal', 'muro'])->default('cristal');
+            $table->enum('surface', ['cesped', 'cemento'])->default('cesped');
+            $table->boolean('is_active')->default(true);
             $table->timestamps();
         });
     }
@@ -23,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('roles');
+        Schema::dropIfExists('courts');
     }
 };

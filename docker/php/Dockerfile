@@ -26,8 +26,8 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 WORKDIR /var/www
 
 # CONFIGURACIÓN DE NGINX
-COPY ./docker/nginx/default.conf /etc/nginx/sites-available/default
-RUN ln -sf /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default
+COPY ./docker/nginx/default.conf /etc/nginx/http.d/default.conf
+COPY ./docker/nginx/default.conf /etc/nginx/conf.d/default.conf
 
 # COPIAR EL CÓDIGO DE LARAVEL
 COPY ./src .

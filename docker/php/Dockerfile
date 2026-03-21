@@ -22,25 +22,14 @@ RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd zip
 # INSTALAR COMPOSER
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# CONFIGURACIÓN DE NGINX PARA LARAVEL
-RUN echo 'server { \n\
-    listen 80; \n\
-    root /var/www/public; \n\
-    add_header X-Frame-Options "SAMEORIGIN"; \n\
-    add_header X-Content-Type-Options "nosniff"; \n\
-    index index.php; \n\
-    charset utf-8; \n\
-    location / { try_files $uri $uri/ /index.php?$query_string; } \n\
-    location ~ \.php$ { \n\
-        fastcgi_pass 127.0.0.1:9000; \n\
-        fastcgi_param SCRIPT_FILENAME $realpath_root$fastcgi_script_name; \n\
-        include fastcgi_params; \n\
-    } \n\
-}' > /etc/nginx/sites-available/default
-
+# CONFIGURAR DIRECTORIO DE TRABAJO
 WORKDIR /var/www
 
-# COPIAR EL CÓDIGO
+# CONFIGURACIÓN DE NGINX
+COPY ./docker/nginx/default.conf /etc/nginx/sites-available/default
+RUN ln -sf /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default
+
+# COPIAR EL CÓDIGO DE LARAVEL
 COPY ./src .
 
 # INSTALAR DEPENDENCIAS DE PHP 

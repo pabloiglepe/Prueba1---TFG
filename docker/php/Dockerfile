@@ -45,14 +45,14 @@ RUN chmod -R 775 /var/www/storage /var/www/bootstrap/cache
 # SCRIPT DE INICIO (MIGRACIONES AUTOMÁTICAS + NGING + PHP)
 RUN printf "#!/bin/sh\n\
 php artisan migrate --force\n\
-php artisan db:seed --force\n\
-/usr/local/sbin/php-fpm -D\n\
-/usr/sbin/nginx -g 'daemon off;'" > /usr/local/bin/start.sh
+php artisan db:seed --force || true\n\
+php-fpm -D\n\
+nginx -g 'daemon off;'" > /usr/local/bin/start.sh
 
 RUN chmod +x /usr/local/bin/start.sh
 
-# VOLVER AL USUARIO WWW-DATA
-USER www-data
-
+USER root
 EXPOSE 80
+
+
 CMD ["/usr/local/bin/start.sh"]

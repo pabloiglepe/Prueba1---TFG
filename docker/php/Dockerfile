@@ -41,18 +41,10 @@ RUN npm install && npm run build
 # CONFIGURAR PERMISOS 
 RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
 RUN chmod -R 775 /var/www/storage /var/www/bootstrap/cache
+RUN mkdir -p /var/run/nginx
 
 # SCRIPT DE INICIO (MIGRACIONES AUTOMÁTICAS + NGING + PHP)
-RUN printf "#!/bin/sh\n\
-php artisan migrate --force\n\
-php artisan db:seed --force || true\n\
-php-fpm -D\n\
-nginx -g 'daemon off;'" > /usr/local/bin/start.sh
-
-RUN chmod +x /usr/local/bin/start.sh
+ENTRYPOINT ["/bin/sh", "-c", "php artisan migrate --force && php artisan db:seed --force || true && php-fpm -D && nginx -g 'daemon off;'"]
 
 USER root
 EXPOSE 80
-
-
-CMD ["/usr/local/bin/start.sh"]

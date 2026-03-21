@@ -1,0 +1,5 @@
+# EJECUTAR MIGRACIONES AUTOMATICAMENTE
+php artisan migrate --force
+
+# INICIAR PROCESO PRINCIPAL
+php-fpm

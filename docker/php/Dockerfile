@@ -37,8 +37,12 @@ RUN npm install && npm run build
 RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
 RUN chmod -R 775 /var/www/storage /var/www/bootstrap/cache
 
+# SCRIPT DE INICIO (MIGRACIONES AUTOMÁTICAS)
+RUN echo "#!/bin/sh\nphp artisan migrate --force\nphp-fpm" > /usr/local/bin/start.sh
+RUN chmod +x /usr/local/bin/start.sh
+
 # VOLVER AL USUARIO WWW-DATA
 USER www-data
 
 EXPOSE 9000
-CMD ["php-fpm"]
+CMD ["/usr/local/bin/start.sh"]

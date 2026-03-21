@@ -43,10 +43,11 @@ RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
 RUN chmod -R 775 /var/www/storage /var/www/bootstrap/cache
 
 # SCRIPT DE INICIO (MIGRACIONES AUTOMÁTICAS + NGING + PHP)
-RUN echo "#!/bin/sh\n\
+RUN printf "#!/bin/sh\n\
 php artisan migrate --force\n\
-php-fpm -D\n\
-nginx -g 'daemon off;'" > /usr/local/bin/start.sh
+php artisan db:seed --force\n\
+/usr/local/sbin/php-fpm -D\n\
+/usr/sbin/nginx -g 'daemon off;'" > /usr/local/bin/start.sh
 
 RUN chmod +x /usr/local/bin/start.sh
 

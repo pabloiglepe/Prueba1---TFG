@@ -1,6 +1,6 @@
 FROM php:8.2-fpm
 
-# INSTALAR DEPENDENCIAS DEL SISTEMA
+# INSTALAR DEPENDENCIAS DEL SISTEMA Y NODE.JS
 RUN apt-get update && apt-get install -y \
     git \
     curl \
@@ -9,22 +9,36 @@ RUN apt-get update && apt-get install -y \
     libxml2-dev \
     zip \
     unzip \
-    libzip-dev
+    libzip-dev \
+    && curl -sL https://deb.nodesource.com/setup_20.x | bash - \
+    && apt-get install -y nodejs
 
 # LIMPIAR CACHÉ DEL SISTEMA
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# INSTALAR EXTENSIONES DE PHP NECESARIAS PARA LARAVEL Y MYSQL 
+# INSTALAR EXTENSIONES DE PHP
 RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd zip
 
-# INSTALAR GESTOR DE DEPEDENCIAS (COMPOSER)
+# INSTALAR COMPOSER
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
-
-# CREAR USUARIO DEL SISTEMA PARA EVITAR CONFLICTO DE PERMISOS 
-RUN useradd -G www-data,root -u 1000 -d /home/dev dev
-RUN mkdir -p /home/dev/.composer && \
-    chown -R dev:dev /home/dev
 
 WORKDIR /var/www
 
-USER dev
+# COPIAR EL CÓDIGO
+COPY ./src .
+
+# INSTALAR DEPENDENCIAS DE PHP 
+RUN composer install --no-dev --optimize-autoloader
+
+# INSTALAR DEPENDENCIAS DE JS Y COMPILAR EL CSS/JS 
+RUN npm install && npm run build
+
+# CONFIGURAR PERMISOS 
+RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
+RUN chmod -R 775 /var/www/storage /var/www/bootstrap/cache
+
+# VOLVER AL USUARIO WWW-DATA
+USER www-data
+
+EXPOSE 9000
+CMD ["php-fpm"]

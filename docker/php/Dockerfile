@@ -41,8 +41,8 @@ RUN composer install --no-dev --optimize-autoloader
 RUN npm install && npm run build
 
 # CONFIGURAR PERMISOS 
-RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
-RUN chmod -R 775 /var/www/storage /var/www/bootstrap/cache
+RUN chown -R www-data:www-data /var/www
+RUN chmod -R 755 /var/www/storage /var/www/bootstrap/cache /var/www/public
 
 # SCRIPT DE INICIO (MIGRACIONES AUTOMÁTICAS + NGING + PHP)
 ENTRYPOINT ["/bin/sh", "-c", "php artisan migrate --force && php-fpm -D && nginx -g 'daemon off;'"]

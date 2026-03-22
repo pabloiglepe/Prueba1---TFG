@@ -32,7 +32,8 @@ WORKDIR /var/www
 
 
 # CONFIGURACIÓN DE NGINX
-COPY ./docker/nginx/default.conf /etc/nginx/sites-available/default
+# COPY ./docker/nginx/default.conf /etc/nginx/sites-available/default
+COPY ./docker/nginx/default.railway.conf /etc/nginx/sites-available/default
 RUN ln -sf /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default
 # COPY ./docker/nginx/default.conf /etc/nginx/conf.d/default.conf
 

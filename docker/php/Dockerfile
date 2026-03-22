@@ -14,31 +14,45 @@ RUN apt-get update && apt-get install -y \
     && curl -sL https://deb.nodesource.com/setup_20.x | bash - \
     && apt-get install -y nodejs
 
+    
 # LIMPIAR CACHÉ DEL SISTEMA
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
+
 
 # INSTALAR EXTENSIONES DE PHP
 RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd zip
 
+
 # INSTALAR COMPOSER
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
+
 # CONFIGURAR DIRECTORIO DE TRABAJO
 WORKDIR /var/www
+
 
 # CONFIGURACIÓN DE NGINX
 COPY ./docker/nginx/default.conf /etc/nginx/sites-available/default
 RUN ln -sf /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default
 # COPY ./docker/nginx/default.conf /etc/nginx/conf.d/default.conf
 
+
 # COPIAR EL CÓDIGO DE LARAVEL
 COPY ./src .
+
 
 # INSTALAR DEPENDENCIAS DE PHP 
 RUN composer install --no-dev --optimize-autoloader
 
+
 # INSTALAR DEPENDENCIAS DE JS Y COMPILAR EL CSS/JS 
 RUN npm install && npm run build
+
+
+# LIMPIEZA DE CHACHÉ DE LARAVEL
+RUN php artisan config:clear
+RUN php artisan view:clear
+
 
 # CONFIGURAR PERMISOS 
 RUN chown -R www-data:www-data /var/www

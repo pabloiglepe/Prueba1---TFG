@@ -46,12 +46,12 @@ RUN composer install --no-dev --optimize-autoloader
 
 
 # BORRAMOS EL ARCHIVO 'public/hot'
-RUN rm -f public/hot
-
+RUN rm -rf public/hot
+RUN rm -rf public/build
 
 # INSTALAR DEPENDENCIAS DE JS Y COMPILAR EL CSS/JS 
-RUN npm install && npm run build
-
+RUN npm install 
+RUN npm run build
 
 # CONFIGURAR PERMISOS 
 RUN chown -R www-data:www-data /var/www

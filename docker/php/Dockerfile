@@ -10,6 +10,7 @@ RUN apt-get update && apt-get install -y \
     zip \
     unzip \
     libzip-dev \
+    nginx \
     && curl -sL https://deb.nodesource.com/setup_20.x | bash - \
     && apt-get install -y nodejs
 
@@ -26,8 +27,9 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 WORKDIR /var/www
 
 # CONFIGURACIÓN DE NGINX
-COPY ./docker/nginx/default.conf /etc/nginx/http.d/default.conf
-COPY ./docker/nginx/default.conf /etc/nginx/conf.d/default.conf
+COPY ./docker/nginx/default.conf /etc/nginx/sites-available/default
+RUN ln -sf /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default
+# COPY ./docker/nginx/default.conf /etc/nginx/conf.d/default.conf
 
 # COPIAR EL CÓDIGO DE LARAVEL
 COPY ./src .
@@ -41,10 +43,10 @@ RUN npm install && npm run build
 # CONFIGURAR PERMISOS 
 RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
 RUN chmod -R 775 /var/www/storage /var/www/bootstrap/cache
-RUN mkdir -p /var/run/nginx
 
 # SCRIPT DE INICIO (MIGRACIONES AUTOMÁTICAS + NGING + PHP)
-ENTRYPOINT ["/bin/sh", "-c", "php artisan migrate --force && php artisan db:seed --force || true && php-fpm -D && nginx -g 'daemon off;'"]
+ENTRYPOINT ["/bin/sh", "-c", "php artisan migrate --force && php-fpm -D && nginx -g 'daemon off;'"]
+
 
 USER root
 EXPOSE 80

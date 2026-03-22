@@ -23,57 +23,65 @@ class DatabaseSeeder extends Seeder
     {
 
         // CREAMOS ROLES
-        $adminRole = Role::create([
+        $adminRole = Role::firstOrCreate([
             'name' => 'admin'
         ]);
-        $playerRole = Role::create([
+        $playerRole = Role::firstOrCreate([
             'name' => 'player'
         ]);
 
 
 
         // CREAR USUARIO ADMINISTRADOR
-        User::factory()->create([
-            'role_id' => $adminRole->id,
-            'name' => 'admin_padel',
-            'email' => 'admin@padel.com',
-            'password' => Hash::make('Admin_padel123'),
-            'phone_number' => '666555444',
-            'email' => 'admin@padel.com',
-            'rgpd_consent' => true
-        ]);
+        User::firstOrCreate(
+            ['email' => 'admin@padel.com'],
+            [
+                'role_id' => $adminRole->id,
+                'name' => 'admin_padel',
+                'password' => Hash::make('Admin_padel123'),
+                'phone_number' => '666555444',
+                'rgpd_consent' => true
+            ]
+        );
 
         // CREAMOS USUARIO DE PRUEBAS
-        User::create([
-            'role_id' => $playerRole->id,
-            'name' => 'pepe_padel',
-            'email' => 'pepe@gmail.com',
-            'password' => Hash::make('Pepe123'),
-            'phone_number' => '611111111',
-            'rgpd_consent' => true
-        ]);
+        User::firstOrCreate(
+            ['email' => 'pepe@gmail.com'],
+            [
+                'role_id' => $playerRole->id,
+                'name' => 'pepe_padel',
+                'password' => Hash::make('Pepe123'),
+                'phone_number' => '611111111',
+                'rgpd_consent' => true
+            ]
+        );
 
         // CREAR PISTAS INICIALES
-        Court::create([
-            'name' => 'Pista Central',
-            'type' => 'cristal',
-            'surface' => 'cesped',
-            'is_active' => true,
-        ]);
+        Court::firstOrCreate(
+            ['name' => 'Pista Central'],
+            [
+                'type' => 'cristal',
+                'surface' => 'cesped',
+                'is_active' => true,
+            ]
+        );
 
-        Court::create([
-            'name' => 'Pista 2',
-            'type' => 'muro',
-            'surface' => 'cesped',
-            'is_active' => true,
-        ]);
+        Court::firstOrCreate(
+            ['name' => 'Pista 2'],
+            [
+                'type' => 'muro',
+                'surface' => 'cesped',
+                'is_active' => true,
+            ]
+        );
 
-        Court::create([
-            'name' => 'Pista 3',
-            'type' => 'cristal',
-            'surface' => 'cemento',
-            // PISTA EN MANTENIMIENTO 
-            'is_active' => false
-        ]);
+        Court::firstOrCreate(
+            ['name' => 'Pista 3'],
+            [
+                'type' => 'cristal',
+                'surface' => 'cemento',
+                'is_active' => false
+            ]
+        );
     }
 }

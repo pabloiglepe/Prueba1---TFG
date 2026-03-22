@@ -22,6 +22,9 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role_id',       
+        'phone_number',  
+        'rgpd_consent',  
     ];
 
     /**

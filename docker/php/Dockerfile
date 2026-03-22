@@ -14,7 +14,7 @@ RUN apt-get update && apt-get install -y \
     && curl -sL https://deb.nodesource.com/setup_20.x | bash - \
     && apt-get install -y nodejs
 
-    
+
 # LIMPIAR CACHÉ DEL SISTEMA
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
@@ -45,13 +45,12 @@ COPY ./src .
 RUN composer install --no-dev --optimize-autoloader
 
 
+# BORRAMOS EL ARCHIVO 'public/hot'
+RUN rm -f public/hot
+
+
 # INSTALAR DEPENDENCIAS DE JS Y COMPILAR EL CSS/JS 
 RUN npm install && npm run build
-
-
-# LIMPIEZA DE CHACHÉ DE LARAVEL
-RUN php artisan config:clear
-RUN php artisan view:clear
 
 
 # CONFIGURAR PERMISOS 

@@ -44,8 +44,9 @@ RUN npm install && npm run build
 RUN chown -R www-data:www-data /var/www
 RUN chmod -R 755 /var/www/storage /var/www/bootstrap/cache /var/www/public
 
+
 # SCRIPT DE INICIO (MIGRACIONES AUTOMÁTICAS + NGING + PHP)
-ENTRYPOINT ["/bin/sh", "-c", "php artisan migrate --force && php-fpm -D && nginx -g 'daemon off;'"]
+ENTRYPOINT ["/bin/sh", "-c", "php artisan config:clear && php artisan route:clear && php artisan view:clear && php-fpm -D && nginx -g 'daemon off;'"]
 
 
 USER root

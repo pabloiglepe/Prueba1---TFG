@@ -25,7 +25,7 @@ return new class extends Migration
             // ALGORITMO DE ENCRIPTACIÓN 'BCRYPT' PARA LAS CONTRASEÑAS
             $table->string('password', 100);
 
-            $table->string('phone_number', 20)->unique();
+            $table->string('phone_number', 9)->unique();
 
             // CASILLA DE CONSENTIMIENTO DE LEY DE PROTECCIÓN DE DATOS
             $table->boolean('rgpd_consent')->default(false);

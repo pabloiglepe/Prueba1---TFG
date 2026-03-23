@@ -21,6 +21,7 @@ class LoginForm extends Form
     #[Validate('boolean')]
     public bool $remember = false;
 
+
     /**
      * Attempt to authenticate the request's credentials.
      *
@@ -33,8 +34,10 @@ class LoginForm extends Form
         if (! Auth::attempt($this->only(['email', 'password']), $this->remember)) {
             RateLimiter::hit($this->throttleKey());
 
+            // MENSAJES PERSONALIZADOS DE ERROR PARA EL LOGIN -> POR SEGURIDAD NO ESPECIFICO SI EL ERROR VIENE DEL EMAIL O DE LA CONTRASEÑA
             throw ValidationException::withMessages([
-                'form.email' => trans('auth.failed'),
+                'form.email' => 'El email o la contraseña no son correctos. ¡Prueba de nuevo!',
+                'form.password' => 'El email o la contraseña no son correctos. ¡Prueba de nuevo!',
             ]);
         }
 
@@ -67,6 +70,6 @@ class LoginForm extends Form
      */
     protected function throttleKey(): string
     {
-        return Str::transliterate(Str::lower($this->email).'|'.request()->ip());
+        return Str::transliterate(Str::lower($this->email) . '|' . request()->ip());
     }
 }

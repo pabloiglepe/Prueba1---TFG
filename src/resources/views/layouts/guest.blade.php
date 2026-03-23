@@ -10,7 +10,7 @@
     <!-- CDN DE SWEETALERT -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-    <title>{{ config('app.name', 'Laravel') }}</title>
+    <title>{{ config('app.name', 'Padel Sync') }}</title>
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
@@ -24,7 +24,12 @@
     <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-gray-100">
         <div>
             <a href="/" wire:navigate>
-                <x-application-logo class="w-20 h-20 fill-current text-gray-500" />
+                <!-- <x-application-logo class="w-20 h-20 fill-current text-gray-500" /> -->
+
+                <img src="{{ asset('images/padel-logo.png') }}"
+                    alt="Logo Padel"
+                    class="w-25 h-20 md:w-40 md:h-40 object-contain drop-shadow-md">
+
             </a>
         </div>
 

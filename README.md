@@ -47,12 +47,6 @@ Para que la conexión con la base de datos funcione, las variables tienen que co
 * DB_USERNAME=user_padel
 * DB_PASSWORD=user_pass
 
-Para acceder a la base de datos desde un cliente externo o para revisar la configuración, estas son las credenciales por defecto: 
-* Base de datos: padel_club
-* Usuario: user_padel
-* Contraseña: user_pass
-* Root Password: root
-
 ### 3. Construcción y arranque de contenedores
 Este paso descarga las imágenes necesarias y ejecuta el Dockerfile personalizado para la aplicación
 ```bash

@@ -64,3 +64,10 @@ Una vez los contenedores estén levantados, genera la clave de cifrado de Larave
 ```bash
 docker-compose exec app php artisan key:generate
 ```
+
+### Puertos y Acceso
+| Servicio | URL / Host | Puerto Externo | Puerto Interno |
+| :--- | :--- | :--- | :--- |
+| **Aplicación Web (Nginx)** | [http://localhost:8000](http://localhost:8000) | `8000` | `80` |
+| **Base de Datos (MySQL)** | `127.0.0.1` | `3307` | `3306` |
+| **Vite Dev Server** | `localhost` | `5173` | `5173` |

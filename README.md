@@ -41,11 +41,11 @@ cp .env.example .env
 ```
 
 Para que la conexión con la base de datos funcione, las variables tienen que coincidir con el servicio definido en el Compose:
-# DB_HOST=padel-db
-# DB_PORT=3306
-# DB_DATABASE=padel_club
-# DB_USERNAME=user_padel
-# DB_PASSWORD=user_pass
+* DB_HOST=padel-db
+* DB_PORT=3306
+* DB_DATABASE=padel_club
+* DB_USERNAME=user_padel
+* DB_PASSWORD=user_pass
 
 ### 3. Construcción y arranque de contenedores
 Este paso descarga las imágenes necesarias y ejecuta el Dockerfile personalizado para la aplicación

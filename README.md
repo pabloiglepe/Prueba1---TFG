@@ -4,6 +4,12 @@ Este repositorio contiene la aplicación de gestión para un club de pádel, des
 
 ---
 
+## Despliegue en Producción
+
+[![Desplegado en Railway](https://img.shields.io/badge/Railway-000000?style=for-the-badge&logo=railway&logoColor=white)](https://prueba1-tfg-production.up.railway.app/)
+
+> 🚀 **Puedes acceder a la versión en vivo aquí:** [https://prueba1-tfg-production.up.railway.app/](https://prueba1-tfg-production.up.railway.app/)
+
 ## Arquitectura del Sistema
 
 El entorno se divide en cuatro servicios principales interconectados mediante una red interna denominada `padel-network`:

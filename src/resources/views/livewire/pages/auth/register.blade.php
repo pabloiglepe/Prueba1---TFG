@@ -39,7 +39,7 @@ new #[Layout('layouts.guest')] class extends Component {
                 // TELÉFONO
                 'phone_number.required' => 'El Teléfono es obligatorio para avisarte si hay cambios en la pista.',
                 'phone_number.numeric' => 'El Teléfono solo admite números.',
-                'phone_number.digits' => 'El Teléfono no admite más de 9 caractéres',
+                'phone_number.digits' => 'El Teléfono debe tener 9 caracteres exactos',
 
                 // EMAIL
                 'email.unique' => 'Este Correo Electrónico ya está registrado en el club.',
@@ -48,7 +48,10 @@ new #[Layout('layouts.guest')] class extends Component {
                 'rgpd_consent.accepted' => 'Debes aceptar la ley de protección de datos para poder continuar.',
 
                 // CONTRASEÑA
-                'password.confirmed' => 'Las contraseñas deben coincidir.'
+                'password.confirmed' => 'Las contraseñas deben coincidir.',
+                'password.min' => 'La contraseña debe tener almenos 8 caracteres.',
+                'password.required' => 'La contraseña es obligatoria.'
+
 
             ],
 

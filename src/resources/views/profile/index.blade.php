@@ -1,34 +1,3 @@
-<!-- <x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Profile') }}
-        </h2>
-    </x-slot>
-
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
-            <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
-                <div class="max-w-xl">
-                    <livewire:profile.update-profile-information-form />
-                </div>
-            </div>
-
-            <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
-                <div class="max-w-xl">
-                    <livewire:profile.update-password-form />
-                </div>
-            </div>
-
-            <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
-                <div class="max-w-xl">
-                    <livewire:profile.delete-user-form />
-                </div>
-            </div>
-        </div>
-    </div>
-</x-app-layout> -->
-
-
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
@@ -40,7 +9,7 @@
 
         {{-- MENSAJES --}}
         @if(session('success'))
-        <div class="p-4 bg-green-100 text-green-800 rounded">{{ session('success') }}</div>
+            <div class="p-4 bg-green-100 text-green-800 rounded">{{ session('success') }}</div>
         @endif
 
         {{-- TARJETAS RESUMEN --}}
@@ -70,17 +39,17 @@
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Nombre</label>
                         <input type="text" name="name" value="{{ old('name', $user->name) }}"
-                            class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                               class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500">
                         @error('name')
-                        <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
+                            <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
                         @enderror
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Teléfono</label>
                         <input type="text" name="phone_number" value="{{ old('phone_number', $user->phone_number) }}"
-                            class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                               class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500">
                         @error('phone_number')
-                        <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
+                            <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
                         @enderror
                     </div>
                 </div>
@@ -88,23 +57,23 @@
                 <div class="mb-4">
                     <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
                     <input type="text" value="{{ $user->email }}" disabled
-                        class="w-full border-gray-300 rounded-lg shadow-sm bg-gray-50 text-gray-400 cursor-not-allowed">
+                           class="w-full border-gray-300 rounded-lg shadow-sm bg-gray-50 text-gray-400 cursor-not-allowed">
                     <p class="text-xs text-gray-400 mt-1">El email no puede modificarse.</p>
                 </div>
 
                 <div class="mb-4">
                     <label class="block text-sm font-medium text-gray-700 mb-1">Rol</label>
                     <input type="text" value="{{ ucfirst($user->role->name) }}" disabled
-                        class="w-full border-gray-300 rounded-lg shadow-sm bg-gray-50 text-gray-400 cursor-not-allowed">
+                           class="w-full border-gray-300 rounded-lg shadow-sm bg-gray-50 text-gray-400 cursor-not-allowed">
                 </div>
 
                 <div class="flex justify-between items-center">
                     <a href="{{ route('profile.export') }}"
-                        class="inline-flex items-center gap-2 bg-gray-700 text-white px-4 py-2 rounded-lg hover:bg-gray-800 text-sm">
+                        class="inline-flex items-center gap-2 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-800 text-sm">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                         </svg>
-                        Exportar mis datos (RGPD)
+                        Exportar mis datos
                     </a>
                     <button type="submit"
                         class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700">
@@ -113,17 +82,6 @@
                 </div>
             </form>
         </div>
-
-        <!-- {{-- EXPORTAR DATOS --}}
-        <div class="flex justify-end">
-            <a href="{{ route('profile.export') }}"
-                class="inline-flex items-center gap-2 bg-gray-700 text-white px-4 py-2 rounded-lg hover:bg-gray-800 text-sm">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                </svg>
-                Exportar mis datos (RGPD)
-            </a>
-        </div> -->
 
         {{-- CAMBIAR CONTRASEÑA --}}
         <div class="bg-white shadow rounded-lg p-6">
@@ -136,29 +94,29 @@
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Contraseña actual</label>
                         <input type="password" name="current_password"
-                            class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                               class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500">
                         @error('current_password')
-                        <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
+                            <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
                         @enderror
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Nueva contraseña</label>
                         <input type="password" name="password"
-                            class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                               class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500">
                         @error('password')
-                        <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
+                            <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
                         @enderror
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Confirmar nueva contraseña</label>
                         <input type="password" name="password_confirmation"
-                            class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                               class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500">
                     </div>
                 </div>
 
                 <div class="flex justify-end">
                     <button type="submit"
-                        class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700">
+                            class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700">
                         Cambiar contraseña
                     </button>
                 </div>
@@ -169,48 +127,48 @@
         <div class="bg-white shadow rounded-lg p-6">
             <h3 class="font-semibold text-gray-700 mb-4">Historial de reservas</h3>
             @if($reservations->isEmpty())
-            <p class="text-gray-400 text-sm">No tienes reservas registradas.</p>
+                <p class="text-gray-400 text-sm">No tienes reservas registradas.</p>
             @else
-            <div class="overflow-x-auto">
-                <table class="min-w-full divide-y divide-gray-200 text-sm">
-                    <thead class="bg-gray-50">
-                        <tr>
-                            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Fecha</th>
-                            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Pista</th>
-                            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Horario</th>
-                            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Precio</th>
-                            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Estado</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-gray-100">
-                        @foreach($reservations as $reservation)
-                        <tr>
-                            <td class="px-4 py-2">{{ \Carbon\Carbon::parse($reservation->reservation_date)->format('d/m/Y') }}</td>
-                            <td class="px-4 py-2">{{ $reservation->court->name }}</td>
-                            <td class="px-4 py-2">
-                                {{ \Carbon\Carbon::parse($reservation->start_time)->format('H:i') }} -
-                                {{ \Carbon\Carbon::parse($reservation->end_time)->format('H:i') }}
-                            </td>
-                            <td class="px-4 py-2 font-medium text-green-600">{{ number_format($reservation->total_price, 2) }}€</td>
-                            <td class="px-4 py-2">
-                                @if($reservation->status === 'pending')
-                                <span class="px-2 py-1 bg-yellow-100 text-yellow-800 rounded-full text-xs">Pendiente</span>
-                                @elseif($reservation->status === 'paid')
-                                <span class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs">Pagada</span>
-                                @else
-                                <span class="px-2 py-1 bg-red-100 text-red-800 rounded-full text-xs">Cancelada</span>
-                                @endif
-                            </td>
-                        </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200 text-sm">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Fecha</th>
+                                <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Pista</th>
+                                <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Horario</th>
+                                <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Precio</th>
+                                <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Estado</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-100">
+                            @foreach($reservations as $reservation)
+                                <tr>
+                                    <td class="px-4 py-2">{{ \Carbon\Carbon::parse($reservation->reservation_date)->format('d/m/Y') }}</td>
+                                    <td class="px-4 py-2">{{ $reservation->court->name }}</td>
+                                    <td class="px-4 py-2">
+                                        {{ \Carbon\Carbon::parse($reservation->start_time)->format('H:i') }} -
+                                        {{ \Carbon\Carbon::parse($reservation->end_time)->format('H:i') }}
+                                    </td>
+                                    <td class="px-4 py-2 font-medium text-green-600">{{ number_format($reservation->total_price, 2) }}€</td>
+                                    <td class="px-4 py-2">
+                                        @if($reservation->status === 'pending')
+                                            <span class="px-2 py-1 bg-yellow-100 text-yellow-800 rounded-full text-xs">Pendiente</span>
+                                        @elseif($reservation->status === 'paid')
+                                            <span class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs">Pagada</span>
+                                        @else
+                                            <span class="px-2 py-1 bg-red-100 text-red-800 rounded-full text-xs">Cancelada</span>
+                                        @endif
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
             @endif
         </div>
 
-        {{-- HISTORIAL DE CLASES --}}
-        <!-- <div class="bg-white shadow rounded-lg p-6">
+        <!-- {{-- HISTORIAL DE CLASES --}}
+        <div class="bg-white shadow rounded-lg p-6">
             <h3 class="font-semibold text-gray-700 mb-4">Mis clases</h3>
             @if($classes->isEmpty())
                 <p class="text-gray-400 text-sm">No estás inscrito en ninguna clase.</p>
@@ -250,7 +208,7 @@
             </p>
 
             <form action="{{ route('profile.destroy') }}" method="POST"
-                onsubmit="return confirm('¿Estás seguro de que quieres eliminar tu cuenta? Esta acción no puede deshacerse.')">
+                  onsubmit="return confirm('¿Estás seguro de que quieres eliminar tu cuenta? Esta acción no puede deshacerse.')">
                 @csrf
                 @method('DELETE')
 
@@ -259,14 +217,14 @@
                         Confirma tu contraseña para continuar
                     </label>
                     <input type="password" name="password"
-                        class="w-full border-red-300 rounded-lg shadow-sm focus:ring-red-500 focus:border-red-500">
+                           class="w-full border-red-300 rounded-lg shadow-sm focus:ring-red-500 focus:border-red-500">
                     @error('password')
-                    <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
+                        <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
                     @enderror
                 </div>
 
                 <button type="submit"
-                    class="bg-red-600 text-white px-6 py-2 rounded-lg hover:bg-red-700">
+                        class="bg-red-600 text-white px-6 py-2 rounded-lg hover:bg-red-700">
                     Eliminar mi cuenta
                 </button>
             </form>

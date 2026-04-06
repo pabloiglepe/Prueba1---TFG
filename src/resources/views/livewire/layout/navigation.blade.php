@@ -54,6 +54,9 @@ new class extends Component
                     <x-nav-link :href="route('player.reservations.index')" :active="request()->routeIs('player.reservations.*')" wire:navigate>
                         Mis Reservas
                     </x-nav-link>
+                    <x-nav-link :href="route('player.classes.index')" :active="request()->routeIs('player.classes.*')" wire:navigate>
+                        Clases
+                    </x-nav-link>
                     @endif
                 </div>
             </div>

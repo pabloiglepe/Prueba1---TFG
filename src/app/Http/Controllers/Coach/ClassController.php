@@ -46,7 +46,7 @@ class ClassController extends Controller
             'title'       => 'required|string|max:50',
             'court_id'    => 'required|exists:courts,id',
             'type'        => 'required|in:individual,grupal',
-            'level'       => 'required|in:iniciacion,intermedio,avanzado',
+            'level'       => 'required|in:initiation,intermediate,advanced',
             'visibility'  => 'required|in:public,private',
             'date'        => 'required|date|after_or_equal:today',
             'start_time'  => 'required|date_format:H:i',
@@ -121,13 +121,14 @@ class ClassController extends Controller
      */
     public function edit(Request $request, PadelClass $class)
     {
-        // SOLO EL ENTRENADOR QUE LA CREÓ PUEDE EDITARLA
-        if ($class->coach_id !== $request->user()->id) {
+        $user = $request->user();
+
+        if ($class->coach_id !== $user->id && $user->role->name !== 'admin') {
             abort(403);
         }
 
-        $courts  = Court::where('is_active', true)->get();
-        $players = User::whereHas('role', fn($q) => $q->where('name', 'player'))->get();
+        $courts      = Court::where('is_active', true)->get();
+        $players     = User::whereHas('role', fn($q) => $q->where('name', 'player'))->get();
         $enrolledIds = $class->players->pluck('id')->toArray();
 
         return view('coach.classes.edit', compact('class', 'courts', 'players', 'enrolledIds'));
@@ -138,7 +139,10 @@ class ClassController extends Controller
      */
     public function update(Request $request, PadelClass $class)
     {
-        if ($class->coach_id !== $request->user()->id) {
+        $user = $request->user();
+
+        // SOLO EL ENTRENADOR QUE LA CREÓ O EL ADMIN PUEDEN ACTUALIZAR
+        if ($class->coach_id !== $request->user()->id && $user->role->name !== 'admin') {
             abort(403);
         }
 
@@ -146,7 +150,7 @@ class ClassController extends Controller
             'title'       => 'required|string|max:50',
             'court_id'    => 'required|exists:courts,id',
             'type'        => 'required|in:individual,grupal',
-            'level'       => 'required|in:iniciacion,intermedio,avanzado',
+            'level'       => 'required|in:initiation,intermediate,advanced',
             'visibility'  => 'required|in:public,private',
             'date'        => 'required|date',
             'start_time'  => 'required|date_format:H:i',
@@ -167,7 +171,10 @@ class ClassController extends Controller
      */
     public function destroy(Request $request, PadelClass $class)
     {
-        if ($class->coach_id !== $request->user()->id) {
+        $user = $request->user();
+
+        // SOLO EL ENTRENADOR QUE LA CREÓ O EL ADMIN PUEDEN CANCELAR
+        if ($class->coach_id !== $request->user()->id && $user->role->name !== 'admin') {
             abort(403);
         }
 

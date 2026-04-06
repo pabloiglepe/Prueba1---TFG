@@ -53,7 +53,7 @@ class PadelClass extends Model
      *
      * @return void
      */
-    public function registrations()
+    public function registered()
     {
         return $this->hasMany(ClassRegistration::class, 'class_id');
     }
@@ -66,9 +66,9 @@ class PadelClass extends Model
      */
     public function players()
     {
-        return $this->belongsToMany(User::class, 'classes_reservations')
-                    ->wherePivot('status', 'registered')
-                    ->withTimestamps();
+        return $this->belongsToMany(User::class, 'classes_reservations', 'class_id', 'user_id')
+            ->wherePivot('status', 'registered')
+            ->withTimestamps();
     }
 
 
@@ -79,9 +79,9 @@ class PadelClass extends Model
      */
     public function availableSpots(): int
     {
-        return $this->max_players - $this->enrollments()
-                                        ->where('status', 'enrolled')
-                                        ->count();
+        return $this->max_players - $this->registered()
+            ->where('status', 'registered')
+            ->count();
     }
 
 

@@ -6,6 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class ClassRegistration extends Model
 {
+
+    protected $table = 'classes_reservations';
+
     protected $fillable = [
         'class_id',
         'user_id',

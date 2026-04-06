@@ -78,7 +78,7 @@ class User extends Authenticatable
      *
      * @return void
      */
-    public function classEnrollments()
+    public function classRegistrations()
     {
         return $this->hasMany(ClassRegistration::class);
     }

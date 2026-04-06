@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\CourtController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Player\ReservationController;
 use App\Http\Controllers\Coach\ClassController;
+use App\Http\Controllers\RedirectController;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
 
@@ -19,13 +20,19 @@ use Illuminate\Support\Facades\Route;
 //     ->name('profile');
 
 
-// RUTAS PÚBLICAS 
-Route::view('/', 'welcome')->name('home');
+// ANTIGUA | RUTA RAÍZ 
+// Route::view('/', 'welcome')->name('home');
+
+
+// RUTA RAÍZ
+Route::get('/', [RedirectController::class, 'home'])->name('home');
 
 
 // RUTAS AUTENTICADAS -> ACCESIBLES PARA CUALQUIER USUARIO LOGUEADO
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::view('dashboard', 'dashboard')->name('dashboard');
+    Route::get('dashboard', [RedirectController::class, 'home'])
+        ->middleware(['auth'])
+        ->name('dashboard');
     Route::view('profile', 'profile')->name('profile');
 });
 

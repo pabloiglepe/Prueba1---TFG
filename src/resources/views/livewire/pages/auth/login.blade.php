@@ -28,7 +28,16 @@ new #[Layout('layouts.guest')] class extends Component
             'text'  => 'Has iniciado sesión correctamente!!',
         ]);
 
-        $this->redirectIntended(default: route('dashboard', absolute: false), navigate: true);
+        $role = \Illuminate\Support\Facades\Auth::user()->role->name;
+
+        $route = match ($role) {
+            'admin'  => route('admin.dashboard', absolute: false),
+            'coach'  => route('coach.classes.index', absolute: false),
+            'player' => route('player.reservations.index', absolute: false),
+            default  => route('admin.dashboard', absolute: false),
+        };
+
+        $this->redirectIntended(default: $route, navigate: true);
     }
 }; ?>
 
@@ -90,5 +99,5 @@ new #[Layout('layouts.guest')] class extends Component
 
         </div>
     </form>
-    
+
 </div>

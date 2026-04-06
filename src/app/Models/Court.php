@@ -12,4 +12,14 @@ class Court extends Model
         'surface',
         'is_active'
     ];
+
+    /**
+     * Una pista puede tener muchas reservas
+     *
+     * @return void
+     */
+    public function reservations()
+    {
+        return $this->hasMany(Reservation::class);
+    }
 }

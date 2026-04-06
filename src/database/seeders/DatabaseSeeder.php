@@ -29,6 +29,9 @@ class DatabaseSeeder extends Seeder
         $playerRole = Role::firstOrCreate([
             'name' => 'player'
         ]);
+        $coachRole = Role::firstOrCreate([
+            'name' => 'coach'
+        ]);
 
 
 
@@ -41,6 +44,18 @@ class DatabaseSeeder extends Seeder
                 'password' => Hash::make('Admin_padel123'),
                 'phone_number' => '666555444',
                 'rgpd_consent' => true
+            ]
+        );
+
+        // CREAR ENTRENDARO DE PRUEBA
+        User::firstOrCreate(
+            ['email' => 'coach@padel.com'],
+            [
+                'role_id'      => $coachRole->id,
+                'name'         => 'coach_padel',
+                'password'     => Hash::make('Coach_padel123'),
+                'phone_number' => '677777777',
+                'rgpd_consent' => true,
             ]
         );
 

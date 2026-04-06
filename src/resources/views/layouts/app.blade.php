@@ -62,7 +62,7 @@
                 icon: '{{ session('swal')['icon'] }}',
                 title: '{{ session('swal')['title'] }}',
                 text: '{{ session('swal')['text'] }}',
-                timer: 2000,
+                timer: 3000,
                 showConfirmButton: false,
                 timerProgressBar: true,
             })

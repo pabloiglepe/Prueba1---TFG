@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use Carbon\Carbon;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 
@@ -24,5 +25,8 @@ class AppServiceProvider extends ServiceProvider
         if (app()->environment('production')) {
             URL::forceScheme('https');
         }
+
+        // CONFIGURO EL 'LOCALE' DE CARBON PARA QUE ESTÉ EN ESPAÑOL (MESE, DÍAS, ETC)
+        Carbon::setLocale('es');
     }
 }

@@ -5,115 +5,201 @@
         </h2>
     </x-slot>
 
-    <div class="py-6 max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
+    <div class="py-6 max-w-7xl mx-auto sm:px-6 lg:px-8">
 
-        {{-- TARJETAS RESUMEN --}}
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
-            <div class="bg-white shadow rounded-lg p-6">
-                <p class="text-sm text-gray-500 mb-1">Reservas totales</p>
-                <p class="text-3xl font-bold text-blue-600">{{ $totalReservations }}</p>
+        {{-- TABS --}}
+        <div x-data="{ tab: 'resumen' }">
+
+            <div class="flex border-b border-gray-200 mb-6">
+                <button @click="tab = 'resumen'"
+                    :class="tab === 'resumen' ? 'border-blue-600 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700'"
+                    class="px-6 py-3 text-sm font-medium border-b-2 transition">
+                    📊 Resumen
+                </button>
+                <button @click="tab = 'entrenadores'"
+                    :class="tab === 'entrenadores' ? 'border-blue-600 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700'"
+                    class="px-6 py-3 text-sm font-medium border-b-2 transition">
+                    👤 Entrenadores
+                </button>
+                <button @click="tab = 'exportar'"
+                    :class="tab === 'exportar' ? 'border-blue-600 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700'"
+                    class="px-6 py-3 text-sm font-medium border-b-2 transition">
+                    ⬇ Exportar
+                </button>
             </div>
-            <div class="bg-white shadow rounded-lg p-6">
-                <p class="text-sm text-gray-500 mb-1">Ingresos totales</p>
-                <p class="text-3xl font-bold text-green-600">{{ number_format($totalRevenue, 2) }}€</p>
-            </div>
-            <div class="bg-white shadow rounded-lg p-6">
-                <p class="text-sm text-gray-500 mb-1">Jugadores registrados</p>
-                <p class="text-3xl font-bold text-purple-600">{{ $totalPlayers }}</p>
-                <p class="text-xs text-gray-400 mt-1">{{ $activePlayersCount }} activos últimos 30 días</p>
-            </div>
-        </div>
 
-        {{-- GRÁFICO OCUPACIÓN --}}
-        <div class="bg-white shadow rounded-lg p-6">
-            <h3 class="font-semibold text-gray-700 mb-1">Ocupación de pistas (últimas 8 semanas)</h3>
-            <p class="text-xs text-gray-400 mb-4">Pulsa en un punto para ver el detalle de esa semana</p>
-            <div id="chart-occupancy" style="height: 300px;"></div>
-        </div>
+            {{-- TAB RESUMEN --}}
+            <div x-show="tab === 'resumen'" class="space-y-6">
 
-        {{-- GRÁFICO INGRESOS --}}
-        <div class="bg-white shadow rounded-lg p-6">
-            <h3 class="font-semibold text-gray-700 mb-1">Ingresos por mes (últimos 6 meses)</h3>
-            <p class="text-xs text-gray-400 mb-4">Pulsa en una barra para ver el detalle de ese mes</p>
-            <div id="chart-revenue" style="height: 300px;"></div>
-        </div>
-
-
-        {{-- REGISTRO DE ENTRENADORES --}}
-        <div class="bg-white shadow rounded-lg p-6">
-            <h3 class="font-semibold text-gray-700 mb-4">Entrenadores y clases activas</h3>
-
-            @if($coaches->isEmpty())
-            <p class="text-gray-400 text-sm">No hay entrenadores registrados.</p>
-            @else
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                @foreach($coaches as $coach)
-                <div class="border border-gray-200 rounded-lg p-4">
-
-                    {{-- CABECERA COACH --}}
-                    <div class="flex justify-between items-start mb-3">
-                        <div>
-                            <p class="font-semibold text-gray-800">{{ $coach->name }}</p>
-                            <p class="text-xs text-gray-400">{{ $coach->email }}</p>
-                        </div>
-                        <span class="px-2 py-1 bg-purple-100 text-purple-700 text-xs rounded-full">
-                            {{ $coach->classesByCoach->count() }} clases
-                        </span>
+                {{-- TARJETAS RESUMEN --}}
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                    <div class="bg-white shadow rounded-lg p-6">
+                        <p class="text-sm text-gray-500 mb-1">Reservas totales</p>
+                        <p class="text-3xl font-bold text-blue-600">{{ $totalReservations }}</p>
                     </div>
+                    <div class="bg-white shadow rounded-lg p-6">
+                        <p class="text-sm text-gray-500 mb-1">Ingresos totales</p>
+                        <p class="text-3xl font-bold text-green-600">{{ number_format($totalRevenue, 2) }}€</p>
+                    </div>
+                    <div class="bg-white shadow rounded-lg p-6">
+                        <p class="text-sm text-gray-500 mb-1">Jugadores registrados</p>
+                        <p class="text-3xl font-bold text-purple-600">{{ $totalPlayers }}</p>
+                        <p class="text-xs text-gray-400 mt-1">{{ $activePlayersCount }} activos últimos 30 días</p>
+                    </div>
+                </div>
 
-                    {{-- CLASES ACTIVAS --}}
-                    @if($coach->classesByCoach->isEmpty())
-                    <p class="text-xs text-gray-400">Sin clases programadas.</p>
+                {{-- GRÁFICO OCUPACIÓN --}}
+                <div class="bg-white shadow rounded-lg p-6">
+                    <h3 class="font-semibold text-gray-700 mb-1">Ocupación de pistas (últimas 8 semanas)</h3>
+                    <p class="text-xs text-gray-400 mb-4">Pulsa en un punto para ver el detalle de esa semana</p>
+                    <div id="chart-occupancy" style="height: 300px;"></div>
+                </div>
+
+                {{-- GRÁFICO INGRESOS --}}
+                <div class="bg-white shadow rounded-lg p-6">
+                    <h3 class="font-semibold text-gray-700 mb-1">Ingresos por mes (últimos 6 meses)</h3>
+                    <p class="text-xs text-gray-400 mb-4">Pulsa en una barra para ver el detalle de ese mes</p>
+                    <div id="chart-revenue" style="height: 300px;"></div>
+                </div>
+
+            </div>
+
+            {{-- TAB ENTRENADORES --}}
+            <div x-show="tab === 'entrenadores'" class="space-y-6">
+
+                {{-- REGISTRO DE ENTRENADORES --}}
+                <div class="bg-white shadow rounded-lg p-6">
+                    <h3 class="font-semibold text-gray-700 mb-4">Entrenadores y clases activas</h3>
+
+                    @if($coaches->isEmpty())
+                    <p class="text-gray-400 text-sm">No hay entrenadores registrados.</p>
                     @else
-                    <div class="space-y-2">
-                        @foreach($coach->classesByCoach as $class)
-                        <div class="bg-gray-50 rounded p-2 text-xs">
-                            <div class="flex justify-between items-center">
-                                <p class="font-medium text-gray-700">{{ $class->title }}</p>
-                                <span class="text-gray-400">
-                                    {{ $class->registered->count() }}/{{ $class->max_players }}
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                        @foreach($coaches as $coach)
+                        <div class="border border-gray-200 rounded-lg p-4">
+
+                            {{-- CABECERA COACH --}}
+                            <div class="flex justify-between items-start mb-3">
+                                <div>
+                                    <p class="font-semibold text-gray-800">{{ $coach->name }}</p>
+                                    <p class="text-xs text-gray-400">{{ $coach->email }}</p>
+                                </div>
+                                <span class="px-2 py-1 bg-purple-100 text-purple-700 text-xs rounded-full">
+                                    {{ $coach->classesByCoach->count() }} clases
                                 </span>
                             </div>
-                            <p class="text-gray-400 mt-0.5">
-                                {{ \Carbon\Carbon::parse($class->date)->format('d/m/Y') }}
-                            </p>
-                            <p class="text-gray-400 mt-0.5">
-                                {{ \Carbon\Carbon::parse($class->start_time)->format('H:i') }}
-                                - {{ \Carbon\Carbon::parse($class->end_time)->format('H:i') }}
-                            </p>
-                            <p class="text-gray-400">
-                                {{ match($class->visibility) {
+
+                            {{-- CLASES ACTIVAS --}}
+                            @if($coach->classesByCoach->isEmpty())
+                            <p class="text-xs text-gray-400">Sin clases programadas.</p>
+                            @else
+                            <div class="space-y-2">
+                                @foreach($coach->classesByCoach as $class)
+                                <div class="bg-gray-50 rounded p-2 text-xs">
+                                    <div class="flex justify-between items-center">
+                                        <p class="font-medium text-gray-700">{{ $class->title }}</p>
+                                        <span class="text-gray-400">
+                                            {{ $class->registered->count() }}/{{ $class->max_players }}
+                                        </span>
+                                    </div>
+                                    <p class="text-gray-400 mt-0.5">
+                                        {{ \Carbon\Carbon::parse($class->date)->format('d/m/Y') }}
+                                    </p>
+                                    <p class="text-gray-400 mt-0.5">
+                                        {{ \Carbon\Carbon::parse($class->start_time)->format('H:i') }}
+                                        - {{ \Carbon\Carbon::parse($class->end_time)->format('H:i') }}
+                                    </p>
+                                    <p class="text-gray-400">
+                                        {{ match($class->visibility) {
                                             'public'  => 'Pública',
                                             'private' => 'Privada',
                                             default   => $class->visibility
                                         } }}
-                                ·
-                                {{ match($class->level) {
+                                        ·
+                                        {{ match($class->level) {
                                             'initiation'   => 'Iniciación',
                                             'intermediate' => 'Intermedio',
                                             'advanced'     => 'Avanzado',
                                             default        => $class->level
                                         } }}
-                            </p>
+                                    </p>
+                                </div>
+                                @endforeach
+                            </div>
+                            @endif
+
+                            {{-- ENLACE AL PERFIL --}}
+                            <div class="mt-3 pt-3 border-t border-gray-100">
+                                <a href="{{ route('admin.users.edit', $coach) }}"
+                                    class="text-xs text-blue-600 hover:underline">
+                                    Ver perfil completo →
+                                </a>
+                            </div>
+
                         </div>
                         @endforeach
                     </div>
                     @endif
-
-                    {{-- ENLACE AL PERFIL --}}
-                    <div class="mt-3 pt-3 border-t border-gray-100">
-                        <a href="{{ route('admin.users.edit', $coach) }}"
-                            class="text-xs text-blue-600 hover:underline">
-                            Ver perfil completo →
-                        </a>
-                    </div>
-
                 </div>
-                @endforeach
-            </div>
-            @endif
-        </div>
 
+            </div>
+
+            {{-- TAB EXPORTAR --}}
+            <div x-show="tab === 'exportar'" class="space-y-6">
+
+                {{-- EXPORTACIÓN DE DATOS --}}
+                <div class="bg-white shadow rounded-lg p-6">
+                    <h3 class="font-semibold text-gray-700 mb-4">Exportar informes</h3>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+
+                        {{-- EXPORTAR RESERVAS --}}
+                        <div class="border border-gray-200 rounded-lg p-4">
+                            <h4 class="font-medium text-gray-700 mb-1">Informe de reservas</h4>
+                            <p class="text-xs text-gray-400 mb-4">Exporta el listado completo de reservas con jugador, pista, horario y precio.</p>
+                            <form action="{{ route('admin.export.reservations') }}" method="GET">
+                                <div class="grid grid-cols-2 gap-2 mb-3">
+                                    <div>
+                                        <label class="block text-xs text-gray-500 mb-1">Desde</label>
+                                        <input type="date" name="start_date"
+                                            class="w-full border-gray-300 rounded-lg text-sm shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs text-gray-500 mb-1">Hasta</label>
+                                        <input type="date" name="end_date"
+                                            class="w-full border-gray-300 rounded-lg text-sm shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                                    </div>
+                                </div>
+                                <button type="submit"
+                                    class="w-full bg-blue-600 text-white text-sm py-2 rounded-lg hover:bg-blue-700">
+                                    ⬇ Descargar reservas (.xlsx)
+                                </button>
+                            </form>
+                        </div>
+
+                        {{-- EXPORTAR INGRESOS --}}
+                        <div class="border border-gray-200 rounded-lg p-4">
+                            <h4 class="font-medium text-gray-700 mb-1">Informe de ingresos</h4>
+                            <p class="text-xs text-gray-400 mb-4">Exporta el resumen de ingresos de un mes concreto.</p>
+                            <form action="{{ route('admin.export.revenue') }}" method="GET">
+                                <div class="mb-3">
+                                    <label class="block text-xs text-gray-500 mb-1">Mes</label>
+                                    <input type="month" name="month"
+                                        class="w-full border-gray-300 rounded-lg text-sm shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                                </div>
+                                <button type="submit"
+                                    class="w-full bg-green-600 text-white text-sm py-2 rounded-lg hover:bg-green-700">
+                                    ⬇ Descargar ingresos (.xlsx)
+                                </button>
+                            </form>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
     </div>
 
     {{-- MODAL --}}
@@ -139,10 +225,6 @@
 
         </div>
     </div>
-
-
-    <!-- {{-- ECHARTS --}}
-    <script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script> -->
 
     <script>
         // DATOS DESDE PHP
@@ -189,7 +271,6 @@
                 </table>`;
         }
 
-
         function renderWeekModal(data) {
             document.getElementById('modal-title').textContent = data.label;
             document.getElementById('modal-loading').style.display = 'none';
@@ -197,7 +278,6 @@
             content.innerHTML = reservationsTable(data.reservations);
             content.style.display = 'block';
         }
-
 
         function renderMonthModal(data) {
             document.getElementById('modal-title').textContent = data.label;
@@ -250,7 +330,6 @@
             if (modal && e.target === modal) closeModal();
         });
 
-
         // SOLO LO RELACIONADO CON LOS GRÁFICOS VAN EN ESTE BLOQUE
         document.addEventListener('livewire:navigated', function() {
 
@@ -260,21 +339,17 @@
 
             if (!occupancy || !revenue) return;
 
-
             // LIMPIAR INSTANCIAS ANTERIORES
             const existingOccupancy = echarts.getInstanceByDom(occupancy);
             const existingRevenue = echarts.getInstanceByDom(revenue);
             if (existingOccupancy) existingOccupancy.dispose();
             if (existingRevenue) existingRevenue.dispose();
 
-
             // INICIALIZAR GRÁFICOS
             const chartOccupancy = echarts.init(occupancy);
             const chartRevenue = echarts.init(revenue);
 
-
             // GRÁFICO OCUPACIÓN -> LÍNEAS
-            // const chartOccupancy = echarts.init(document.getElementById('chart-occupancy'));
             chartOccupancy.setOption({
                 tooltip: {
                     trigger: 'axis',
@@ -329,8 +404,7 @@
                     .then(data => renderWeekModal(data));
             });
 
-            // GRÁFICO INGRESOS -> BARRAS 
-            // const chartRevenue = echarts.init(document.getElementById('chart-revenue'));
+            // GRÁFICO INGRESOS -> BARRAS
             chartRevenue.setOption({
                 tooltip: {
                     trigger: 'axis',
@@ -377,78 +451,6 @@
                     .then(r => r.json())
                     .then(data => renderMonthModal(data));
             });
-
-            // EVENTO PARA CERRAR EL MODAL AL PULSAR FUERA DE ÉL
-            // document.getElementById('modal').addEventListener('click', function(e) {
-            //     if (e.target === this) closeModal();
-            // });
-
-            //     /**
-            //      * FUNCIÓN QUE FORMA LA TABLA QUE CONTIENE LA INFORMACIÓN DE LAS RESERVAS
-            //      * 
-            //      * @param reservations 
-            //      * 
-            //      * */
-            //     function reservationsTable(reservations) {
-            //         if (!reservations.length) return '<p class="text-red-500 text-sm">No hay reservas.</p>';
-            //         return `
-            //         <table class="min-w-full text-sm divide-y divide-gray-200">
-            //             <thead class="bg-gray-50">
-            //                 <tr>
-            //                     <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Fecha</th>
-            //                     <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Jugador</th>
-            //                     <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Pista</th>
-            //                     <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Horario</th>
-            //                     <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Precio</th>
-            //                 </tr>
-            //             </thead>
-            //             <tbody class="divide-y divide-gray-100">
-            //                 ${reservations.map(r => `
-            //                     <tr>
-            //                         <td class="px-4 py-2">${r.date}</td>
-            //                         <td class="px-4 py-2">${r.player}</td>
-            //                         <td class="px-4 py-2">${r.court}</td>
-            //                         <td class="px-4 py-2">${r.time}</td>
-            //                         <td class="px-4 py-2 font-medium text-green-600">${r.price}</td>
-            //                     </tr>`).join('')}
-            //             </tbody>
-            //         </table>`;
-            //     }
-
-
-            //     function renderWeekModal(data) {
-            //         document.getElementById('modal-title').textContent = data.label;
-            //         document.getElementById('modal-loading').style.display = 'none';
-            //         const content = document.getElementById('modal-content');
-            //         content.innerHTML = reservationsTable(data.reservations);
-            //         content.style.display = 'block';
-            //     }
-
-
-            //     function renderMonthModal(data) {
-            //         document.getElementById('modal-title').textContent = data.label;
-            //         document.getElementById('modal-loading').style.display = 'none';
-            //         const content = document.getElementById('modal-content');
-            //         const byCourt = data.by_court.map(c => `
-            // <div style="display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px solid #f3f4f6;">
-            //     <span style="font-weight:500; color:#374151;">${c.court}</span>
-            //     <span style="color:#6b7280; font-size:0.875rem;">${c.count} reservas</span>
-            //     <span style="font-weight:600; color:#16a34a;">${c.total}</span>
-            // </div>`).join('');
-
-            //         content.innerHTML = `
-            // <div style="margin-bottom:24px;">
-            //     <h4 style="font-weight:600; color:#374151; margin-bottom:12px;">Desglose por pista</h4>
-            //     <div style="background:#f9fafb; border-radius:8px; padding:16px;">
-            //         ${byCourt || '<p style="color:#9ca3af; font-size:0.875rem;">Sin datos.</p>'}
-            //     </div>
-            // </div>
-            // <div>
-            //     <h4 style="font-weight:600; color:#374151; margin-bottom:12px;">Listado de reservas</h4>
-            //     ${reservationsTable(data.reservations)}
-            // </div>`;
-            //         content.style.display = 'block';
-            //     }
 
             // HACEMOS LOS GRÁFICOS RESPONSIVE
             window.addEventListener('resize', () => {

@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\CourtController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\ExportController;
 use App\Http\Controllers\Player\ReservationController;
 use App\Http\Controllers\Coach\ClassController;
 
@@ -59,6 +60,10 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     // RUTAS QUE DESGLOSAN LA INFORMACION EN EL DASHBOARD DEL ADMIN
     Route::get('dashboard/week-detail',  [DashboardController::class, 'weekDetail'])->name('dashboard.week-detail');
     Route::get('dashboard/month-detail', [DashboardController::class, 'monthDetail'])->name('dashboard.month-detail');
+
+    // RUTAS DE EXPORTACIÓN DE DATOS
+    Route::get('export/reservations', [ExportController::class, 'reservations'])->name('export.reservations');
+    Route::get('export/revenue',      [ExportController::class, 'revenue'])->name('export.revenue');
 });
 
 

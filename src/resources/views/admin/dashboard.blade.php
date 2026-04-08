@@ -1,4 +1,17 @@
 <x-app-layout>
+
+    <!-- MOVEMOS DATOS PROVENIENTES DE PHP A ATRIBUTOS 'data-' PARA QUE NO DE PROBLEMAS AL GENERAR LOS GRÁFICOS -->
+    <div id="dashboard-data"
+        data-occupancy-labels="@js($occupancyLabels)"
+        data-occupancy-data="@js($occupancyData)"
+        data-revenue-labels="@js($revenueLabels)"
+        data-revenue-data="@js($revenueData)"
+        data-week-data="@js($weekData)"
+        data-month-data="@js($monthData)"
+        data-url-week="{{ route('admin.dashboard.week-detail') }}"
+        data-url-month="{{ route('admin.dashboard.month-detail') }}">
+    </div>
+
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
             Dashboard
@@ -227,17 +240,20 @@
     </div>
 
     <script>
-        // DATOS DESDE PHP
-        var occupancyLabels = @js($occupancyLabels);
-        var occupancyData = @js($occupancyData);
-        var revenueLabels = @js($revenueLabels);
-        var revenueData = @js($revenueData);
-        var weekData = @js($weekData);
-        var monthData = @js($monthData);
+        // // EVITAR QUE HAYA REEDECLARACIONES AL NAVEGAR CON LIVEWIRE
+        // if (typeof occupancyLabels === 'undefined') {
+        //     // DATOS DESDE PHP
+        //     var occupancyLabels = @js($occupancyLabels);
+        //     var occupancyData = @js($occupancyData);
+        //     var revenueLabels = @js($revenueLabels);
+        //     var revenueData = @js($revenueData);
+        //     var weekData = @js($weekData);
+        //     var monthData = @js($monthData);
 
-        // URLS
-        var urlWeek = "{{ route('admin.dashboard.week-detail') }}";
-        var urlMonth = "{{ route('admin.dashboard.month-detail') }}";
+        //     // URLS
+        //     var urlWeek = "{{ route('admin.dashboard.week-detail') }}";
+        //     var urlMonth = "{{ route('admin.dashboard.month-detail') }}";
+        // }
 
         /**
          * FUNCIÓN QUE FORMA LA TABLA QUE CONTIENE LA INFORMACIÓN DE LAS RESERVAS
@@ -332,6 +348,18 @@
 
         // SOLO LO RELACIONADO CON LOS GRÁFICOS VAN EN ESTE BLOQUE
         document.addEventListener('livewire:navigated', function() {
+
+            const el = document.getElementById('dashboard-data');
+            if (!el) return;
+
+            const occupancyLabels = JSON.parse(el.dataset.occupancyLabels);
+            const occupancyData = JSON.parse(el.dataset.occupancyData);
+            const revenueLabels = JSON.parse(el.dataset.revenueLabels);
+            const revenueData = JSON.parse(el.dataset.revenueData);
+            const weekData = JSON.parse(el.dataset.weekData);
+            const monthData = JSON.parse(el.dataset.monthData);
+            const urlWeek = el.dataset.urlWeek;
+            const urlMonth = el.dataset.urlMonth;
 
             // SELECTORES DE LOS GRÁFICAS EN HTML
             const occupancy = document.getElementById('chart-occupancy');

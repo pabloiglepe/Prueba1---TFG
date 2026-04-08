@@ -2,12 +2,12 @@
 
     <!-- MOVEMOS DATOS PROVENIENTES DE PHP A ATRIBUTOS 'data-' PARA QUE NO DE PROBLEMAS AL GENERAR LOS GRÁFICOS -->
     <div id="dashboard-data"
-        data-occupancy-labels="{{ htmlspecialchars(json_encode($occupancyLabels), ENT_QUOTES) }}"
-        data-occupancy-data="{{ htmlspecialchars(json_encode($occupancyData), ENT_QUOTES) }}"
-        data-revenue-labels="{{ htmlspecialchars(json_encode($revenueLabels), ENT_QUOTES) }}"
-        data-revenue-data="{{ htmlspecialchars(json_encode($revenueData), ENT_QUOTES) }}"
-        data-week-data="{{ htmlspecialchars(json_encode($weekData), ENT_QUOTES) }}"
-        data-month-data="{{ htmlspecialchars(json_encode($monthData), ENT_QUOTES) }}"
+        data-occupancy-labels="{{ htmlspecialchars(json_encode($occupancyLabels), ENT_NOQUOTES) }}"
+        data-occupancy-data="{{ htmlspecialchars(json_encode($occupancyData), ENT_NOQUOTES) }}"
+        data-revenue-labels="{{ htmlspecialchars(json_encode($revenueLabels), ENT_NOQUOTES) }}"
+        data-revenue-data="{{ htmlspecialchars(json_encode($revenueData), ENT_NOQUOTES) }}"
+        data-week-data="{{ htmlspecialchars(json_encode($weekData), ENT_NOQUOTES) }}"
+        data-month-data="{{ htmlspecialchars(json_encode($monthData), ENT_NOQUOTES) }}"
         data-url-week="{{ route('admin.dashboard.week-detail') }}"
         data-url-month="{{ route('admin.dashboard.month-detail') }}">
     </div>

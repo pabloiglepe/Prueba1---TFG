@@ -73,6 +73,17 @@ class DashboardController extends Controller
         }
 
 
+        // REGISTRO DE ENTRENADORES Y SUS CLASES ACTIVAS
+        $coaches = User::whereHas('role', fn($q) => $q->where('name', 'coach'))
+            ->with([
+                'classesByCoach' => fn($q) => $q
+                    ->where('status', 'registered')
+                    ->with(['registered'])
+                    ->orderBy('date')
+            ])
+            ->get();
+
+
         return view('admin.dashboard', compact(
             'occupancyLabels',
             'occupancyData',
@@ -83,7 +94,8 @@ class DashboardController extends Controller
             'totalRevenue',
             'totalPlayers',
             'weekData',
-            'monthData'
+            'monthData',
+            'coaches'
         ));
     }
 

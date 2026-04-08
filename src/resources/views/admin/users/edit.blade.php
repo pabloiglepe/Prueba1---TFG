@@ -5,7 +5,7 @@
                 Editar Usuario: {{ $user->name }}
             </h2>
             <a href="{{ route('admin.users.index') }}"
-               class="text-sm text-gray-600 hover:underline">
+                class="text-sm text-gray-600 hover:underline">
                 ← Volver al listado
             </a>
         </div>
@@ -21,9 +21,9 @@
                 <div class="mb-4">
                     <label class="block text-sm font-medium text-gray-700 mb-1">Nombre</label>
                     <input type="text" name="name" value="{{ old('name', $user->name) }}"
-                           class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                        class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500">
                     @error('name')
-                        <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
+                    <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
                     @enderror
                 </div>
 
@@ -31,7 +31,7 @@
                 <div class="mb-4">
                     <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
                     <input type="text" value="{{ $user->email }}" disabled
-                           class="w-full border-gray-300 rounded-lg shadow-sm bg-gray-50 text-gray-400 cursor-not-allowed">
+                        class="w-full border-gray-300 rounded-lg shadow-sm bg-gray-50 text-gray-400 cursor-not-allowed">
                     <p class="text-xs text-gray-400 mt-1">El email no puede modificarse.</p>
                 </div>
 
@@ -39,9 +39,9 @@
                 <div class="mb-4">
                     <label class="block text-sm font-medium text-gray-700 mb-1">Teléfono</label>
                     <input type="text" name="phone_number" value="{{ old('phone_number', $user->phone_number) }}"
-                           class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                        class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500">
                     @error('phone_number')
-                        <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
+                    <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
                     @enderror
                 </div>
 
@@ -49,22 +49,47 @@
                 <div class="mb-6">
                     <label class="block text-sm font-medium text-gray-700 mb-1">Rol</label>
                     <select name="role_id"
-                            class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                        class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500">
                         @foreach($roles->where('name', '!=', 'admin') as $role)
-                            <option value="{{ $role->id }}"
-                                    {{ old('role_id', $user->role_id) == $role->id ? 'selected' : '' }}>
-                                {{ $role->name === 'coach' ? 'Entrenador' : 'Jugador' }}
-                            </option>
+                        <option value="{{ $role->id }}"
+                            {{ old('role_id', $user->role_id) == $role->id ? 'selected' : '' }}>
+                            {{ $role->name === 'coach' ? 'Entrenador' : 'Jugador' }}
+                        </option>
                         @endforeach
                     </select>
                     @error('role_id')
-                        <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
+                    <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
                     @enderror
                 </div>
 
                 {{-- ESTADÍSTICAS DEL USUARIO --}}
                 <div class="mb-6 bg-gray-50 rounded-lg p-4">
                     <h4 class="text-sm font-medium text-gray-700 mb-3">Estadísticas</h4>
+
+                    @if($user->role->name === 'coach')
+                    <div class="grid grid-cols-2 gap-4 text-sm">
+                        <div>
+                            <p class="text-gray-500">Clases creadas</p>
+                            <p class="font-semibold text-gray-800">{{ $user->classesByCoach->count() }}</p>
+                        </div>
+                        <div>
+                            <p class="text-gray-500">Ingresos generados</p>
+                            <p class="font-semibold text-green-600">
+                                {{ number_format($user->classesByCoach->sum('price'), 2) }}€
+                            </p>
+                        </div>
+                        <div>
+                            <p class="text-gray-500">Miembro desde</p>
+                            <p class="font-semibold text-gray-800">{{ $user->created_at->format('d/m/Y') }}</p>
+                        </div>
+                        <div>
+                            <p class="text-gray-500">RGPD</p>
+                            <p class="font-semibold {{ $user->rgpd_consent ? 'text-green-600' : 'text-red-600' }}">
+                                {{ $user->rgpd_consent ? 'Aceptado' : 'No aceptado' }}
+                            </p>
+                        </div>
+                    </div>
+                    @else
                     <div class="grid grid-cols-2 gap-4 text-sm">
                         <div>
                             <p class="text-gray-500">Reservas totales</p>
@@ -87,11 +112,12 @@
                             </p>
                         </div>
                     </div>
+                    @endif
                 </div>
 
                 <div class="flex justify-end">
                     <button type="submit"
-                            class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700">
+                        class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700">
                         Guardar cambios
                     </button>
                 </div>

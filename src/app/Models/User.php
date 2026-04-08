@@ -95,4 +95,14 @@ class User extends Authenticatable
             ->wherePivot('status', 'registered')
             ->withTimestamps();
     }
+
+    /**
+     * CLASES QUE IMPARTE EL ENTRENADOR
+     *
+     * @return void
+     */
+    public function classesByCoach()
+    {
+        return $this->hasMany(PadelClass::class, 'coach_id');
+    }
 }

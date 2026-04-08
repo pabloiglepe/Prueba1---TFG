@@ -90,7 +90,7 @@ class UserController extends Controller
      */
     public function edit(User $user)
     {
-        $user->load(['role', 'reservations']);
+        $user->load(['role', 'reservations', 'classesByCoach']);
         $roles = Role::all();
         return view('admin.users.edit', compact('user', 'roles'));
     }

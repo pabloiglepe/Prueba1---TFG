@@ -2,12 +2,12 @@
 
     <!-- MOVEMOS DATOS PROVENIENTES DE PHP A ATRIBUTOS 'data-' PARA QUE NO DE PROBLEMAS AL GENERAR LOS GRÁFICOS -->
     <div id="dashboard-data"
-        data-occupancy-labels="@js($occupancyLabels)"
-        data-occupancy-data="@js($occupancyData)"
-        data-revenue-labels="@js($revenueLabels)"
-        data-revenue-data="@js($revenueData)"
-        data-week-data="@js($weekData)"
-        data-month-data="@js($monthData)"
+        data-occupancy-labels="{{ htmlspecialchars(json_encode($occupancyLabels), ENT_QUOTES) }}"
+        data-occupancy-data="{{ htmlspecialchars(json_encode($occupancyData), ENT_QUOTES) }}"
+        data-revenue-labels="{{ htmlspecialchars(json_encode($revenueLabels), ENT_QUOTES) }}"
+        data-revenue-data="{{ htmlspecialchars(json_encode($revenueData), ENT_QUOTES) }}"
+        data-week-data="{{ htmlspecialchars(json_encode($weekData), ENT_QUOTES) }}"
+        data-month-data="{{ htmlspecialchars(json_encode($monthData), ENT_QUOTES) }}"
         data-url-week="{{ route('admin.dashboard.week-detail') }}"
         data-url-month="{{ route('admin.dashboard.month-detail') }}">
     </div>
@@ -349,17 +349,17 @@
         // SOLO LO RELACIONADO CON LOS GRÁFICOS VAN EN ESTE BLOQUE
         document.addEventListener('livewire:navigated', function() {
 
-            const el = document.getElementById('dashboard-data');
-            if (!el) return;
+            const element = document.getElementById('dashboard-data');
+            if (!element) return;
 
-            const occupancyLabels = JSON.parse(el.dataset.occupancyLabels);
-            const occupancyData = JSON.parse(el.dataset.occupancyData);
-            const revenueLabels = JSON.parse(el.dataset.revenueLabels);
-            const revenueData = JSON.parse(el.dataset.revenueData);
-            const weekData = JSON.parse(el.dataset.weekData);
-            const monthData = JSON.parse(el.dataset.monthData);
-            const urlWeek = el.dataset.urlWeek;
-            const urlMonth = el.dataset.urlMonth;
+            const occupancyLabels = JSON.parse(element.dataset.occupancyLabels);
+            const occupancyData = JSON.parse(element.dataset.occupancyData);
+            const revenueLabels = JSON.parse(element.dataset.revenueLabels);
+            const revenueData = JSON.parse(element.dataset.revenueData);
+            const weekData = JSON.parse(element.dataset.weekData);
+            const monthData = JSON.parse(element.dataset.monthData);
+            const urlWeek = element.dataset.urlWeek;
+            const urlMonth = element.dataset.urlMonth;
 
             // SELECTORES DE LOS GRÁFICAS EN HTML
             const occupancy = document.getElementById('chart-occupancy');

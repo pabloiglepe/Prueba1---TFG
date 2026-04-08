@@ -228,16 +228,16 @@
 
     <script>
         // DATOS DESDE PHP
-        const occupancyLabels = @js($occupancyLabels);
-        const occupancyData = @js($occupancyData);
-        const revenueLabels = @js($revenueLabels);
-        const revenueData = @js($revenueData);
-        const weekData = @js($weekData);
-        const monthData = @js($monthData);
+        var occupancyLabels = @js($occupancyLabels);
+        var occupancyData = @js($occupancyData);
+        var revenueLabels = @js($revenueLabels);
+        var revenueData = @js($revenueData);
+        var weekData = @js($weekData);
+        var monthData = @js($monthData);
 
         // URLS
-        const urlWeek = "{{ route('admin.dashboard.week-detail') }}";
-        const urlMonth = "{{ route('admin.dashboard.month-detail') }}";
+        var urlWeek = "{{ route('admin.dashboard.week-detail') }}";
+        var urlMonth = "{{ route('admin.dashboard.month-detail') }}";
 
         /**
          * FUNCIÓN QUE FORMA LA TABLA QUE CONTIENE LA INFORMACIÓN DE LAS RESERVAS

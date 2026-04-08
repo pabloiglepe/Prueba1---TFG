@@ -40,7 +40,7 @@ class ClassController extends Controller
                 'registered as enrolled_count' => fn($q) =>
                 $q->where('status', 'registered')
             ])
-            ->having('enrolled_count', '<', \DB::raw('max_players'))
+            ->having('enrolled_count', '<', \Illuminate\Support\Facades\DB::raw('max_players'))
             ->orderBy('date')
             ->get()
             ->filter(fn($class) => !$class->isFull());

@@ -46,6 +46,9 @@ new class extends Component
                     <x-nav-link :href="route('admin.courts.index')" :active="request()->routeIs('admin.courts.*')" wire:navigate>
                         Pistas
                     </x-nav-link>
+                    <x-nav-link :href="route('admin.users.index')" :active="request()->routeIs('admin.users.*')" wire:navigate>
+                        Usuarios
+                    </x-nav-link>
                     @elseif($role === 'coach')
                     <x-nav-link :href="route('coach.classes.index')" :active="request()->routeIs('coach.classes.*')" wire:navigate>
                         Mis Clases

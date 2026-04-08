@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\CourtController;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Player\ReservationController;
 use App\Http\Controllers\Coach\ClassController;
 
@@ -53,6 +54,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::resource('courts', CourtController::class);
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::resource('users', UserController::class)->except(['show']);
 
     // RUTAS QUE DESGLOSAN LA INFORMACION EN EL DASHBOARD DEL ADMIN
     Route::get('dashboard/week-detail',  [DashboardController::class, 'weekDetail'])->name('dashboard.week-detail');

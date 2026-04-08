@@ -14,17 +14,17 @@
                 <button @click="tab = 'resumen'"
                     :class="tab === 'resumen' ? 'border-blue-600 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700'"
                     class="px-6 py-3 text-sm font-medium border-b-2 transition">
-                    📊 Resumen
+                    Resumen
                 </button>
                 <button @click="tab = 'entrenadores'"
                     :class="tab === 'entrenadores' ? 'border-blue-600 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700'"
                     class="px-6 py-3 text-sm font-medium border-b-2 transition">
-                    👤 Entrenadores
+                    Entrenadores
                 </button>
                 <button @click="tab = 'exportar'"
                     :class="tab === 'exportar' ? 'border-blue-600 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700'"
                     class="px-6 py-3 text-sm font-medium border-b-2 transition">
-                    ⬇ Exportar
+                    Exportar
                 </button>
             </div>
 
@@ -172,7 +172,7 @@
                                 </div>
                                 <button type="submit"
                                     class="w-full bg-blue-600 text-white text-sm py-2 rounded-lg hover:bg-blue-700">
-                                    ⬇ Descargar reservas (.xlsx)
+                                    Descargar reservas (.xlsx)
                                 </button>
                             </form>
                         </div>
@@ -189,7 +189,7 @@
                                 </div>
                                 <button type="submit"
                                     class="w-full bg-green-600 text-white text-sm py-2 rounded-lg hover:bg-green-700">
-                                    ⬇ Descargar ingresos (.xlsx)
+                                    Descargar ingresos (.xlsx)
                                 </button>
                             </form>
                         </div>

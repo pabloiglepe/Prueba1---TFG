@@ -1,34 +1,3 @@
-<!-- <x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Profile') }}
-        </h2>
-    </x-slot>
-
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
-            <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
-                <div class="max-w-xl">
-                    <livewire:profile.update-profile-information-form />
-                </div>
-            </div>
-
-            <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
-                <div class="max-w-xl">
-                    <livewire:profile.update-password-form />
-                </div>
-            </div>
-
-            <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
-                <div class="max-w-xl">
-                    <livewire:profile.delete-user-form />
-                </div>
-            </div>
-        </div>
-    </div>
-</x-app-layout> -->
-
-
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
@@ -43,7 +12,24 @@
         <div class="p-4 bg-green-100 text-green-800 rounded">{{ session('success') }}</div>
         @endif
 
-        {{-- TARJETAS RESUMEN --}}
+        <!-- {{-- TARJETAS RESUMEN --}}
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div class="bg-white shadow rounded-lg p-5">
+                <p class="text-sm text-gray-500 mb-1">Gasto en reservas</p>
+                <p class="text-2xl font-bold text-blue-600">{{ number_format($totalSpentReservations, 2) }}€</p>
+            </div>
+            <div class="bg-white shadow rounded-lg p-5">
+                <p class="text-sm text-gray-500 mb-1">Gasto en clases</p>
+                <p class="text-2xl font-bold text-purple-600">{{ number_format($totalSpentClasses, 2) }}€</p>
+            </div>
+            <div class="bg-white shadow rounded-lg p-5">
+                <p class="text-sm text-gray-500 mb-1">Gasto total</p>
+                <p class="text-2xl font-bold text-green-600">{{ number_format($totalSpent, 2) }}€</p>
+            </div>
+        </div> -->
+
+        {{-- TARJETAS RESUMEN SEGÚN ROL --}}
+        @if($user->role->name === 'player')
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div class="bg-white shadow rounded-lg p-5">
                 <p class="text-sm text-gray-500 mb-1">Gasto en reservas</p>
@@ -58,6 +44,23 @@
                 <p class="text-2xl font-bold text-green-600">{{ number_format($totalSpent, 2) }}€</p>
             </div>
         </div>
+
+        @elseif($user->role->name === 'coach')
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div class="bg-white shadow rounded-lg p-5">
+                <p class="text-sm text-gray-500 mb-1">Clases creadas</p>
+                <p class="text-2xl font-bold text-blue-600">{{ $coachStats['total_classes'] }}</p>
+            </div>
+            <div class="bg-white shadow rounded-lg p-5">
+                <p class="text-sm text-gray-500 mb-1">Alumnos totales</p>
+                <p class="text-2xl font-bold text-purple-600">{{ $coachStats['total_students'] }}</p>
+            </div>
+            <div class="bg-white shadow rounded-lg p-5">
+                <p class="text-sm text-gray-500 mb-1">Ingresos generados</p>
+                <p class="text-2xl font-bold text-green-600">{{ number_format($coachStats['total_revenue'], 2) }}€</p>
+            </div>
+        </div>
+        @endif
 
         {{-- DATOS PERSONALES --}}
         <div class="bg-white shadow rounded-lg p-6">
@@ -100,11 +103,11 @@
 
                 <div class="flex justify-between items-center">
                     <a href="{{ route('profile.export') }}"
-                        class="inline-flex items-center gap-2 bg-gray-700 text-white px-4 py-2 rounded-lg hover:bg-gray-800 text-sm">
+                        class="inline-flex items-center gap-2 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-800 text-sm">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                         </svg>
-                        Exportar mis datos (RGPD)
+                        Exportar mis datos
                     </a>
                     <button type="submit"
                         class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700">
@@ -113,17 +116,6 @@
                 </div>
             </form>
         </div>
-
-        <!-- {{-- EXPORTAR DATOS --}}
-        <div class="flex justify-end">
-            <a href="{{ route('profile.export') }}"
-                class="inline-flex items-center gap-2 bg-gray-700 text-white px-4 py-2 rounded-lg hover:bg-gray-800 text-sm">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                </svg>
-                Exportar mis datos (RGPD)
-            </a>
-        </div> -->
 
         {{-- CAMBIAR CONTRASEÑA --}}
         <div class="bg-white shadow rounded-lg p-6">
@@ -165,7 +157,8 @@
             </form>
         </div>
 
-        {{-- HISTORIAL DE RESERVAS --}}
+        <!-- {{-- HISTORIAL DE RESERVAS (SOLO PLAYER) --}}
+        @if($user->role->name === 'player')
         <div class="bg-white shadow rounded-lg p-6">
             <h3 class="font-semibold text-gray-700 mb-4">Historial de reservas</h3>
             @if($reservations->isEmpty())
@@ -209,8 +202,91 @@
             @endif
         </div>
 
-        {{-- HISTORIAL DE CLASES --}}
-        <!-- <div class="bg-white shadow rounded-lg p-6">
+        {{-- HISTORIAL DE CLASES COMO ALUMNO (SOLO PLAYER) --}}
+        <div class="bg-white shadow rounded-lg p-6">
+            <h3 class="font-semibold text-gray-700 mb-4">Mis clases</h3>
+            @if($classes->isEmpty())
+            <p class="text-gray-400 text-sm">No estás inscrito en ninguna clase.</p>
+            @else
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200 text-sm">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Clase</th>
+                            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Fecha</th>
+                            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Entrenador</th>
+                            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Pista</th>
+                            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Precio</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-100">
+                        @foreach($classes as $class)
+                        <tr>
+                            <td class="px-4 py-2 font-medium text-gray-800">{{ $class->title }}</td>
+                            <td class="px-4 py-2">{{ \Carbon\Carbon::parse($class->date)->format('d/m/Y') }}</td>
+                            <td class="px-4 py-2">{{ $class->coach->name }}</td>
+                            <td class="px-4 py-2">{{ $class->court->name }}</td>
+                            <td class="px-4 py-2 font-medium text-green-600">{{ number_format($class->price, 2) }}€</td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+            @endif
+        </div>
+        @endif
+
+        {{-- CLASES CREADAS (SOLO COACH) --}}
+        @if($user->role->name === 'coach')
+        <div class="bg-white shadow rounded-lg p-6">
+            <h3 class="font-semibold text-gray-700 mb-4">Mis clases creadas</h3>
+            @if($user->classesByCoach->isEmpty())
+            <p class="text-gray-400 text-sm">No has creado ninguna clase todavía.</p>
+            @else
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200 text-sm">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Clase</th>
+                            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Fecha</th>
+                            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Pista</th>
+                            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Alumnos</th>
+                            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Estado</th>
+                            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Ingresos</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-100">
+                        @foreach($user->classesByCoach as $class)
+                        <tr>
+                            <td class="px-4 py-2 font-medium text-gray-800">{{ $class->title }}</td>
+                            <td class="px-4 py-2">{{ \Carbon\Carbon::parse($class->date)->format('d/m/Y') }}</td>
+                            <td class="px-4 py-2">{{ $class->court->name }}</td>
+                            <td class="px-4 py-2">
+                                {{ $class->registered->count() }}/{{ $class->max_players }}
+                            </td>
+                            <td class="px-4 py-2">
+                                @if($class->status === 'registered')
+                                <span class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs">Programada</span>
+                                @elseif($class->status === 'completed')
+                                <span class="px-2 py-1 bg-purple-100 text-purple-800 rounded-full text-xs">Completada</span>
+                                @else
+                                <span class="px-2 py-1 bg-red-100 text-red-800 rounded-full text-xs">Cancelada</span>
+                                @endif
+                            </td>
+                            <td class="px-4 py-2 font-medium text-green-600">
+                                {{ number_format($class->registered->count() * $class->price, 2) }}€
+                            </td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+            @endif
+        </div>
+        @endif -->
+
+        <!-- {{-- HISTORIAL DE CLASES --}}
+        <div class="bg-white shadow rounded-lg p-6">
             <h3 class="font-semibold text-gray-700 mb-4">Mis clases</h3>
             @if($classes->isEmpty())
                 <p class="text-gray-400 text-sm">No estás inscrito en ninguna clase.</p>
@@ -242,9 +318,9 @@
             @endif
         </div> -->
 
-        {{-- ZONA DE PELIGRO - BORRAR CUENTA --}}
+        {{-- BORRAR CUENTA --}}
         <div class="bg-white shadow rounded-lg p-6 border border-red-200">
-            <h3 class="font-semibold text-red-600 mb-2">Zona de peligro</h3>
+            <h3 class="font-semibold text-red-600 mb-2">Borrar Cuenta</h3>
             <p class="text-sm text-gray-500 mb-4">
                 Al eliminar tu cuenta todos tus datos serán borrados permanentemente y tus reservas pendientes serán canceladas. Esta acción no puede deshacerse.
             </p>

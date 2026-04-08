@@ -12,7 +12,7 @@ class ProfileController extends Controller
     // VISTA DEL PERFIL
     public function index(Request $request)
     {
-        $user = $request->user()->load('role');
+        $user = $request->user()->load(['role', 'classesByCoach.registered', 'classesByCoach.court']);
 
         // HISTORIAL DE RESERVAS
         $reservations = Reservation::where('user_id', $user->id)
@@ -41,13 +41,33 @@ class ProfileController extends Controller
         // GASTO TOTAL
         $totalSpent = $totalSpentReservations + $totalSpentClasses;
 
-        return view('profile.index', compact(
+        // DATOS ESPECÍFICOS PARA EL ENTRENADOR
+        $coachStats = null;
+        if ($user->role->name === 'coach') {
+            $coachStats = [
+                'total_classes'  => $user->classesByCoach()->count(),
+                'total_students' => $user->classesByCoach()
+                    ->withCount([
+                        'registered as students_count' => fn($q) =>
+                        $q->where('status', 'registered')
+                    ])
+                    ->get()
+                    ->sum('students_count'),
+                'total_revenue'  => $user->classesByCoach()
+                    ->with(['registered' => fn($q) => $q->where('status', 'registered')])
+                    ->get()
+                    ->sum(fn($class) => $class->registered->count() * $class->price),
+            ];
+        }
+
+        return view('profile', compact(
             'user',
             'reservations',
             'totalSpentReservations',
             'classes',
             'totalSpentClasses',
-            'totalSpent'
+            'totalSpent',
+            'coachStats'
         ));
     }
 

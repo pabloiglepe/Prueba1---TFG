@@ -17,14 +17,13 @@
                 timer: 3000,
                 showConfirmButton: false,
                 timerProgressBar: true,
-                confirmButtonColor: '#4f46e5',
+                confirmButtonColor: '#6b8f6b',
             });
-
         });
     </script>
     @endif -->
 
-    <title>{{ config('app.name', 'Padel Sync') }}</title>
+    <title>{{ config('app.name', 'PadelSync') }}</title>
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
@@ -32,27 +31,47 @@
 
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+    <style>
+        :root {
+            --sage: #6b8f6b;
+            --sage-light: #e8f0e8;
+            --sage-dark: #4a6b4a;
+            --gray-warm: #f7f8f5;
+            --gray-border: #d4d9cc;
+            --text-dark: #2d3b2d;
+            --text-mid: #5a6b5a;
+            --text-light: #7a8a7a;
+        }
+    </style>
 </head>
 
-<body class="font-sans antialiased">
-    <div class="min-h-screen bg-gray-100">
+<body class="font-sans antialiased" style="background: var(--gray-warm);">
+    <div class="flex flex-col min-h-screen" style="background: var(--gray-warm);">
         <livewire:layout.navigation />
 
         <!-- Page Heading -->
         @if (isset($header))
-        <header class="bg-white shadow">
-            <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+        <header style="background: #fff; border-bottom: 0.5px solid var(--gray-border);">
+            <div class="max-w-7xl mx-auto py-5 px-4 sm:px-6 lg:px-8">
                 {{ $header }}
             </div>
         </header>
         @endif
 
         <!-- Page Content -->
-        <main>
+        <main class="flex-1">
             {{ $slot }}
         </main>
-    </div>
 
+        <!-- Footer -->
+        <footer style="border-top: 0.5px solid var(--gray-border); background: #fff; padding: 20px; text-align: center;">
+            <span style="font-size: 13px; color: var(--text-light);">
+                © {{ date('Y') }} PadelSync · Desarrollado por
+                <span style="font-weight: 500; color: var(--text-mid);">Pablo Iglesias Peral</span>
+            </span>
+        </footer>
+    </div>
 
     @if (session('swal'))
     <div
@@ -69,6 +88,7 @@
         ">
     </div>
     @endif
+
 </body>
 
 </html>

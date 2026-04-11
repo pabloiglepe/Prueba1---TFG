@@ -23,123 +23,143 @@ new class extends Component
     }
 }; ?>
 
-<nav x-data="{ open: false }" class="bg-white border-b border-gray-100">
+<nav x-data="{ open: false }" style="background: #fff; border-bottom: 0.5px solid #d4d9cc;">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-16">
             <div class="flex">
 
                 {{-- LOGO --}}
-                <div class="shrink-0 flex items-center">
-                    <a href="{{ route('dashboard') }}" wire:navigate>
-                        <x-application-logo class="block h-9 w-auto fill-current text-gray-800" />
+                <div class="shrink-0 flex items-center gap-2">
+                    <a href="{{ route('dashboard') }}" wire:navigate class="flex items-center gap-2">
+                        <x-application-logo style="height: 36px; width: auto; fill: #6b8f6b;" />
+                        <span style="font-size: 16px; font-weight: 600; color: #2d3b2d;">PadelSync</span>
                     </a>
                 </div>
 
                 {{-- ENLACES SEGÚN ROL --}}
-                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                <div class="hidden sm:flex sm:items-center sm:ms-10 sm:gap-1">
                     @php $role = Auth::user()->role->name; @endphp
 
                     @if($role === 'admin')
-                    <x-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.dashboard')" wire:navigate>
-                        Dashboard
-                    </x-nav-link>
-                    <x-nav-link :href="route('admin.courts.index')" :active="request()->routeIs('admin.courts.*')" wire:navigate>
-                        Pistas
-                    </x-nav-link>
-                    <x-nav-link :href="route('admin.users.index')" :active="request()->routeIs('admin.users.*')" wire:navigate>
-                        Usuarios
-                    </x-nav-link>
+                        <a href="{{ route('admin.dashboard') }}" wire:navigate
+                           style="font-size: 14px; font-weight: 500; padding: 6px 14px; border-radius: 8px; text-decoration: none; transition: background 0.15s;
+                           {{ request()->routeIs('admin.dashboard') ? 'background: #e8f0e8; color: #4a6b4a;' : 'color: #5a6b5a;' }}"
+                           onmouseover="if(!{{ request()->routeIs('admin.dashboard') ? 'true' : 'false' }})this.style.background='#f7f8f5'"
+                           onmouseout="if(!{{ request()->routeIs('admin.dashboard') ? 'true' : 'false' }})this.style.background='transparent'">
+                            Dashboard
+                        </a>
+                        <a href="{{ route('admin.courts.index') }}" wire:navigate
+                           style="font-size: 14px; font-weight: 500; padding: 6px 14px; border-radius: 8px; text-decoration: none; transition: background 0.15s;
+                           {{ request()->routeIs('admin.courts.*') ? 'background: #e8f0e8; color: #4a6b4a;' : 'color: #5a6b5a;' }}"
+                           onmouseover="if(!{{ request()->routeIs('admin.courts.*') ? 'true' : 'false' }})this.style.background='#f7f8f5'"
+                           onmouseout="if(!{{ request()->routeIs('admin.courts.*') ? 'true' : 'false' }})this.style.background='transparent'">
+                            Pistas
+                        </a>
+                        <a href="{{ route('admin.users.index') }}" wire:navigate
+                           style="font-size: 14px; font-weight: 500; padding: 6px 14px; border-radius: 8px; text-decoration: none; transition: background 0.15s;
+                           {{ request()->routeIs('admin.users.*') ? 'background: #e8f0e8; color: #4a6b4a;' : 'color: #5a6b5a;' }}"
+                           onmouseover="if(!{{ request()->routeIs('admin.users.*') ? 'true' : 'false' }})this.style.background='#f7f8f5'"
+                           onmouseout="if(!{{ request()->routeIs('admin.users.*') ? 'true' : 'false' }})this.style.background='transparent'">
+                            Usuarios
+                        </a>
                     @elseif($role === 'coach')
-                    <x-nav-link :href="route('coach.classes.index')" :active="request()->routeIs('coach.classes.*')" wire:navigate>
-                        Mis Clases
-                    </x-nav-link>
+                        <a href="{{ route('coach.classes.index') }}" wire:navigate
+                           style="font-size: 14px; font-weight: 500; padding: 6px 14px; border-radius: 8px; text-decoration: none;
+                           {{ request()->routeIs('coach.classes.*') ? 'background: #e8f0e8; color: #4a6b4a;' : 'color: #5a6b5a;' }}">
+                            Mis Clases
+                        </a>
                     @elseif($role === 'player')
-                    <x-nav-link :href="route('player.reservations.index')" :active="request()->routeIs('player.reservations.*')" wire:navigate>
-                        Mis Reservas
-                    </x-nav-link>
-                    <x-nav-link :href="route('player.classes.index')" :active="request()->routeIs('player.classes.*')" wire:navigate>
-                        Clases
-                    </x-nav-link>
+                        <a href="{{ route('player.reservations.index') }}" wire:navigate
+                           style="font-size: 14px; font-weight: 500; padding: 6px 14px; border-radius: 8px; text-decoration: none;
+                           {{ request()->routeIs('player.reservations.*') ? 'background: #e8f0e8; color: #4a6b4a;' : 'color: #5a6b5a;' }}">
+                            Mis Reservas
+                        </a>
+                        <a href="{{ route('player.classes.index') }}" wire:navigate
+                           style="font-size: 14px; font-weight: 500; padding: 6px 14px; border-radius: 8px; text-decoration: none;
+                           {{ request()->routeIs('player.classes.*') ? 'background: #e8f0e8; color: #4a6b4a;' : 'color: #5a6b5a;' }}">
+                            Clases
+                        </a>
                     @endif
                 </div>
             </div>
 
-            <div class="hidden sm:flex sm:items-center sm:ms-6 gap-4">
+            <div class="hidden sm:flex sm:items-center sm:ms-6 gap-3">
 
                 {{-- CAMPANA DE NOTIFICACIONES --}}
                 @php $notifications = Auth::user()->unreadNotifications; @endphp
                 <div class="relative" x-data="{ open: false }" @click.outside="open = false">
                     <button @click="open = !open"
-                        class="relative p-2 text-gray-500 hover:text-gray-700 focus:outline-none">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        style="position: relative; padding: 8px; color: #5a6b5a; background: none; border: none; cursor: pointer; border-radius: 8px;"
+                        onmouseover="this.style.background='#f7f8f5'"
+                        onmouseout="this.style.background='none'">
+                        <svg xmlns="http://www.w3.org/2000/svg" style="width:22px;height:22px;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                            <path stroke-linecap="round" stroke-linejoin="round"
                                 d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6 6 0 10-12 0v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
                         </svg>
                         @if($notifications->count() > 0)
-                        <span class="absolute top-1 right-1 inline-flex items-center justify-center w-4 h-4 text-xs font-bold text-white bg-red-500 rounded-full">
-                            {{ $notifications->count() }}
-                        </span>
+                            <span style="position: absolute; top: 4px; right: 4px; width: 16px; height: 16px; background: #e05c5c; color: #fff; font-size: 10px; font-weight: 700; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                                {{ $notifications->count() }}
+                            </span>
                         @endif
                     </button>
 
                     {{-- DROPDOWN NOTIFICACIONES --}}
                     <div x-show="open" x-transition
-                        class="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
+                        style="position: absolute; right: 0; top: calc(100% + 8px); width: 320px; background: #fff; border-radius: 12px; border: 0.5px solid #d4d9cc; box-shadow: 0 8px 24px rgba(0,0,0,0.08); z-index: 50;">
 
-                        <div class="flex justify-between items-center px-4 py-3 border-b">
-                            <h3 class="font-semibold text-gray-700 text-sm">Notificaciones</h3>
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 14px 16px; border-bottom: 0.5px solid #d4d9cc;">
+                            <h3 style="font-size: 14px; font-weight: 600; color: #2d3b2d; margin: 0;">Notificaciones</h3>
                             @if($notifications->count() > 0)
-                            <button wire:click="markAllAsRead"
-                                class="text-xs text-blue-600 hover:underline">
-                                Marcar todas como leídas
-                            </button>
+                                <button wire:click="markAllAsRead"
+                                    style="font-size: 12px; color: #6b8f6b; background: none; border: none; cursor: pointer;">
+                                    Marcar todas como leídas
+                                </button>
                             @endif
                         </div>
 
-                        <div class="max-h-80 overflow-y-auto divide-y divide-gray-100">
+                        <div style="max-height: 320px; overflow-y: auto;">
                             @forelse($notifications as $notification)
-                            <div class="px-4 py-3 hover:bg-gray-50 flex justify-between items-start gap-2">
-                                <div>
-                                    <p class="text-sm font-medium text-gray-800">
-                                        {{ $notification->data['title'] }}
-                                    </p>
-                                    <p class="text-xs text-gray-500 mt-0.5">
-                                        {{ $notification->data['message'] }}
-                                    </p>
-                                    <p class="text-xs text-gray-400 mt-1">
-                                        {{ $notification->created_at->diffForHumans() }}
-                                    </p>
+                                <div style="padding: 12px 16px; display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; border-bottom: 0.5px solid #f0f3ee;">
+                                    <div>
+                                        <p style="font-size: 13px; font-weight: 500; color: #2d3b2d; margin: 0 0 3px;">
+                                            {{ $notification->data['title'] }}
+                                        </p>
+                                        <p style="font-size: 12px; color: #5a6b5a; margin: 0 0 3px;">
+                                            {{ $notification->data['message'] }}
+                                        </p>
+                                        <p style="font-size: 11px; color: #9aaa9a; margin: 0;">
+                                            {{ $notification->created_at->diffForHumans() }}
+                                        </p>
+                                    </div>
+                                    <button wire:click="markAsRead('{{ $notification->id }}')"
+                                        style="color: #b8c9b8; background: none; border: none; cursor: pointer; flex-shrink: 0; padding: 2px;"
+                                        title="Marcar como leída">
+                                        <svg xmlns="http://www.w3.org/2000/svg" style="width:16px;height:16px;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                                        </svg>
+                                    </button>
                                 </div>
-                                <button wire:click="markAsRead('{{ $notification->id }}')"
-                                    class="text-gray-300 hover:text-gray-500 shrink-0 mt-1"
-                                    title="Marcar como leída">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                                    </svg>
-                                </button>
-                            </div>
                             @empty
-                            <div class="px-4 py-6 text-center text-sm text-gray-400">
-                                No tienes notificaciones nuevas
-                            </div>
+                                <div style="padding: 32px 16px; text-align: center; font-size: 13px; color: #9aaa9a;">
+                                    No tienes notificaciones nuevas
+                                </div>
                             @endforelse
                         </div>
-
                     </div>
                 </div>
 
                 {{-- DROPDOWN USUARIO --}}
                 <x-dropdown align="right" width="48">
                     <x-slot name="trigger">
-                        <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
+                        <button style="display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 8px; border: 0.5px solid #d4d9cc; background: #fff; font-size: 14px; color: #2d3b2d; cursor: pointer; font-weight: 500;"
+                                onmouseover="this.style.background='#f7f8f5'"
+                                onmouseout="this.style.background='#fff'">
                             <div x-data="{{ json_encode(['name' => Auth::user()->name]) }}"
                                 x-text="name"
                                 x-on:profile-updated.window="name = $event.detail.name"></div>
-                            <div class="ms-1">
-                                <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
-                                </svg>
-                            </div>
+                            <svg style="width:14px;height:14px;fill:#5a6b5a;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                            </svg>
                         </button>
                     </x-slot>
                     <x-slot name="content">
@@ -158,7 +178,8 @@ new class extends Component
 
             {{-- HAMBURGER --}}
             <div class="-me-2 flex items-center sm:hidden">
-                <button @click="open = ! open" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none transition duration-150 ease-in-out">
+                <button @click="open = ! open"
+                        style="padding: 8px; border-radius: 8px; border: none; background: none; cursor: pointer; color: #5a6b5a;">
                     <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
                         <path :class="{'hidden': open, 'inline-flex': ! open }" class="inline-flex" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
                         <path :class="{'hidden': ! open, 'inline-flex': open }" class="hidden" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -169,32 +190,41 @@ new class extends Component
     </div>
 
     {{-- MENÚ RESPONSIVE --}}
-    <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
-        <div class="pt-2 pb-3 space-y-1">
+    <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden"
+         style="border-top: 0.5px solid #d4d9cc;">
+        <div style="padding: 8px 12px;">
             @if($role === 'admin')
-            <x-responsive-nav-link :href="route('admin.dashboard')" wire:navigate>Dashboard</x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('admin.courts.index')" wire:navigate>Pistas</x-responsive-nav-link>
+                <a href="{{ route('admin.dashboard') }}" wire:navigate
+                   style="display: block; padding: 10px 12px; font-size: 14px; color: #2d3b2d; text-decoration: none; border-radius: 8px;">Dashboard</a>
+                <a href="{{ route('admin.courts.index') }}" wire:navigate
+                   style="display: block; padding: 10px 12px; font-size: 14px; color: #2d3b2d; text-decoration: none; border-radius: 8px;">Pistas</a>
+                <a href="{{ route('admin.users.index') }}" wire:navigate
+                   style="display: block; padding: 10px 12px; font-size: 14px; color: #2d3b2d; text-decoration: none; border-radius: 8px;">Usuarios</a>
             @elseif($role === 'coach')
-            <x-responsive-nav-link :href="route('coach.classes.index')" wire:navigate>Mis Clases</x-responsive-nav-link>
+                <a href="{{ route('coach.classes.index') }}" wire:navigate
+                   style="display: block; padding: 10px 12px; font-size: 14px; color: #2d3b2d; text-decoration: none; border-radius: 8px;">Mis Clases</a>
             @elseif($role === 'player')
-            <x-responsive-nav-link :href="route('player.reservations.index')" wire:navigate>Mis Reservas</x-responsive-nav-link>
+                <a href="{{ route('player.reservations.index') }}" wire:navigate
+                   style="display: block; padding: 10px 12px; font-size: 14px; color: #2d3b2d; text-decoration: none; border-radius: 8px;">Mis Reservas</a>
+                <a href="{{ route('player.classes.index') }}" wire:navigate
+                   style="display: block; padding: 10px 12px; font-size: 14px; color: #2d3b2d; text-decoration: none; border-radius: 8px;">Clases</a>
             @endif
         </div>
 
-        <div class="pt-4 pb-1 border-t border-gray-200">
-            <div class="px-4">
-                <div class="font-medium text-base text-gray-800"
+        <div style="padding: 12px; border-top: 0.5px solid #d4d9cc;">
+            <div style="padding: 0 12px 8px;">
+                <div style="font-size: 15px; font-weight: 500; color: #2d3b2d;"
                     x-data="{{ json_encode(['name' => Auth::user()->name]) }}"
                     x-text="name"
                     x-on:profile-updated.window="name = $event.detail.name"></div>
-                <div class="font-medium text-sm text-gray-500">{{ Auth::user()->email }}</div>
+                <div style="font-size: 13px; color: #5a6b5a;">{{ Auth::user()->email }}</div>
             </div>
-            <div class="mt-3 space-y-1">
-                <x-responsive-nav-link :href="route('profile')" wire:navigate>Perfil</x-responsive-nav-link>
-                <button wire:click="logout" class="w-full text-start">
-                    <x-responsive-nav-link>Cerrar sesión</x-responsive-nav-link>
-                </button>
-            </div>
+            <a href="{{ route('profile') }}" wire:navigate
+               style="display: block; padding: 10px 12px; font-size: 14px; color: #2d3b2d; text-decoration: none; border-radius: 8px;">Perfil</a>
+            <button wire:click="logout"
+                    style="display: block; width: 100%; text-align: left; padding: 10px 12px; font-size: 14px; color: #2d3b2d; background: none; border: none; cursor: pointer; border-radius: 8px;">
+                Cerrar sesión
+            </button>
         </div>
     </div>
 </nav>

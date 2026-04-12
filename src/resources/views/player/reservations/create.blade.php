@@ -50,57 +50,66 @@
         </div>
 
         {{-- PASO 2: ELEGIR FRANJA HORARIA --}}
-        @if(request('date') && $slots->isNotEmpty())
-        <div style="background: #fff; border-radius: 12px; border: 0.5px solid #d4d9cc; padding: 24px;">
-            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
-                <div style="width: 26px; height: 26px; background: #6b8f6b; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600; color: #fff; flex-shrink: 0;">2</div>
-                <h3 style="font-size: 15px; font-weight: 600; color: #2d3b2d; margin: 0;">Elige una franja horaria</h3>
-            </div>
-
-            {{-- TARIFAS --}}
-            <div style="display: flex; gap: 16px; margin-bottom: 16px; padding-left: 36px;">
-                <span style="display: inline-flex; align-items: center; gap: 5px; font-size: 13px; color: #5a6b5a;">
-                    <svg xmlns="http://www.w3.org/2000/svg" style="width:14px;height:14px;stroke:#6b8f6b;" fill="none" viewBox="0 0 24 24" stroke-width="2">
-                        <circle cx="12" cy="12" r="5"/>
-                        <line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
-                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
-                        <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
-                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+        @if(request('date'))
+            @if($slots->isEmpty())
+                <div style="padding: 16px 20px; background: #fdf6e8; border: 0.5px solid #e8d4a0; border-radius: 10px; font-size: 14px; color: #92650a; display: flex; align-items: center; gap: 10px;">
+                    <svg xmlns="http://www.w3.org/2000/svg" style="width:18px;height:18px;stroke:#b8860b;flex-shrink:0;" fill="none" viewBox="0 0 24 24" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
                     </svg>
-                    Diurna: <strong style="color: #2d3b2d;">12€</strong>
-                </span>
-                <span style="display: inline-flex; align-items: center; gap: 5px; font-size: 13px; color: #5a6b5a;">
-                    <svg xmlns="http://www.w3.org/2000/svg" style="width:14px;height:14px;stroke:#6b8f6b;" fill="none" viewBox="0 0 24 24" stroke-width="2">
-                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
-                    </svg>
-                    Nocturna (desde {{ $nightStartTime }}): <strong style="color: #2d3b2d;">16€</strong>
-                </span>
-                <span style="display: inline-flex; align-items: center; gap: 5px; font-size: 13px; color: #5a6b5a;">
-                    <svg xmlns="http://www.w3.org/2000/svg" style="width:14px;height:14px;stroke:#6b8f6b;" fill="none" viewBox="0 0 24 24" stroke-width="2">
-                        <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
-                    </svg>
-                    Duración: <strong style="color: #2d3b2d;">1h 30min</strong>
-                </span>
-            </div>
-
-            {{-- FRANJAS --}}
-            <form method="GET" action="{{ route('player.reservations.create') }}">
-                <input type="hidden" name="date" value="{{ request('date') }}">
-                <div style="display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px;">
-                    @foreach($slots as $slot)
-                        <button type="submit" name="start_time" value="{{ $slot }}"
-                                style="padding: 9px 6px; border-radius: 8px; font-size: 13px; font-weight: 500; border: 0.5px solid; cursor: pointer;
-                                {{ request('start_time') == $slot
-                                    ? 'background: #6b8f6b; color: #fff; border-color: #6b8f6b;'
-                                    : 'background: #fff; color: #2d3b2d; border-color: #d4d9cc;' }}"
-                                onmouseover="if('{{ request('start_time') }}' !== '{{ $slot }}') { this.style.borderColor='#6b8f6b'; this.style.color='#4a6b4a'; }"
-                                onmouseout="if('{{ request('start_time') }}' !== '{{ $slot }}') { this.style.borderColor='#d4d9cc'; this.style.color='#2d3b2d'; }">
-                            {{ $slot }}
-                        </button>
-                    @endforeach
+                    No hay franjas disponibles para hoy. El horario de reservas ha finalizado por hoy, prueba con otra fecha.
                 </div>
-            </form>
-        </div>
+            @else
+            <div style="background: #fff; border-radius: 12px; border: 0.5px solid #d4d9cc; padding: 24px;">
+                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
+                    <div style="width: 26px; height: 26px; background: #6b8f6b; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600; color: #fff; flex-shrink: 0;">2</div>
+                    <h3 style="font-size: 15px; font-weight: 600; color: #2d3b2d; margin: 0;">Elige una franja horaria</h3>
+                </div>
+
+                {{-- TARIFAS --}}
+                <div style="display: flex; gap: 16px; margin-bottom: 16px; padding-left: 36px;">
+                    <span style="display: inline-flex; align-items: center; gap: 5px; font-size: 13px; color: #5a6b5a;">
+                        <svg xmlns="http://www.w3.org/2000/svg" style="width:14px;height:14px;stroke:#6b8f6b;" fill="none" viewBox="0 0 24 24" stroke-width="2">
+                            <circle cx="12" cy="12" r="5"/>
+                            <line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
+                            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+                            <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
+                            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+                        </svg>
+                        Diurna: <strong style="color: #2d3b2d;">12€</strong>
+                    </span>
+                    <span style="display: inline-flex; align-items: center; gap: 5px; font-size: 13px; color: #5a6b5a;">
+                        <svg xmlns="http://www.w3.org/2000/svg" style="width:14px;height:14px;stroke:#6b8f6b;" fill="none" viewBox="0 0 24 24" stroke-width="2">
+                            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+                        </svg>
+                        Nocturna (desde {{ $nightStartTime }}): <strong style="color: #2d3b2d;">16€</strong>
+                    </span>
+                    <span style="display: inline-flex; align-items: center; gap: 5px; font-size: 13px; color: #5a6b5a;">
+                        <svg xmlns="http://www.w3.org/2000/svg" style="width:14px;height:14px;stroke:#6b8f6b;" fill="none" viewBox="0 0 24 24" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+                        </svg>
+                        Duración: <strong style="color: #2d3b2d;">1h 30min</strong>
+                    </span>
+                </div>
+
+                {{-- FRANJAS --}}
+                <form method="GET" action="{{ route('player.reservations.create') }}">
+                    <input type="hidden" name="date" value="{{ request('date') }}">
+                    <div style="display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px;">
+                        @foreach($slots as $slot)
+                            <button type="submit" name="start_time" value="{{ $slot }}"
+                                    style="padding: 9px 6px; border-radius: 8px; font-size: 13px; font-weight: 500; border: 0.5px solid; cursor: pointer;
+                                    {{ request('start_time') == $slot
+                                        ? 'background: #6b8f6b; color: #fff; border-color: #6b8f6b;'
+                                        : 'background: #fff; color: #2d3b2d; border-color: #d4d9cc;' }}"
+                                    onmouseover="if('{{ request('start_time') }}' !== '{{ $slot }}') { this.style.borderColor='#6b8f6b'; this.style.color='#4a6b4a'; }"
+                                    onmouseout="if('{{ request('start_time') }}' !== '{{ $slot }}') { this.style.borderColor='#d4d9cc'; this.style.color='#2d3b2d'; }">
+                                {{ $slot }}
+                            </button>
+                        @endforeach
+                    </div>
+                </form>
+            </div>
+            @endif
         @endif
 
         {{-- PASO 3: ELEGIR PISTA --}}

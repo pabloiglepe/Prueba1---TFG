@@ -80,6 +80,14 @@ class ClassController extends Controller
 
                 return !$reservationOverlap && !$classOverlap;
             })->values();
+
+            // SI LA FECHA ES HOY, FILTRAMOS LAS FRANJAS QUE YA HAN PASADO
+            if (\Carbon\Carbon::parse($date)->isToday()) {
+                $now = \Carbon\Carbon::now();
+                $slots = $slots->filter(function ($slot) use ($now) {
+                    return \Carbon\Carbon::createFromFormat('H:i', $slot)->gt($now);
+                })->values();
+            }
         }
 
         return view('coach.classes.create', compact('courts', 'players', 'slots', 'selectedCourt', 'courtId', 'date'));
@@ -249,6 +257,14 @@ class ClassController extends Controller
 
             return !$reservationOverlap && !$classOverlap;
         })->values();
+
+        // SI LA FECHA ES HOY, FILTRAMOS LAS FRANJAS QUE YA HAN PASADO
+        if (\Carbon\Carbon::parse($date)->isToday()) {
+            $now = \Carbon\Carbon::now();
+            $slots = $slots->filter(function ($slot) use ($now) {
+                return \Carbon\Carbon::createFromFormat('H:i', $slot)->gt($now);
+            })->values();
+        }
 
         return view('coach.classes.edit', compact('class', 'courts', 'players', 'enrolledIds', 'slots', 'selectedCourt', 'courtId', 'date'));
     }

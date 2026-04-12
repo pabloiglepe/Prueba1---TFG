@@ -27,23 +27,38 @@ class ClassController extends Controller
 
 
         // CLASES PÚBLICAS DISPONIBLES (no inscrito, con plazas, futuras)
+        // $availableClasses = PadelClass::where('visibility', 'public')
+        //     ->where('status', 'registered')
+        //     ->where('date', '>=', today())
+        //     ->whereDoesntHave(
+        //         'registered',
+        //         fn($q) =>
+        //         $q->where('user_id', $user->id)->where('status', 'registered')
+        //     )
+        //     ->with(['coach', 'court'])
+        //     ->withCount([
+        //         'registered as enrolled_count' => fn($q) =>
+        //         $q->where('status', 'registered')
+        //     ])
+        //     ->having('enrolled_count', '<', \Illuminate\Support\Facades\DB::raw('max_players'))
+        //     ->orderBy('date')
+        //     ->get()
+        //     ->filter(fn($class) => !$class->isFull());
+        // CLASES PÚBLICAS DISPONIBLES (no inscrito, con plazas, futuras)
         $availableClasses = PadelClass::where('visibility', 'public')
             ->where('status', 'registered')
             ->where('date', '>=', today())
             ->whereDoesntHave(
                 'registered',
-                fn($q) =>
-                $q->where('user_id', $user->id)->where('status', 'registered')
+                fn($q) => $q->where('user_id', $user->id)->where('status', 'registered')
             )
             ->with(['coach', 'court'])
             ->withCount([
-                'registered as enrolled_count' => fn($q) =>
-                $q->where('status', 'registered')
+                'registered as enrolled_count' => fn($q) => $q->where('status', 'registered')
             ])
-            ->having('enrolled_count', '<', \Illuminate\Support\Facades\DB::raw('max_players'))
             ->orderBy('date')
             ->get()
-            ->filter(fn($class) => !$class->isFull());
+            ->filter(fn($class) => $class->enrolled_count < $class->max_players);
 
         return view('player.classes.index', compact('myClasses', 'availableClasses'));
     }

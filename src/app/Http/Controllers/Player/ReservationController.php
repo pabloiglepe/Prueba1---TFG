@@ -51,6 +51,14 @@ class ReservationController extends Controller
                 $current->addMinutes(30);
             }
 
+            // SI LA FECHA ES HOY, FILTRAMOS LAS FRANJAS QUE YA HAN PASADO
+            if (Carbon::parse($request->date)->isToday()) {
+                $now = Carbon::now();
+                $slots = $slots->filter(function ($slot) use ($now) {
+                    return Carbon::createFromFormat('H:i', $slot)->gt($now);
+                });
+            }
+
             // SI TAMBIÉN HAY FRANJA SELECCIONADA, BUSCAMOS PISTAS LIBRES
             if ($request->filled('start_time')) {
                 $request->validate([

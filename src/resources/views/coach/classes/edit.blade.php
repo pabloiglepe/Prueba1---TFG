@@ -88,9 +88,8 @@
                     Duración: <strong style="color: #2d3b2d;">1h 30min</strong>
                 </span>
                 <span style="display: inline-flex; align-items: center; gap: 5px; font-size: 13px; color: #5a6b5a;">
-                    <svg xmlns="http://www.w3.org/2000/svg" style="width:14px;height:14px;stroke:#6b8f6b;" fill="none" viewBox="0 0 24 24" stroke-width="2">
-                        <path d="M12 2a10 10 0 1 0 0 20A10 10 0 0 0 12 2z" />
-                        <path d="M12 6v6l4 2" />
+                    <svg xmlns="http://www.w3.org/2000/svg" style="width:14px;height:14px;stroke:#6b8f6b;" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M14.25 7.756a4.5 4.5 0 1 0 0 8.488M7.5 10.5h5.25m-5.25 3h5.25M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                     </svg>
                     El precio por alumno se define en el paso siguiente
                 </span>
@@ -179,21 +178,25 @@
                             x-data="{ type: '{{ $currentType }}' }"
                             x-model="type"
                             x-on:change="
-                                    const max = document.getElementById('max_players');
-                                    const maxHidden = document.getElementById('max_players_hidden');
-                                    if (type === 'individual') {
-                                        max.value = 1;
-                                        max.disabled = true;
-                                        max.style.background = '#f7f8f5';
-                                        max.style.color = '#9aaa9a';
-                                        maxHidden.value = 1;
-                                    } else {
-                                        max.disabled = false;
-                                        max.style.background = '#fff';
-                                        max.style.color = '#2d3b2d';
-                                        maxHidden.value = max.value;
-                                    }
-                                "
+                                        const max = document.getElementById('max_players');
+                                        const maxHidden = document.getElementById('max_players_hidden');
+                                        if (type === 'individual') {
+                                            max.value = 1;
+                                            max.disabled = true;
+                                            max.style.background = '#f7f8f5';
+                                            max.style.color = '#9aaa9a';
+                                            maxHidden.value = 1;
+                                        } else {
+                                            max.disabled = false;
+                                            max.style.background = '#fff';
+                                            max.style.color = '#2d3b2d';
+                                            max.min = 2;
+                                            if (parseInt(max.value) < 2) {
+                                                max.value = 2;
+                                            }
+                                            maxHidden.value = max.value;
+                                        }
+                                    "
                             style="width: 100%; padding: 9px 12px; border: 0.5px solid #d4d9cc; border-radius: 8px; font-size: 14px; color: #2d3b2d; outline: none; background: #fff; box-sizing: border-box;"
                             onfocus="this.style.borderColor='#6b8f6b'"
                             onblur="this.style.borderColor='#d4d9cc'">

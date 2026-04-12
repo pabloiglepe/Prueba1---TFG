@@ -54,7 +54,7 @@ new #[Layout('layouts.guest')] class extends Component
                 </svg>
                 <input wire:model="form.email"
                     id="email" type="email" name="email"
-                    required autofocus autocomplete="username"
+                    required placeholder="example@gmail.com" autofocus autocomplete="username"
                     style="width: 100%; padding: 9px 12px 9px 38px; border: 0.5px solid #d4d9cc; border-radius: 8px; font-size: 14px; color: #2d3b2d; outline: none; box-sizing: border-box;"
                     onfocus="this.style.borderColor='#6b8f6b'"
                     onblur="this.style.borderColor='#d4d9cc'">
@@ -76,7 +76,7 @@ new #[Layout('layouts.guest')] class extends Component
                 <input wire:model="form.password"
                     id="password" name="password"
                     :type="show ? 'text' : 'password'"
-                    required autocomplete="current-password"
+                    required placeholder="*******" autocomplete="current-password"
                     style="width: 100%; padding: 9px 40px 9px 38px; border: 0.5px solid #d4d9cc; border-radius: 8px; font-size: 14px; color: #2d3b2d; outline: none; box-sizing: border-box;"
                     onfocus="this.style.borderColor='#6b8f6b'"
                     onblur="this.style.borderColor='#d4d9cc'">

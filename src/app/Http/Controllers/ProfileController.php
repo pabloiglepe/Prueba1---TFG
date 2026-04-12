@@ -14,6 +14,15 @@ class ProfileController extends Controller
     {
         $user = $request->user()->load(['role', 'classesByCoach.registered', 'classesByCoach.court']);
 
+        // DATOS ESPECÍFICOS PARA EL JUGADOR
+        $reservations = collect();
+        $classes      = collect();
+
+        if ($user->role->name === 'player') {
+            $reservations = $user->reservations()->with('court')->orderBy('reservation_date', 'desc')->get();
+            $classes      = $user->classes()->with(['coach', 'court'])->get();
+        }
+
         // HISTORIAL DE RESERVAS
         $reservations = Reservation::where('user_id', $user->id)
             ->with('court')

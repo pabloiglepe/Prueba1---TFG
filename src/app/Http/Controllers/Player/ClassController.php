@@ -64,7 +64,7 @@ class ClassController extends Controller
             return back()->with('error', 'No quedan plazas disponibles en esta clase.');
         }
 
-        // COMPROBAR QUE NO ESTÁ YA INSCRITO
+        // COMPROBAR SI YA ESTÁ INSCRITO
         $alreadyRegistered = ClassRegistration::where('class_id', $class->id)
             ->where('user_id', $user->id)
             ->where('status', 'registered')

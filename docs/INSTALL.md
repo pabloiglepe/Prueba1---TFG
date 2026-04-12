@@ -32,7 +32,28 @@ DB_USERNAME=user_padel
 DB_PASSWORD=user_pass
 ```
 
-### 3. Levantar los contenedores
+### 3. Configurar el envío de emails
+
+Para que el sistema de recuperación de contraseña funcione con emails reales, la aplicación usa **Brevo API HTTP**. Esto es necesario tanto en local como en producción, ya que Railway bloquea las conexiones SMTP salientes.
+
+**Paso 1** — Crea una cuenta gratuita en [brevo.com](https://brevo.com)
+
+**Paso 2** — Ve a tu perfil → **SMTP & API** → pestaña **API Keys** → crea una API key con el nombre `PadelSync`
+
+**Paso 3** — Añade estas variables en `src/.env`:
+
+```env
+MAIL_MAILER=brevo
+MAIL_FROM_ADDRESS=tucuenta@gmail.com
+MAIL_FROM_NAME="PadelSync"
+BREVO_API_KEY=tu_api_key_de_brevo
+```
+
+> Si no configuras el email, los correos se escribirán en `storage/logs/laravel.log` en lugar de enviarse. Cambia `MAIL_MAILER=log` para ese comportamiento.
+
+> **¿Por qué Brevo API y no SMTP?** Railway bloquea todos los puertos SMTP salientes (25, 465, 587). El transport personalizado de Brevo usa la API HTTP sobre HTTPS (puerto 443), que siempre está abierto. Ver Hito 13 en `BITACORA.md` para más detalles.
+
+### 4. Levantar los contenedores
 
 ```bash
 docker compose up -d
@@ -40,19 +61,19 @@ docker compose up -d
 
 Esto arranca los cuatro servicios: `padel-web`, `padel-app`, `padel-db` y `padel-node`.
 
-### 4. Instalar dependencias PHP
+### 5. Instalar dependencias PHP
 
 ```bash
 docker exec -it padel-app composer install
 ```
 
-### 5. Generar la clave de la aplicación
+### 6. Generar la clave de la aplicación
 
 ```bash
 docker exec -it padel-app php artisan key:generate
 ```
 
-### 6. Ejecutar migraciones y seeders
+### 7. Ejecutar migraciones y seeders
 
 ```bash
 docker exec -it padel-app php artisan migrate --seed
@@ -60,14 +81,14 @@ docker exec -it padel-app php artisan migrate --seed
 
 Esto crea todas las tablas y carga los usuarios de prueba.
 
-### 7. Instalar dependencias Node y compilar assets
+### 8. Instalar dependencias Node y compilar assets
 
 ```bash
 docker exec -it padel-node npm install
 docker exec -it padel-node npm run build
 ```
 
-### 8. Acceder a la aplicación
+### 9. Acceder a la aplicación
 
 Abre [http://localhost:8000](http://localhost:8000) en el navegador.
 
@@ -80,6 +101,19 @@ Abre [http://localhost:8000](http://localhost:8000) en el navegador.
 | admin@padel.com | Admin_padel123 | Administrador |
 | coach@padel.com | Coach_padel123 | Entrenador |
 | pepe@gmail.com | Pepe123 | Jugador |
+
+---
+
+## Variables de entorno de Railway (producción)
+
+En el panel de Railway → tu servicio → **Variables**, añade:
+
+```
+MAIL_MAILER=brevo
+MAIL_FROM_ADDRESS=tucuenta@gmail.com
+MAIL_FROM_NAME=PadelSync
+BREVO_API_KEY=tu_api_key_de_brevo
+```
 
 ---
 
@@ -112,6 +146,25 @@ docker compose down -v
 
 ---
 
+## Sincronizar base de datos local con Railway
+
+Si necesitas importar tu BD local en Railway:
+
+```bash
+# 1. Exportar la BD local
+docker exec -it padel-db mysqldump -u user_padel -puser_pass padel_club > backup.sql
+
+# 2. Limpiar warnings del dump (importante, o fallará la importación)
+grep -v "^mysqldump:" backup.sql > backup_clean.sql
+
+# 3. Importar en Railway (sustituye con tus credenciales reales)
+mysql -h caboose.proxy.rlwy.net -P 58770 -u root -pTU_PASSWORD --skip-ssl railway < backup_clean.sql
+```
+
+Las credenciales de Railway las encuentras en el panel → servicio MySQL → pestaña **Variables**.
+
+---
+
 ## Solución de problemas comunes
 
 **Error 500 tras instalar**  
@@ -128,3 +181,9 @@ docker exec -it padel-node npm run build
 
 **Error de conexión a la base de datos**  
 Verificar que las variables `DB_*` en `src/.env` coinciden exactamente con las del `docker-compose.yml`.
+
+**Los emails de recuperación de contraseña no llegan**  
+Verificar que `MAIL_MAILER=brevo` y que `BREVO_API_KEY` contiene la API key (no la contraseña SMTP). Si el problema persiste, revisar `storage/logs/laravel.log` para ver el error exacto.
+
+**Error `Unsupported mail transport [brevo]`**  
+Asegúrate de que el transport está registrado en `AppServiceProvider@boot` y que existe el archivo `app/Mail/BrevoTransport.php`.

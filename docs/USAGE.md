@@ -6,6 +6,15 @@ Al entrar en la aplicación sin sesión iniciada se muestra la **landing page** 
 
 Tras autenticarse, el sistema redirige automáticamente al panel correspondiente según el rol del usuario.
 
+### Recuperación de contraseña
+
+Si el usuario no recuerda su contraseña puede recuperarla desde la pantalla de login pulsando **¿Olvidaste la contraseña?**. El flujo es el siguiente:
+
+1. Introduce el email asociado a la cuenta.
+2. El sistema envía un email con un enlace de recuperación (válido durante 60 minutos).
+3. Al pulsar el enlace, se accede a un formulario para establecer una nueva contraseña.
+4. Tras confirmar la nueva contraseña, el sistema redirige al login.
+
 ---
 
 ## Rol: Administrador
@@ -112,7 +121,7 @@ Ruta: `/player/classes`
 
 Dividida en dos secciones:
 
-- **Mis clases**: clases en las que el jugador está inscrito. Las clases futuras permiten cancelar la inscripción.
+- **Mis clases**: clases en las que el jugador está inscrito. Las clases futuras permiten cancelar la inscripción. Si el jugador cancela y quiere volver a inscribirse, el sistema permite la reinscripción sin errores.
 - **Clases disponibles**: clases públicas con plazas libres a las que el jugador puede inscribirse.
 
 ---
@@ -121,12 +130,23 @@ Dividida en dos secciones:
 
 Ruta: `/profile` (accesible para todos los roles)
 
+El perfil se organiza en dos pestañas:
+
+### Mi Perfil
+
+- **Tarjetas resumen** diferenciadas por rol:
+  - Jugador: gasto en reservas, gasto en clases y gasto total.
+  - Entrenador: clases creadas, alumnos totales e ingresos generados.
 - **Datos personales**: editar nombre y teléfono. El email y el rol no son modificables.
 - **Exportar datos**: descarga un JSON con todos los datos del usuario (cumplimiento RGPD).
-- **Cambiar contraseña**: requiere la contraseña actual.
-- **Historial** (solo jugador): reservas realizadas y clases en las que está inscrito.
-- **Mis clases creadas** (solo entrenador): listado de clases con alumnos e ingresos generados.
-- **Eliminar cuenta**: borrado lógico de la cuenta.
+- **Historial de reservas** (solo jugador): listado con fecha, pista, horario, precio y estado.
+- **Mis clases** (solo jugador): clases en las que está inscrito con entrenador, pista y precio.
+- **Mis clases creadas** (solo entrenador): listado con alumnos inscritos, estado e ingresos generados.
+
+### Seguridad
+
+- **Cambiar contraseña**: requiere introducir la contraseña actual antes de establecer la nueva.
+- **Zona de peligro**: eliminar la cuenta de forma permanente. Requiere confirmar la contraseña. El borrado es lógico (softDelete) y cancela todas las reservas pendientes.
 
 ---
 

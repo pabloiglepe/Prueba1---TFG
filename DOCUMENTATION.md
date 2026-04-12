@@ -14,7 +14,6 @@
 4. [Sistema de roles y seguridad](#4-sistema-de-roles-y-seguridad)
 5. [Módulos implementados](#5-módulos-implementados)
 6. [Decisiones técnicas relevantes](#6-decisiones-técnicas-relevantes)
-<!-- 7. [Bitácora de lecciones aprendidas](#7-bitácora-de-lecciones-aprendidas) -->
 
 > Para la arquitectura del sistema consulta [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)  
 > Para la instalación consulta [docs/INSTALL.md](docs/INSTALL.md)  
@@ -45,6 +44,7 @@
 | Gráficos | ECharts | 5.x (npm) |
 | Iconos | Feather Icons | SVG inline |
 | Exportación Excel | maatwebsite/excel | 3.x |
+| Envío de emails | Brevo API HTTP | — |
 | Contenerización | Docker + Docker Compose | — |
 | Despliegue | Railway | — |
 | Control de versiones | Git + GitHub | — |
@@ -85,7 +85,9 @@ courts ─────────────── classes ──────�
                         price
                         timestamps
 
-notifications (driver database de Laravel)
+notifications            password_reset_tokens
+(driver database         (nativo de Laravel)
+de Laravel)
 ```
 
 ### Descripción de tablas
@@ -103,6 +105,8 @@ notifications (driver database de Laravel)
 **`classes_reservations`** — Tabla pivote entre `classes` y `users`. Registra las inscripciones de jugadores a clases con su estado (`registered` / `cancelled`). Tiene restricción `unique(class_id, user_id)` para evitar inscripciones duplicadas.
 
 **`notifications`** — Tabla generada por Laravel para el sistema de notificaciones con driver `database`.
+
+**`password_reset_tokens`** — Tabla nativa de Laravel para almacenar los tokens temporales de recuperación de contraseña. Los tokens expiran tras 60 minutos.
 
 ---
 
@@ -147,6 +151,7 @@ return match($request->user()->role->name) {
 - **SQL Injection**: prevenida mediante el ORM Eloquent (consultas parametrizadas).
 - **SoftDeletes**: borrado lógico de usuarios para cumplimiento RGPD.
 - **RGPD**: casilla de consentimiento obligatoria en el registro (`rgpd_consent`). Exportación de datos en JSON desde el perfil.
+- **Recuperación de contraseña**: tokens firmados con expiración de 60 minutos enviados por email mediante Brevo API HTTP.
 
 ---
 
@@ -171,7 +176,7 @@ Permite al administrador crear, editar, activar/desactivar y eliminar pistas. La
 #### Flujo de reserva
 
 1. El jugador selecciona una **fecha**.
-2. El sistema genera automáticamente las **franjas horarias disponibles** (09:00 - 22:00, cada 30 minutos), sin incluir las pistas ocupadas.
+2. El sistema genera automáticamente las **franjas horarias disponibles** (09:00 - 22:00, cada 30 minutos), excluyendo las ocupadas.
 3. Al seleccionar una franja, el sistema muestra las **pistas libres** en ese horario.
 4. El jugador elige pista y **confirma** la reserva.
 
@@ -246,14 +251,12 @@ El sistema valida que el horario elegido no se solape con:
 - Otras clases en la misma pista.
 - Reservas de jugadores en la misma pista.
 
-Esta validación se aplica tanto en la creación (`store`) como en la edición (`update`), sin encluir la propia clase en el caso de la edición.
+Esta validación se aplica tanto en la creación (`store`) como en la edición (`update`), excluyendo la propia clase en el caso de la edición.
 
 #### Sistema de notificaciones
 
 - **Clase pública**: notificación automática a todos los jugadores al crearla (`PublicClassNotification`).
 - **Clase privada**: notificación individual a cada alumno inscrito (`ClassRegistrationNotification`).
-
-> El sistema está preparado para activar el canal `mail` en el futuro. Actualmente solo usa el driver `database`.
 
 ---
 
@@ -264,6 +267,7 @@ Esta validación se aplica tanto en la creación (`store`) como en la edición (
 
 - **Reservas**: listado con opción de cancelar. Las reservas canceladas muestran el estado pero no permiten más acciones.
 - **Clases**: dos secciones — clases inscritas (con opción de cancelar inscripción si la clase es futura) y clases públicas disponibles con plazas libres.
+- **Reinscripción**: si un jugador cancela su inscripción y quiere volver a inscribirse, el sistema actualiza el registro existente en lugar de crear uno nuevo, evitando el error de clave duplicada en `classes_reservations`.
 
 ---
 
@@ -282,15 +286,66 @@ Esta validación se aplica tanto en la creación (`store`) como en la edición (
 ### 5.7 Perfil de usuario
 
 **Controlador**: `App\Http\Controllers\ProfileController`  
-**Rutas**: `profile` 
+**Rutas**: `profile`
 
-- Edición de nombre y teléfono.
-- Cambio de contraseña con verificación de la actual.
+El perfil se organiza en dos pestañas:
+
+**Mi Perfil**
+- Tarjetas de estadísticas diferenciadas por rol (gastos para player, clases e ingresos para coach).
+- Edición de nombre y teléfono. Email y rol no son modificables.
 - Exportación de datos en JSON (RGPD).
-- Borrado lógico de cuenta con cancelación de reservas pendientes.
-- Tarjetas de estadísticas diferenciadas por rol.
-- Historial de reservas y clases (solo player).
-- Listado de clases creadas con ingresos (solo coach).
+- Historial de reservas y clases inscritas (solo player).
+- Listado de clases creadas con alumnos e ingresos (solo coach).
+
+**Seguridad**
+- Cambio de contraseña con verificación de la contraseña actual.
+- Zona de peligro: borrado lógico de cuenta con cancelación de reservas pendientes.
+
+---
+
+### 5.8 Recuperación de contraseña
+
+**Vistas**: `resources/views/livewire/pages/auth/`
+- `forgot-password.blade.php` — Formulario para solicitar el enlace de recuperación.
+- `reset-password.blade.php` — Formulario para establecer la nueva contraseña.
+
+#### Flujo completo
+
+1. El usuario accede a **¿Olvidaste la contraseña?** desde el login.
+2. Introduce su email y el sistema genera un token firmado almacenado en `password_reset_tokens`.
+3. Laravel envía un email real al usuario mediante **Brevo API HTTP** con un enlace que incluye el token.
+4. El usuario pulsa el enlace, accede al formulario de reset y establece una nueva contraseña.
+5. El token se invalida y el usuario es redirigido al login.
+
+#### Configuración del transporte de email (Brevo API HTTP)
+
+Railway bloquea las conexiones SMTP salientes, por lo que se implementó un `BrevoTransport` personalizado que usa la API HTTP de Brevo en lugar de SMTP:
+
+```php
+// app/Mail/BrevoTransport.php
+protected function doSend(SentMessage $message): void
+{
+    Http::withHeaders(['api-key' => $this->apiKey])
+        ->post('https://api.brevo.com/v3/smtp/email', $payload);
+}
+```
+
+Registrado en `AppServiceProvider`:
+
+```php
+Mail::extend('brevo', fn() => new BrevoTransport(config('services.brevo.key')));
+```
+
+Variables de entorno necesarias:
+
+```env
+MAIL_MAILER=brevo
+BREVO_API_KEY=tu_api_key
+MAIL_FROM_ADDRESS=cuenta@gmail.com
+MAIL_FROM_NAME="PadelSync"
+```
+
+> En local funciona también con SMTP de Brevo (`smtp-relay.brevo.com:587`), pero en Railway es necesario usar la API HTTP.
 
 ---
 
@@ -314,60 +369,14 @@ Las reservas y clases validan la disponibilidad tanto en la búsqueda (para most
 ### Visibilidad de clase inmutable
 Una vez creada una clase, su visibilidad (`public` / `private`) no puede modificarse. Esto previene inconsistencias con notificaciones ya enviadas e inscripciones existentes. En el controlador se ignora el campo `visibility` del formulario de edición y se mantiene el valor original.
 
+### Reinscripción mediante búsqueda y actualización
+La tabla `classes_reservations` tiene una restricción `unique(class_id, user_id)`. Para permitir que un jugador se reinscriba tras cancelar, el controlador busca el registro existente y actualiza su estado a `registered` en lugar de intentar crear uno nuevo, evitando la violación de la clave única.
+
+### Brevo API HTTP para emails en producción
+Railway bloquea los puertos SMTP salientes (25, 465, 587). Para solucionar esto se implementó un transport personalizado que usa la API HTTP de Brevo, que funciona sobre HTTPS (puerto 443, siempre abierto). En local se puede usar SMTP de Brevo directamente.
+
 ### Livewire Volt para autenticación
-Se optó por Livewire Volt  para mantener toda la lógica reactiva dentro del ecosistema Laravel, simplificando el despliegue.
+Se optó por Livewire Volt para mantener toda la lógica reactiva dentro del ecosistema Laravel, simplificando el despliegue.
 
 ### Iconos SVG inline (Feather Icons)
-Los iconos se incluyen como SVG inline sin dependencias externas. Esto evita peticiones HTTP adicionales y permite controlar el tamaño y color directamente con CSS.
-
----
-
-<!-- ## 7. Bitácora de lecciones aprendidas
-
-### Hito 1 — Configuración del entorno Docker
-**Problema**: tras levantar los contenedores, Laravel mostraba error 500 por permisos denegados en `storage` y `bootstrap/cache`.  
-**Solución**: dar permisos de escritura a estas carpetas tras instalar el proyecto.
-
-### Hito 2 — Recompilación de assets Tailwind
-**Problema**: las clases de Tailwind añadidas en vistas nuevas no se aplicaban.  
-**Causa**: Tailwind en modo producción solo incluye las clases detectadas en el último build.  
-**Solución**: ejecutar `npm run build` cada vez que se añadan clases nuevas.
-
-### Hito 3 — Helper `auth()` no reconocido por el IDE
-**Problema**: el IDE marcaba `auth()->user()` como no encontrado.  
-**Solución**: usar `$request->user()` en su lugar, que es más semánticamente correcto.
-
-### Hito 4 — Error SQLSTATE en campo `status`
-**Problema**: MySQL devolvía `Data truncated for column 'status'` al crear una reserva.  
-**Causa**: la migración definía el enum en español pero el controlador insertaba valores en inglés.  
-**Solución**: crear una nueva migración con `->change()` para actualizar los valores del enum. Nunca modificar migraciones ya ejecutadas directamente.
-
-### Hito 5 — Modal del dashboard sin posicionamiento correcto
-**Problema**: el modal no flotaba como overlay sino que se insertaba en el flujo de la página.  
-**Causa**: el layout de Laravel tiene `overflow` que rompe el `position: fixed` de Tailwind.  
-**Solución**: usar estilos CSS inline con `position:fixed` y `z-index:9999`.
-
-### Hito 6 — Redeclaración de variables con Livewire Navigate
-**Problema**: al navegar entre páginas con Livewire Navigate, el script del dashboard lanzaba `Identifier 'occupancyLabels' has already been declared`.  
-**Causa**: Livewire Navigate no recarga la página completa, por lo que el script se ejecuta de nuevo pero las variables `const` no pueden redeclararse.  
-**Solución**: mover los datos PHP a atributos `data-` del HTML y leerlos desde JavaScript mediante `element.dataset`.
-
-### Hito 7 — ECharts no renderizaba el gráfico de líneas
-**Problema**: el gráfico de ocupación mostraba los ejes pero no la línea de datos.  
-**Causa**: ECharts inicializa con las dimensiones del contenedor en ese momento. El tab de Alpine.js tenía `x-show` que ocultaba el contenedor con `display:none`, haciendo que las dimensiones fueran cero al inicializar.  
-**Solución**: añadir un `setTimeout` de 50ms tras inicializar para forzar `chartOccupancy.resize()`.
-
-### Hito 8 — Gráfico de ocupación sin datos
-**Problema**: el gráfico de líneas mostraba todos los valores a 0 aunque había reservas.  
-**Causa**: el gráfico mostraba las últimas 8 semanas pasadas, pero las reservas de prueba eran de semanas futuras.  
-**Solución**: cambiar el rango del bucle de `-7..0` a `-4..+3` para mostrar 4 semanas pasadas y 4 futuras.
-
-### Hito 9 — Campo `type` truncado en clases (grupal vs group)
-**Problema**: al guardar una clase grupal, MySQL devolvía `Data truncated for column 'type'`.  
-**Causa**: el enum de la tabla `classes` tenía el valor `group` pero el formulario enviaba `grupal`.  
-**Solución**: unificar la nomenclatura en inglés (`group`) en formularios, vistas y validaciones del controlador.
-
-### Hito 10 — Campos `disabled` no se envían en el formulario
-**Problema**: al crear una clase individual, el campo `max_players` deshabilitado no se enviaba y la validación fallaba silenciosamente.  
-**Causa**: los campos HTML con atributo `disabled` no se incluyen en el submit del formulario.  
-**Solución**: añadir un `<input type="hidden" name="max_players" id="max_players_hidden">` que siempre se envía, y sincronizarlo con el input visible mediante `oninput` y Alpine.js. -->
+Los iconos se incluyen como SVG inline sin dependencias externas. Esto evita peticiones HTTP adicionales y permite controlar el tamaño y color directamente con CSS inline.

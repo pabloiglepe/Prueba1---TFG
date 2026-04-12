@@ -98,7 +98,6 @@ document.addEventListener('livewire:navigated', function() {
 const chartOccupancy = echarts.init(occupancy);
 const chartRevenue = echarts.init(revenue);
 
-// FORZAMOS RESIZE TRAS INICIALIZAR POR SI EL CONTENEDOR TENÍA DIMENSIONES CERO
 setTimeout(() => {
     chartOccupancy.resize();
     chartRevenue.resize();
@@ -113,7 +112,7 @@ setTimeout(() => {
 
 **Problema**: el gráfico de líneas del dashboard mostraba los ejes y la línea pero todos los valores eran 0, aunque existían reservas en la base de datos.  
 **Causa**: el gráfico estaba configurado para mostrar las 8 semanas pasadas, pero las reservas de prueba eran de semanas futuras.  
-**Solución**: cambiar el rango del bucle de `-7..0` a `-4..+4` para mostrar 4 semanas pasadas y 4 futuras, asegurando que siempre hay datos relevantes visibles.
+**Solución**: cambiar el rango del bucle de `-7..0` a `-4..+3` para mostrar 4 semanas pasadas y 4 futuras, asegurando que siempre hay datos relevantes visibles.
 
 ```php
 // ANTES: solo semanas pasadas
@@ -124,7 +123,6 @@ for ($i = -4; $i <= 3; $i++) { ... }
 ```
 
 **Lección**: al diseñar gráficos de ocupación o calendarios, considerar el contexto temporal de los datos de prueba. Un rango que incluya semanas futuras es más útil para un club de pádel donde las reservas se hacen con antelación.
-
 
 ---
 
@@ -141,3 +139,142 @@ for ($i = -4; $i <= 3; $i++) { ... }
 ```
 
 **Lección**: cuando se necesite deshabilitar un campo de formulario visualmente pero seguir enviando su valor, siempre usar un `input hidden` como respaldo. Los campos `disabled` no participan en el submit del formulario por diseño del estándar HTML.
+
+---
+
+## Hito 10 — Error 500 en perfil del coach (`isEmpty() on null`)
+
+**Problema**: al acceder al perfil con un usuario de rol coach, la aplicación devolvía error 500 con el mensaje `Call to a member function isEmpty() on null`.  
+**Causa**: el `ProfileController@index` inicializaba `$reservations` y `$classes` como `collect()` dentro de un bloque `if ($user->role->name === 'player')`, pero inmediatamente después las sobreescribía con consultas que buscaban reservas y clases del usuario independientemente del rol. Para el coach estas consultas devolvían resultados inesperados o nulos.  
+**Solución**: reestructurar el controlador para que todas las variables se inicialicen con valores por defecto al principio, y que los bloques de consulta estén completamente separados por rol:
+
+```php
+$reservations = collect();
+$classes      = collect();
+$totalSpentReservations = 0;
+
+if ($user->role->name === 'player') {
+    $reservations = $user->reservations()->with('court')->get();
+}
+
+if ($user->role->name === 'coach') {
+    $coachStats = [...];
+}
+```
+
+**Lección**: cuando un controlador maneja múltiples roles, inicializar siempre todas las variables con valores por defecto antes de cualquier condicional. Nunca sobreescribir variables inicializadas en un bloque condicional fuera de ese bloque.
+
+---
+
+## Hito 11 — Inscripción duplicada en clases (Integrity constraint violation)
+
+**Problema**: al intentar inscribirse en una clase en la que el jugador ya había estado inscrito (y cancelado), la aplicación devolvía error 500 con `SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry`.  
+**Causa**: la tabla `classes_reservations` tiene una restricción `unique(class_id, user_id)`. El controlador siempre intentaba crear un nuevo registro con `ClassRegistration::create()`, lo que viola la restricción cuando ya existe un registro cancelado para esa combinación.  
+**Solución**: buscar primero si existe un registro previo y actualizar su estado en lugar de crear uno nuevo:
+
+```php
+$existing = ClassRegistration::where('class_id', $class->id)
+    ->where('user_id', $user->id)
+    ->first();
+
+if ($existing) {
+    if ($existing->status === 'registered') {
+        return back()->with('error', 'Ya estás inscrito en esta clase.');
+    }
+    $existing->update(['status' => 'registered']);
+} else {
+    ClassRegistration::create([...]);
+}
+```
+
+**Lección**: cuando una tabla tiene restricciones de unicidad y el flujo de negocio permite estados múltiples para la misma combinación de claves, es mejor buscar y actualizar el registro existente que intentar crear uno nuevo.
+
+---
+
+## Hito 12 — Importación de BD en Railway fallaba por warnings en el dump
+
+**Problema**: al intentar importar el backup de la base de datos local en Railway, MySQL devolvía `ERROR 1064 (42000): You have an error in your SQL syntax`.  
+**Causa**: el archivo generado por `mysqldump` incluía líneas de warning al principio del archivo (`mysqldump: [Warning] Using a password...`) que no son SQL válido. Al importar el archivo, MySQL intentaba interpretar esas líneas como sentencias SQL.  
+**Solución**: limpiar el archivo eliminando las líneas que empiezan por `mysqldump:` antes de importarlo:
+
+```bash
+grep -v "^mysqldump:" backup.sql > backup_clean.sql
+mysql -h caboose.proxy.rlwy.net -P 58770 -u root -pPASSWORD --skip-ssl railway < backup_clean.sql
+```
+
+**Lección**: los warnings de `mysqldump` se escriben en stdout junto con el SQL, no en stderr, por lo que contaminan el archivo de backup. Añadir `backup*.sql` al `.gitignore` para evitar subir dumps al repositorio.
+
+---
+
+## Hito 13 — Envío de emails en producción: Railway bloquea SMTP
+
+**Problema**: el sistema de recuperación de contraseña funcionaba perfectamente en local pero fallaba en producción con errores de conexión o permisos.  
+**Causa**: Railway bloquea todas las conexiones SMTP salientes (puertos 25, 465 y 587) en su plan gratuito. Esto impide usar cualquier servicio de email basado en SMTP directamente desde el servidor.
+
+### Intentos fallidos en orden cronológico
+
+**Intento 1 — Gmail SMTP (puerto 587 y 465)**  
+Error: `Connection timed out` al intentar conectar con `smtp.gmail.com`.  
+Causa: Railway bloquea el puerto 587. Tampoco funciona con el 465.
+
+**Intento 2 — Resend (API HTTP)**  
+Error: `The gmail.com domain is not verified`.  
+Causa: Resend en su plan gratuito no permite usar dominios `@gmail.com` como remitente sin verificación de dominio. Solo permite enviar al email con el que te registraste en Resend, no a cualquier destinatario.
+
+**Intento 3 — Brevo SMTP (puerto 587)**  
+Error: `Connection timed out` al intentar conectar con `smtp-relay.brevo.com`.  
+Causa: el mismo problema de Railway — bloquea SMTP independientemente del proveedor.
+
+### Solución definitiva — Transport HTTP personalizado con Brevo API
+
+La solución fue crear un `BrevoTransport` personalizado en `app/Mail/BrevoTransport.php` que en lugar de usar SMTP usa la API HTTP de Brevo (`https://api.brevo.com/v3/smtp/email`). Las peticiones HTTP salientes sobre el puerto 443 no están bloqueadas por Railway.
+
+```php
+// app/Mail/BrevoTransport.php
+protected function doSend(SentMessage $message): void
+{
+    $response = Http::withHeaders([
+        'api-key'      => $this->apiKey,
+        'Content-Type' => 'application/json',
+    ])->post('https://api.brevo.com/v3/smtp/email', $payload);
+
+    if ($response->failed()) {
+        throw new \Exception('Brevo API error: ' . $response->body());
+    }
+}
+```
+
+El transport se registra en `AppServiceProvider@boot`:
+
+```php
+Mail::extend('brevo', function () {
+    return new BrevoTransport(config('services.brevo.key'));
+});
+```
+
+Y se configura en `.env`:
+
+```env
+MAIL_MAILER=brevo
+BREVO_API_KEY=tu_api_key_de_brevo
+MAIL_FROM_ADDRESS=cuenta@gmail.com
+MAIL_FROM_NAME="PadelSync"
+```
+
+**Lección**: Railway y otras plataformas de despliegue gratuitas frecuentemente bloquean los puertos SMTP. Para entornos de producción en estas plataformas, usar siempre servicios de email basados en API HTTP en lugar de SMTP. La diferencia clave es que SMTP necesita abrir conexiones TCP en puertos específicos, mientras que las APIs HTTP funcionan sobre el puerto 443 (HTTPS) que siempre está abierto.
+
+---
+
+## Hito 14 — `railway run` no ejecuta comandos en el servidor remoto
+
+**Problema**: al intentar ejecutar `railway run php artisan migrate:fresh --seed` para sincronizar la base de datos de Railway, el comando fallaba con `could not find driver` porque no encontraba el driver de MySQL.  
+**Causa**: `railway run` inyecta las variables de entorno de Railway en el proceso local y ejecuta el comando en la máquina local, no en el servidor de Railway. La máquina local no tiene el driver PDO MySQL instalado para PHP.  
+**Solución**: exportar la BD local con `mysqldump`, limpiar el archivo de warnings y importarlo directamente en Railway usando el cliente MySQL con las credenciales públicas del proxy de Railway:
+
+```bash
+docker exec -it padel-db mysqldump -u user_padel -puser_pass padel_club > backup.sql
+grep -v "^mysqldump:" backup.sql > backup_clean.sql
+mysql -h caboose.proxy.rlwy.net -P 58770 -u root -pPASSWORD --skip-ssl railway < backup_clean.sql
+```
+
+**Lección**: `railway run` es útil para ejecutar scripts que solo necesitan las variables de entorno, pero no sustituye a una shell remota en el servidor. Para sincronizar bases de datos entre local y Railway, usar el cliente MySQL directamente con las credenciales del proxy público de Railway.

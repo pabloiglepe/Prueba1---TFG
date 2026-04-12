@@ -4,13 +4,13 @@
 
 | Capa | Tecnología | Versión |
 |---|---|---|
-| Backend | Laravel | 12.x |
+| Backend | Laravel | 12.0 |
 | Frontend | Blade + Livewire Volt | — |
 | Base de datos | MySQL | 8.0 |
 | Servidor web | Nginx | Alpine |
 | Runtime PHP | PHP-FPM | 8.2 |
 | Compilación assets | Vite + Tailwind CSS | — |
-| Gráficos | ECharts | 5.x (npm) |
+| Gráficos | ECharts | 5.6.0 (npm) |
 | Iconos | Feather Icons | SVG inline |
 | Contenerización | Docker + Docker Compose | — |
 | Despliegue | Railway | — |
@@ -27,7 +27,7 @@ La aplicación se divide en cuatro servicios interconectados mediante la red int
 │                padel-network                │
 │                                             │
 │  ┌──────────┐    ┌──────────┐    ┌────────┐ │
-│  │  Nginx   │───▶│ PHP-FPM  │───▶│ MySQL  │ │
+│  │  Nginx   │───▶│ PHP-FPM  │───▶│ MySQL │ │
 │  │(padel-web│    │(padel-app│    │(padel- │ │
 │  │ :8000)   │    │ :9000)   │    │ db)    │ │
 │  └──────────┘    └──────────┘    └────────┘ │

@@ -238,7 +238,7 @@
                     <div style="padding: 20px 24px; border-bottom: 0.5px solid #f0f3ee;">
                         <p style="font-size: 11px; font-weight: 600; color: #7a8a7a; text-transform: uppercase; letter-spacing: 0.05em; margin: 0;">Mis clases creadas</p>
                     </div>
-                    @if($user->taughtClasses->isEmpty())
+                    @if($user->classesByCoach->isEmpty())
                         <div style="padding: 40px; text-align: center; font-size: 14px; color: #9aaa9a;">
                             No has creado ninguna clase todavía.
                         </div>
@@ -255,7 +255,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach($user->taughtClasses as $class)
+                                @foreach($user->classesByCoach as $class)
                                 <tr style="border-top: 0.5px solid #f0f3ee;" onmouseover="this.style.background='#fafbf9'" onmouseout="this.style.background='#fff'">
                                     <td style="padding: 14px 20px; font-size: 14px; font-weight: 500; color: #2d3b2d;">{{ $class->title }}</td>
                                     <td style="padding: 14px 20px; font-size: 14px; color: #5a6b5a;">{{ \Carbon\Carbon::parse($class->date)->format('d/m/Y') }}</td>

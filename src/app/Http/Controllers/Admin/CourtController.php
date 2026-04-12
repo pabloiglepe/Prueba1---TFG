@@ -55,7 +55,14 @@ class CourtController extends Controller
      */
     public function edit(Court $court)
     {
-        return view('admin.courts.edit', compact('court'));
+        $court->load('reservations');
+        
+        $futureReservations = $court->reservations()
+        ->where('status', '!=', 'cancelled')
+        ->where('reservation_date', '>=', today())
+        ->exists();
+        
+        return view('admin.courts.edit', compact('court', 'futureReservations'));
     }
 
     /**

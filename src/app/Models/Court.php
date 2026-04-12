@@ -4,6 +4,10 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @property-read \Illuminate\Database\Eloquent\Collection $reservations
+ * @method \Illuminate\Database\Eloquent\Relations\HasMany reservations()
+ */
 class Court extends Model
 {
     protected $fillable = [

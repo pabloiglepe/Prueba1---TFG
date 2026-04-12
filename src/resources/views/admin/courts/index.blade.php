@@ -1,12 +1,16 @@
 <x-app-layout>
     <x-slot name="header">
         <div class="flex justify-between items-center">
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            <h2 style="font-size: 20px; font-weight: 600; color: #2d3b2d; margin: 0;">
                 Gestión de Pistas
             </h2>
             <a href="{{ route('admin.courts.create') }}"
-                class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
-                + Nueva Pista
+               style="display: inline-flex; align-items: center; gap: 8px; background: #6b8f6b; color: #fff; font-size: 14px; font-weight: 500; padding: 9px 18px; border-radius: 8px; text-decoration: none;">
+                {{-- ICONO PLUS CIRCLE --}}
+                <svg xmlns="http://www.w3.org/2000/svg" style="width:16px;height:16px;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/>
+                </svg>
+                Nueva Pista
             </a>
         </div>
     </x-slot>
@@ -15,56 +19,83 @@
 
         {{-- MENSAJE DE ÉXITO --}}
         @if(session('success'))
-        <div class="mb-4 p-4 bg-green-100 text-green-800 rounded">
+        <div style="margin-bottom: 16px; padding: 14px 18px; background: #e8f0e8; color: #4a6b4a; border-radius: 8px; font-size: 14px; border-left: 3px solid #6b8f6b;">
             {{ session('success') }}
         </div>
         @endif
 
         {{-- TABLA DE PISTAS --}}
-        <div class="bg-white shadow rounded-lg overflow-hidden">
-            <table class="min-w-full divide-y divide-gray-200">
-                <thead class="bg-gray-50">
-                    <tr>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">#</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Nombre</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Tipo</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Superficie</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Estado</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Acciones</th>
+        <div style="background: #fff; border-radius: 12px; border: 0.5px solid #d4d9cc; overflow: hidden;">
+            <table style="width: 100%; border-collapse: collapse;">
+                <thead>
+                    <tr style="background: #f7f8f5; border-bottom: 0.5px solid #d4d9cc;">
+                        <th style="padding: 12px 20px; text-align: left; font-size: 11px; font-weight: 600; color: #7a8a7a; text-transform: uppercase; letter-spacing: 0.05em;">#</th>
+                        <th style="padding: 12px 20px; text-align: left; font-size: 11px; font-weight: 600; color: #7a8a7a; text-transform: uppercase; letter-spacing: 0.05em;">Nombre</th>
+                        <th style="padding: 12px 20px; text-align: left; font-size: 11px; font-weight: 600; color: #7a8a7a; text-transform: uppercase; letter-spacing: 0.05em;">Tipo</th>
+                        <th style="padding: 12px 20px; text-align: left; font-size: 11px; font-weight: 600; color: #7a8a7a; text-transform: uppercase; letter-spacing: 0.05em;">Superficie</th>
+                        <th style="padding: 12px 20px; text-align: left; font-size: 11px; font-weight: 600; color: #7a8a7a; text-transform: uppercase; letter-spacing: 0.05em;">Estado</th>
+                        <th style="padding: 12px 20px; text-align: left; font-size: 11px; font-weight: 600; color: #7a8a7a; text-transform: uppercase; letter-spacing: 0.05em;">Acciones</th>
                     </tr>
                 </thead>
-                <tbody class="bg-white divide-y divide-gray-200">
+                <tbody>
                     @forelse($courts as $court)
-                    <tr>
-                        <td class="px-6 py-4 text-sm text-gray-500">{{ $court->id }}</td>
-                        <td class="px-6 py-4 text-sm font-medium text-gray-900">{{ $court->name }}</td>
-                        <td class="px-6 py-4 text-sm text-gray-500 capitalize">{{ $court->type }}</td>
-                        <td class="px-6 py-4 text-sm text-gray-500 capitalize">{{ $court->surface }}</td>
-                        <td class="px-6 py-4 text-sm">
+                    <tr style="border-bottom: 0.5px solid #f0f3ee;" onmouseover="this.style.background='#fafbf9'" onmouseout="this.style.background='#fff'">
+                        <td style="padding: 14px 20px; font-size: 13px; color: #9aaa9a;">{{ $court->id }}</td>
+                        <td style="padding: 14px 20px; font-size: 14px; font-weight: 500; color: #2d3b2d;">{{ $court->name }}</td>
+                        <td style="padding: 14px 20px; font-size: 14px; color: #5a6b5a; text-transform: capitalize;">{{ $court->type }}</td>
+                        <td style="padding: 14px 20px; font-size: 14px; color: #5a6b5a; text-transform: capitalize;">{{ $court->surface }}</td>
+                        <td style="padding: 14px 20px;">
                             @if($court->is_active)
-                            <span class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs">Activa</span>
+                                <span style="display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; background: #e8f0e8; color: #4a6b4a; border-radius: 20px; font-size: 12px; font-weight: 500;">
+                                    <svg xmlns="http://www.w3.org/2000/svg" style="width:10px;height:10px;fill:#4a6b4a;" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>
+                                    Activa
+                                </span>
                             @else
-                            <span class="px-2 py-1 bg-red-100 text-red-800 rounded-full text-xs">Inactiva</span>
+                                <span style="display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; background: #fce8e8; color: #9b4444; border-radius: 20px; font-size: 12px; font-weight: 500;">
+                                    <svg xmlns="http://www.w3.org/2000/svg" style="width:10px;height:10px;fill:#9b4444;" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>
+                                    Inactiva
+                                </span>
                             @endif
                         </td>
-                        <td class="px-6 py-4 text-sm space-x-2">
-                            <a href="{{ route('admin.courts.edit', $court) }}"
-                                class="text-blue-600 hover:underline">Editar</a>
+                        <td style="padding: 14px 20px;">
+                            <div style="display: flex; align-items: center; gap: 12px;">
+                                {{-- EDITAR --}}
+                                <a href="{{ route('admin.courts.edit', $court) }}"
+                                   style="display: inline-flex; align-items: center; gap: 5px; font-size: 13px; color: #6b8f6b; font-weight: 500; text-decoration: none;"
+                                   onmouseover="this.style.color='#4a6b4a'"
+                                   onmouseout="this.style.color='#6b8f6b'">
+                                    <svg xmlns="http://www.w3.org/2000/svg" style="width:14px;height:14px;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                                    </svg>
+                                    Editar
+                                </a>
 
-                            <form action="{{ route('admin.courts.destroy', $court) }}"
-                                method="POST" class="inline"
-                                onsubmit="return confirm('¿Eliminar esta pista?')">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="text-red-600 hover:underline">
-                                    Eliminar
-                                </button>
-                            </form>
+                                {{-- ELIMINAR --}}
+                                <form action="{{ route('admin.courts.destroy', $court) }}"
+                                      method="POST" class="inline"
+                                      onsubmit="return confirm('¿Eliminar esta pista?')">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit"
+                                            style="display: inline-flex; align-items: center; gap: 5px; font-size: 13px; color: #c0625e; font-weight: 500; background: none; border: none; cursor: pointer; padding: 0;"
+                                            onmouseover="this.style.color='#9b4444'"
+                                            onmouseout="this.style.color='#c0625e'">
+                                        <svg xmlns="http://www.w3.org/2000/svg" style="width:14px;height:14px;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                            <polyline points="3 6 5 6 21 6"/>
+                                            <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
+                                            <path d="M10 11v6M14 11v6"/>
+                                            <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
+                                        </svg>
+                                        Eliminar
+                                    </button>
+                                </form>
+                            </div>
                         </td>
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="6" class="px-6 py-4 text-center text-gray-400">
+                        <td colspan="6" style="padding: 48px 20px; text-align: center; font-size: 14px; color: #9aaa9a;">
                             No hay pistas registradas todavía.
                         </td>
                     </tr>

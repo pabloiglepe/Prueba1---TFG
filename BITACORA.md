@@ -119,7 +119,7 @@ setTimeout(() => {
 for ($i = 7; $i >= 0; $i--) { ... }
 
 // DESPUÉS: 4 pasadas + semana actual + 3 futuras
-for ($i = -4; $i <= 3; $i++) { ... }
+for ($i = -4; $i <= 4; $i++) { ... }
 ```
 
 **Lección**: al diseñar gráficos de ocupación o calendarios, considerar el contexto temporal de los datos de prueba. Un rango que incluya semanas futuras es más útil para un club de pádel donde las reservas se hacen con antelación.
@@ -166,7 +166,7 @@ if ($user->role->name === 'coach') {
 
 ---
 
-## Hito 11 — Inscripción duplicada en clases (Integrity constraint violation)
+## Hito 11 — Inscripción duplicada en clases
 
 **Problema**: al intentar inscribirse en una clase en la que el jugador ya había estado inscrito (y cancelado), la aplicación devolvía error 500 con `SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry`.  
 **Causa**: la tabla `classes_reservations` tiene una restricción `unique(class_id, user_id)`. El controlador siempre intentaba crear un nuevo registro con `ClassRegistration::create()`, lo que viola la restricción cuando ya existe un registro cancelado para esa combinación.  

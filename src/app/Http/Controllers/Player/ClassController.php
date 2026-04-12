@@ -54,33 +54,27 @@ class ClassController extends Controller
     {
         $user = $request->user();
 
-        // COMPROBAR QUE LA CLASE ES PÚBLICA
-        if ($class->visibility !== 'public') {
-            abort(403);
-        }
-
-        // COMPROBAR QUE HAY PLAZAS
-        if ($class->isFull()) {
-            return back()->with('error', 'No quedan plazas disponibles en esta clase.');
-        }
-
-        // COMPROBAR SI YA ESTÁ INSCRITO
-        $alreadyRegistered = ClassRegistration::where('class_id', $class->id)
+        // COMPROBAMOS SI YA EXISTE UNA INSCRIPCIÓN (ACTIVA O CANCELADA)
+        $existing = ClassRegistration::where('class_id', $class->id)
             ->where('user_id', $user->id)
-            ->where('status', 'registered')
-            ->exists();
+            ->first();
 
-        if ($alreadyRegistered) {
-            return back()->with('error', 'Ya estás inscrito en esta clase.');
+        if ($existing) {
+            if ($existing->status === 'registered') {
+                return back()->with('error', 'Ya estás inscrito en esta clase.');
+            }
+            // SI ESTABA CANCELADA LA REACTIVAMOS
+            $existing->update(['status' => 'registered']);
+        } else {
+            // SI NO EXISTE LA CREAMOS
+            ClassRegistration::create([
+                'class_id' => $class->id,
+                'user_id'  => $user->id,
+                'status'   => 'registered',
+            ]);
         }
 
-        ClassRegistration::create([
-            'class_id' => $class->id,
-            'user_id'  => $user->id,
-            'status'   => 'registered',
-        ]);
-
-        return back()->with('success', '¡Inscripción confirmada!');
+        return back()->with('success', 'Inscripción realizada correctamente.');
     }
 
 

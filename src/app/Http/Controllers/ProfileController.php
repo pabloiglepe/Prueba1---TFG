@@ -14,58 +14,49 @@ class ProfileController extends Controller
     {
         $user = $request->user()->load(['role', 'classesByCoach.registered', 'classesByCoach.court']);
 
-        // DATOS ESPECÍFICOS PARA EL JUGADOR
-        $reservations = collect();
-        $classes      = collect();
+        // INICIALIZAMOS VARIABLES POR DEFECTO
+        $reservations           = collect();
+        $classes                = collect();
+        $totalSpentReservations = 0;
+        $totalSpentClasses      = 0;
+        $totalSpent             = 0;
+        $coachStats             = null;
 
+        // DATOS ESPECÍFICOS PARA EL JUGADOR
         if ($user->role->name === 'player') {
-            $reservations = $user->reservations()->with('court')->orderBy('reservation_date', 'desc')->get();
-            $classes      = $user->classes()->with(['coach', 'court'])->get();
+            $reservations = $user->reservations()
+                ->with('court')
+                ->orderBy('reservation_date', 'desc')
+                ->get();
+
+            $classes = PadelClass::whereHas(
+                'registered',
+                fn($q) => $q->where('user_id', $user->id)->where('status', 'registered')
+            )
+                ->with(['coach', 'court'])
+                ->orderBy('date', 'desc')
+                ->get();
+
+            // GASTO TOTAL EN RESERVAS
+            $totalSpentReservations = $reservations
+                ->where('status', '!=', 'cancelled')
+                ->sum('total_price');
+
+            // GASTO TOTAL EN CLASES
+            $totalSpentClasses = $classes->sum('price');
+
+            // GASTO TOTAL
+            $totalSpent = $totalSpentReservations + $totalSpentClasses;
         }
 
-        // HISTORIAL DE RESERVAS
-        $reservations = Reservation::where('user_id', $user->id)
-            ->with('court')
-            ->orderBy('reservation_date', 'desc')
-            ->get();
-
-        // GASTO TOTAL EN RESERVAS
-        $totalSpentReservations = $reservations
-            ->where('status', '!=', 'cancelled')
-            ->sum('total_price');
-
-        // CLASES INSCRITAS
-        $classes = PadelClass::whereHas(
-            'registered',
-            fn($q) =>
-            $q->where('user_id', $user->id)->where('status', 'registered')
-        )
-            ->with(['coach', 'court'])
-            ->orderBy('date', 'desc')
-            ->get();
-
-        // GASTO TOTAL EN CLASES
-        $totalSpentClasses = $classes->sum('price');
-
-        // GASTO TOTAL
-        $totalSpent = $totalSpentReservations + $totalSpentClasses;
-
         // DATOS ESPECÍFICOS PARA EL ENTRENADOR
-        $coachStats = null;
         if ($user->role->name === 'coach') {
             $coachStats = [
-                'total_classes'  => $user->classesByCoach()->count(),
-                'total_students' => $user->classesByCoach()
-                    ->withCount([
-                        'registered as students_count' => fn($q) =>
-                        $q->where('status', 'registered')
-                    ])
-                    ->get()
-                    ->sum('students_count'),
-                'total_revenue'  => $user->classesByCoach()
-                    ->with(['registered' => fn($q) => $q->where('status', 'registered')])
-                    ->get()
-                    ->sum(fn($class) => $class->registered->count() * $class->price),
+                'total_classes'  => $user->classesByCoach->count(),
+                'total_students' => $user->classesByCoach
+                    ->sum(fn($class) => $class->registered->where('status', 'registered')->count()),
+                'total_revenue'  => $user->classesByCoach
+                    ->sum(fn($class) => $class->registered->where('status', 'registered')->count() * $class->price),
             ];
         }
 

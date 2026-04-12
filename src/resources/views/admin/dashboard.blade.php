@@ -13,7 +13,7 @@
     </div>
 
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+        <h2 style="font-size: 20px; font-weight: 600; color: #2d3b2d; margin: 0;">
             Dashboard
         </h2>
     </x-slot>
@@ -23,55 +23,73 @@
         {{-- TABS --}}
         <div x-data="{ tab: 'resumen' }">
 
-            <div class="flex border-b border-gray-200 mb-6">
+            <div style="display: inline-flex; align-items: center; gap: 8px; padding: 14px 40px; font-size: 14px; font-weight: 500; background: none; border-top: none; border-left: none; border-right: none; cursor: pointer; margin-bottom: -1px;">
                 <button @click="tab = 'resumen'"
-                    :class="tab === 'resumen' ? 'border-blue-600 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700'"
-                    class="px-6 py-3 text-sm font-medium border-b-2 transition">
+                    :style="tab === 'resumen' ? 'border-bottom: 2px solid #6b8f6b; color: #4a6b4a;' : 'border-bottom: 2px solid transparent; color: #7a8a7a;'"
+                    style="display: inline-flex; align-items: center; gap: 8px; padding: 14px 28px; font-size: 14px; font-weight: 500; background: none; border-top: none; border-left: none; border-right: none; cursor: pointer; margin-bottom: -1px;">
+                    <svg xmlns="http://www.w3.org/2000/svg" style="width:15px;height:15px;flex-shrink:0;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="20" x2="18" y2="10" />
+                        <line x1="12" y1="20" x2="12" y2="4" />
+                        <line x1="6" y1="20" x2="6" y2="14" />
+                    </svg>
                     Resumen
                 </button>
                 <button @click="tab = 'entrenadores'"
-                    :class="tab === 'entrenadores' ? 'border-blue-600 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700'"
-                    class="px-6 py-3 text-sm font-medium border-b-2 transition">
+                    :style="tab === 'entrenadores' ? 'border-bottom: 2px solid #6b8f6b; color: #4a6b4a;' : 'border-bottom: 2px solid transparent; color: #7a8a7a;'"
+                    style="display: inline-flex; align-items: center; gap: 8px; padding: 14px 28px; font-size: 14px; font-weight: 500; background: none; border-top: none; border-left: none; border-right: none; cursor: pointer; margin-bottom: -1px;">
+                    <svg xmlns="http://www.w3.org/2000/svg" style="width:15px;height:15px;flex-shrink:0;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                        <circle cx="9" cy="7" r="4" />
+                        <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                        <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                    </svg>
                     Entrenadores
                 </button>
                 <button @click="tab = 'exportar'"
-                    :class="tab === 'exportar' ? 'border-blue-600 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700'"
-                    class="px-6 py-3 text-sm font-medium border-b-2 transition">
+                    :style="tab === 'exportar' ? 'border-bottom: 2px solid #6b8f6b; color: #4a6b4a;' : 'border-bottom: 2px solid transparent; color: #7a8a7a;'"
+                    style="display: inline-flex; align-items: center; gap: 8px; padding: 14px 28px; font-size: 14px; font-weight: 500; background: none; border-top: none; border-left: none; border-right: none; cursor: pointer; margin-bottom: -1px;">
+                    <svg xmlns="http://www.w3.org/2000/svg" style="width:15px;height:15px;flex-shrink:0;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                        <polyline points="7 10 12 15 17 10" />
+                        <line x1="12" y1="15" x2="12" y2="3" />
+                    </svg>
                     Exportar
                 </button>
             </div>
 
             {{-- TAB RESUMEN --}}
-            <div x-show="tab === 'resumen'" class="space-y-6">
+            <div x-show="tab === 'resumen'"
+                x-on:click.window="if(tab === 'resumen') { setTimeout(() => { window.dispatchEvent(new Event('resize')); }, 50); }"
+                class="space-y-6">
 
                 {{-- TARJETAS RESUMEN --}}
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
-                    <div class="bg-white shadow rounded-lg p-6">
-                        <p class="text-sm text-gray-500 mb-1">Reservas totales</p>
-                        <p class="text-3xl font-bold text-blue-600">{{ $totalReservations }}</p>
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
+                    <div style="background: #fff; border-radius: 12px; border: 0.5px solid #d4d9cc; padding: 24px;">
+                        <p style="font-size: 12px; color: #7a8a7a; margin: 0 0 8px;">Reservas totales</p>
+                        <p style="font-size: 32px; font-weight: 600; color: #2d3b2d; margin: 0;">{{ $totalReservations }}</p>
                     </div>
-                    <div class="bg-white shadow rounded-lg p-6">
-                        <p class="text-sm text-gray-500 mb-1">Ingresos totales</p>
-                        <p class="text-3xl font-bold text-green-600">{{ number_format($totalRevenue, 2) }}€</p>
+                    <div style="background: #fff; border-radius: 12px; border: 0.5px solid #d4d9cc; padding: 24px;">
+                        <p style="font-size: 12px; color: #7a8a7a; margin: 0 0 8px;">Ingresos totales</p>
+                        <p style="font-size: 32px; font-weight: 600; color: #6b8f6b; margin: 0;">{{ number_format($totalRevenue, 2) }}€</p>
                     </div>
-                    <div class="bg-white shadow rounded-lg p-6">
-                        <p class="text-sm text-gray-500 mb-1">Jugadores registrados</p>
-                        <p class="text-3xl font-bold text-purple-600">{{ $totalPlayers }}</p>
-                        <p class="text-xs text-gray-400 mt-1">{{ $activePlayersCount }} activos últimos 30 días</p>
+                    <div style="background: #fff; border-radius: 12px; border: 0.5px solid #d4d9cc; padding: 24px;">
+                        <p style="font-size: 12px; color: #7a8a7a; margin: 0 0 8px;">Jugadores registrados</p>
+                        <p style="font-size: 32px; font-weight: 600; color: #2d3b2d; margin: 0;">{{ $totalPlayers }}</p>
+                        <p style="font-size: 12px; color: #9aaa9a; margin: 4px 0 0;">{{ $activePlayersCount }} activos últimos 30 días</p>
                     </div>
                 </div>
 
                 {{-- GRÁFICO OCUPACIÓN --}}
-                <div class="bg-white shadow rounded-lg p-6">
-                    <h3 class="font-semibold text-gray-700 mb-1">Ocupación de pistas (últimas 8 semanas)</h3>
-                    <p class="text-xs text-gray-400 mb-4">Pulsa en un punto para ver el detalle de esa semana</p>
+                <div style="background: #fff; border-radius: 12px; border: 0.5px solid #d4d9cc; padding: 24px;">
+                    <h3 style="font-size: 15px; font-weight: 600; color: #2d3b2d; margin: 0 0 4px;">Ocupación de pistas (últimas 8 semanas)</h3>
+                    <p style="font-size: 12px; color: #9aaa9a; margin: 0 0 20px;">Pulsa en un punto para ver el detalle de esa semana</p>
                     <div id="chart-occupancy" style="height: 300px;"></div>
                 </div>
 
                 {{-- GRÁFICO INGRESOS --}}
-                <div class="bg-white shadow rounded-lg p-6">
-                    <h3 class="font-semibold text-gray-700 mb-1">Ingresos por mes (últimos 6 meses)</h3>
-                    <p class="text-xs text-gray-400 mb-4">Pulsa en una barra para ver el detalle de ese mes</p>
+                <div style="background: #fff; border-radius: 12px; border: 0.5px solid #d4d9cc; padding: 24px;">
+                    <h3 style="font-size: 15px; font-weight: 600; color: #2d3b2d; margin: 0 0 4px;">Ingresos por mes (últimos 6 meses)</h3>
+                    <p style="font-size: 12px; color: #9aaa9a; margin: 0 0 20px;">Pulsa en una barra para ver el detalle de ese mes</p>
                     <div id="chart-revenue" style="height: 300px;"></div>
                 </div>
 
@@ -81,60 +99,63 @@
             <div x-show="tab === 'entrenadores'" class="space-y-6">
 
                 {{-- REGISTRO DE ENTRENADORES --}}
-                <div class="bg-white shadow rounded-lg p-6">
-                    <h3 class="font-semibold text-gray-700 mb-4">Entrenadores y clases activas</h3>
+                <div style="background: #fff; border-radius: 12px; border: 0.5px solid #d4d9cc; padding: 24px;">
+                    <p style="font-size: 11px; font-weight: 600; color: #7a8a7a; text-transform: uppercase; letter-spacing: 0.05em; margin: 0 0 16px;">Entrenadores y clases activas</p>
 
                     @if($coaches->isEmpty())
-                    <p class="text-gray-400 text-sm">No hay entrenadores registrados.</p>
+                    <p style="font-size: 14px; color: #9aaa9a;">No hay entrenadores registrados.</p>
                     @else
-                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px;">
                         @foreach($coaches as $coach)
-                        <div class="border border-gray-200 rounded-lg p-4">
+                        <div style="border: 0.5px solid #d4d9cc; border-radius: 10px; padding: 16px;">
 
                             {{-- CABECERA COACH --}}
-                            <div class="flex justify-between items-start mb-3">
-                                <div>
-                                    <p class="font-semibold text-gray-800">{{ $coach->name }}</p>
-                                    <p class="text-xs text-gray-400">{{ $coach->email }}</p>
+                            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
+                                <div style="display: flex; align-items: center; gap: 10px;">
+                                    <div style="width: 34px; height: 34px; border-radius: 50%; background: #e8f0e8; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600; color: #4a6b4a; flex-shrink: 0;">
+                                        {{ strtoupper(substr($coach->name, 0, 1)) }}
+                                    </div>
+                                    <div>
+                                        <p style="font-size: 14px; font-weight: 500; color: #2d3b2d; margin: 0;">{{ $coach->name }}</p>
+                                        <p style="font-size: 12px; color: #7a8a7a; margin: 0;">{{ $coach->email }}</p>
+                                    </div>
                                 </div>
-                                <span class="px-2 py-1 bg-purple-100 text-purple-700 text-xs rounded-full">
+                                <span style="padding: 3px 8px; background: #f0eaf8; color: #6b4a8f; border-radius: 20px; font-size: 11px; font-weight: 500; white-space: nowrap;">
                                     {{ $coach->classesByCoach->count() }} clases
                                 </span>
                             </div>
 
                             {{-- CLASES ACTIVAS --}}
                             @if($coach->classesByCoach->isEmpty())
-                            <p class="text-xs text-gray-400">Sin clases programadas.</p>
+                            <p style="font-size: 12px; color: #9aaa9a;">Sin clases programadas.</p>
                             @else
-                            <div class="space-y-2">
+                            <div style="display: flex; flex-direction: column; gap: 6px;">
                                 @foreach($coach->classesByCoach as $class)
-                                <div class="bg-gray-50 rounded p-2 text-xs">
-                                    <div class="flex justify-between items-center">
-                                        <p class="font-medium text-gray-700">{{ $class->title }}</p>
-                                        <span class="text-gray-400">
+                                <div style="background: #f7f8f5; border-radius: 8px; padding: 10px 12px;">
+                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                                        <p style="font-size: 13px; font-weight: 500; color: #2d3b2d; margin: 0;">{{ $class->title }}</p>
+                                        <span style="font-size: 12px; color: #7a8a7a;">
                                             {{ $class->registered->count() }}/{{ $class->max_players }}
                                         </span>
                                     </div>
-                                    <p class="text-gray-400 mt-0.5">
+                                    <p style="font-size: 12px; color: #7a8a7a; margin: 0;">
                                         {{ \Carbon\Carbon::parse($class->date)->format('d/m/Y') }}
-                                    </p>
-                                    <p class="text-gray-400 mt-0.5">
-                                        {{ \Carbon\Carbon::parse($class->start_time)->format('H:i') }}
+                                        · {{ \Carbon\Carbon::parse($class->start_time)->format('H:i') }}
                                         - {{ \Carbon\Carbon::parse($class->end_time)->format('H:i') }}
                                     </p>
-                                    <p class="text-gray-400">
+                                    <p style="font-size: 12px; color: #9aaa9a; margin: 2px 0 0;">
                                         {{ match($class->visibility) {
-                                            'public'  => 'Pública',
-                                            'private' => 'Privada',
-                                            default   => $class->visibility
-                                        } }}
+                                                    'public'  => 'Pública',
+                                                    'private' => 'Privada',
+                                                    default   => $class->visibility
+                                                } }}
                                         ·
                                         {{ match($class->level) {
-                                            'initiation'   => 'Iniciación',
-                                            'intermediate' => 'Intermedio',
-                                            'advanced'     => 'Avanzado',
-                                            default        => $class->level
-                                        } }}
+                                                    'initiation'   => 'Iniciación',
+                                                    'intermediate' => 'Intermedio',
+                                                    'advanced'     => 'Avanzado',
+                                                    default        => $class->level
+                                                } }}
                                     </p>
                                 </div>
                                 @endforeach
@@ -142,9 +163,11 @@
                             @endif
 
                             {{-- ENLACE AL PERFIL --}}
-                            <div class="mt-3 pt-3 border-t border-gray-100">
+                            <div style="margin-top: 12px; padding-top: 12px; border-top: 0.5px solid #f0f3ee;">
                                 <a href="{{ route('admin.users.edit', $coach) }}"
-                                    class="text-xs text-blue-600 hover:underline">
+                                    style="font-size: 12px; color: #6b8f6b; text-decoration: none; font-weight: 500;"
+                                    onmouseover="this.style.color='#4a6b4a'"
+                                    onmouseout="this.style.color='#6b8f6b'">
                                     Ver perfil completo →
                                 </a>
                             </div>
@@ -161,47 +184,67 @@
             <div x-show="tab === 'exportar'" class="space-y-6">
 
                 {{-- EXPORTACIÓN DE DATOS --}}
-                <div class="bg-white shadow rounded-lg p-6">
-                    <h3 class="font-semibold text-gray-700 mb-4">Exportar informes</h3>
+                <div style="background: #fff; border-radius: 12px; border: 0.5px solid #d4d9cc; padding: 24px;">
+                    <p style="font-size: 11px; font-weight: 600; color: #7a8a7a; text-transform: uppercase; letter-spacing: 0.05em; margin: 0 0 20px;">Exportar informes</p>
 
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
 
                         {{-- EXPORTAR RESERVAS --}}
-                        <div class="border border-gray-200 rounded-lg p-4">
-                            <h4 class="font-medium text-gray-700 mb-1">Informe de reservas</h4>
-                            <p class="text-xs text-gray-400 mb-4">Exporta el listado completo de reservas con jugador, pista, horario y precio.</p>
+                        <div style="border: 0.5px solid #d4d9cc; border-radius: 10px; padding: 20px;">
+                            <p style="font-size: 14px; font-weight: 500; color: #2d3b2d; margin: 0 0 4px;">Informe de reservas</p>
+                            <p style="font-size: 12px; color: #7a8a7a; margin: 0 0 16px;">Exporta el listado completo de reservas con jugador, pista, horario y precio.</p>
                             <form action="{{ route('admin.export.reservations') }}" method="GET">
-                                <div class="grid grid-cols-2 gap-2 mb-3">
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px;">
                                     <div>
-                                        <label class="block text-xs text-gray-500 mb-1">Desde</label>
+                                        <label style="display: block; font-size: 12px; color: #7a8a7a; margin-bottom: 5px;">Desde</label>
                                         <input type="date" name="start_date"
-                                            class="w-full border-gray-300 rounded-lg text-sm shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                                            style="width: 100%; padding: 8px 10px; border: 0.5px solid #d4d9cc; border-radius: 8px; font-size: 13px; color: #2d3b2d; outline: none; box-sizing: border-box;"
+                                            onfocus="this.style.borderColor='#6b8f6b'"
+                                            onblur="this.style.borderColor='#d4d9cc'">
                                     </div>
                                     <div>
-                                        <label class="block text-xs text-gray-500 mb-1">Hasta</label>
+                                        <label style="display: block; font-size: 12px; color: #7a8a7a; margin-bottom: 5px;">Hasta</label>
                                         <input type="date" name="end_date"
-                                            class="w-full border-gray-300 rounded-lg text-sm shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                                            style="width: 100%; padding: 8px 10px; border: 0.5px solid #d4d9cc; border-radius: 8px; font-size: 13px; color: #2d3b2d; outline: none; box-sizing: border-box;"
+                                            onfocus="this.style.borderColor='#6b8f6b'"
+                                            onblur="this.style.borderColor='#d4d9cc'">
                                     </div>
                                 </div>
                                 <button type="submit"
-                                    class="w-full bg-blue-600 text-white text-sm py-2 rounded-lg hover:bg-blue-700">
+                                    style="width: 100%; display: inline-flex; align-items: center; justify-content: center; gap: 8px; background: #6b8f6b; color: #fff; font-size: 14px; font-weight: 500; padding: 10px; border-radius: 8px; border: none; cursor: pointer;"
+                                    onmouseover="this.style.background='#4a6b4a'"
+                                    onmouseout="this.style.background='#6b8f6b'">
+                                    <svg xmlns="http://www.w3.org/2000/svg" style="width:15px;height:15px;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                                        <polyline points="7 10 12 15 17 10" />
+                                        <line x1="12" y1="15" x2="12" y2="3" />
+                                    </svg>
                                     Descargar reservas (.xlsx)
                                 </button>
                             </form>
                         </div>
 
                         {{-- EXPORTAR INGRESOS --}}
-                        <div class="border border-gray-200 rounded-lg p-4">
-                            <h4 class="font-medium text-gray-700 mb-1">Informe de ingresos</h4>
-                            <p class="text-xs text-gray-400 mb-4">Exporta el resumen de ingresos de un mes concreto.</p>
+                        <div style="border: 0.5px solid #d4d9cc; border-radius: 10px; padding: 20px;">
+                            <p style="font-size: 14px; font-weight: 500; color: #2d3b2d; margin: 0 0 4px;">Informe de ingresos</p>
+                            <p style="font-size: 12px; color: #7a8a7a; margin: 0 0 16px;">Exporta el resumen de ingresos de un mes concreto.</p>
                             <form action="{{ route('admin.export.revenue') }}" method="GET">
-                                <div class="mb-3">
-                                    <label class="block text-xs text-gray-500 mb-1">Mes</label>
+                                <div style="margin-bottom: 12px;">
+                                    <label style="display: block; font-size: 12px; color: #7a8a7a; margin-bottom: 5px;">Mes</label>
                                     <input type="month" name="month"
-                                        class="w-full border-gray-300 rounded-lg text-sm shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                                        style="width: 100%; padding: 8px 10px; border: 0.5px solid #d4d9cc; border-radius: 8px; font-size: 13px; color: #2d3b2d; outline: none; box-sizing: border-box;"
+                                        onfocus="this.style.borderColor='#6b8f6b'"
+                                        onblur="this.style.borderColor='#d4d9cc'">
                                 </div>
                                 <button type="submit"
-                                    class="w-full bg-green-600 text-white text-sm py-2 rounded-lg hover:bg-green-700">
+                                    style="width: 100%; display: inline-flex; align-items: center; justify-content: center; gap: 8px; background: #6b8f6b; color: #fff; font-size: 14px; font-weight: 500; padding: 10px; border-radius: 8px; border: none; cursor: pointer;"
+                                    onmouseover="this.style.background='#4a6b4a'"
+                                    onmouseout="this.style.background='#6b8f6b'">
+                                    <svg xmlns="http://www.w3.org/2000/svg" style="width:15px;height:15px;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                                        <polyline points="7 10 12 15 17 10" />
+                                        <line x1="12" y1="15" x2="12" y2="3" />
+                                    </svg>
                                     Descargar ingresos (.xlsx)
                                 </button>
                             </form>
@@ -218,21 +261,21 @@
     {{-- MODAL --}}
     <div id="modal" style="display:none; position:fixed; inset:0; z-index:9999; background:rgba(0,0,0,0.6);"
         class="items-center justify-center">
-        <div style="background:white; border-radius:12px; width:90%; max-width:750px; max-height:80vh; 
+        <div style="background:white; border-radius:12px; width:90%; max-width:750px; max-height:80vh;
             display:flex; flex-direction:column; margin:7vh; box-shadow: 0 25px 50px rgba(0,0,0,0.3);">
 
             {{-- CABECERA MODAL --}}
-            <div style="display:flex; justify-content:space-between; align-items:center; padding:20px 24px; border-bottom:1px solid #e5e7eb;">
-                <h3 id="modal-title" style="font-weight:600; font-size:1.1rem; color:#1f2937;"></h3>
+            <div style="display:flex; justify-content:space-between; align-items:center; padding:20px 24px; border-bottom:0.5px solid #d4d9cc;">
+                <h3 id="modal-title" style="font-weight:600; font-size:1.1rem; color:#2d3b2d;"></h3>
                 <button onclick="closeModal()"
-                    style="color:#9ca3af; font-size:1.5rem; line-height:1; background:none; border:none; cursor:pointer;">
+                    style="color:#9aaa9a; font-size:1.5rem; line-height:1; background:none; border:none; cursor:pointer;">
                     &times;
                 </button>
             </div>
 
             {{-- CONTENIDO MODAL --}}
             <div id="modal-body" style="overflow-y:auto; padding:24px; flex:1;">
-                <div id="modal-loading" style="text-align:center; color:#9ca3af; padding:40px 0;">Cargando...</div>
+                <div id="modal-loading" style="text-align:center; color:#9aaa9a; padding:40px 0;">Cargando...</div>
                 <div id="modal-content" style="display:none;"></div>
             </div>
 
@@ -240,21 +283,6 @@
     </div>
 
     <script>
-        // // EVITAR QUE HAYA REEDECLARACIONES AL NAVEGAR CON LIVEWIRE
-        // if (typeof occupancyLabels === 'undefined') {
-        //     // DATOS DESDE PHP
-        //     var occupancyLabels = @js($occupancyLabels);
-        //     var occupancyData = @js($occupancyData);
-        //     var revenueLabels = @js($revenueLabels);
-        //     var revenueData = @js($revenueData);
-        //     var weekData = @js($weekData);
-        //     var monthData = @js($monthData);
-
-        //     // URLS
-        //     var urlWeek = "{{ route('admin.dashboard.week-detail') }}";
-        //     var urlMonth = "{{ route('admin.dashboard.month-detail') }}";
-        // }
-
         /**
          * FUNCIÓN QUE FORMA LA TABLA QUE CONTIENE LA INFORMACIÓN DE LAS RESERVAS
          * 
@@ -262,26 +290,26 @@
          * 
          * */
         function reservationsTable(reservations) {
-            if (!reservations.length) return '<p class="text-red-500 text-sm">No hay reservas.</p>';
+            if (!reservations.length) return '<p style="color:#c0625e;font-size:14px;">No hay reservas.</p>';
             return `
-                <table class="min-w-full text-sm divide-y divide-gray-200">
-                    <thead class="bg-gray-50">
-                        <tr>
-                            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Fecha</th>
-                            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Jugador</th>
-                            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Pista</th>
-                            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Horario</th>
-                            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Precio</th>
+                <table style="width:100%;border-collapse:collapse;font-size:14px;">
+                    <thead>
+                        <tr style="background:#f7f8f5;">
+                            <th style="padding:10px 16px;text-align:left;font-size:11px;font-weight:600;color:#7a8a7a;text-transform:uppercase;letter-spacing:0.05em;">Fecha</th>
+                            <th style="padding:10px 16px;text-align:left;font-size:11px;font-weight:600;color:#7a8a7a;text-transform:uppercase;letter-spacing:0.05em;">Jugador</th>
+                            <th style="padding:10px 16px;text-align:left;font-size:11px;font-weight:600;color:#7a8a7a;text-transform:uppercase;letter-spacing:0.05em;">Pista</th>
+                            <th style="padding:10px 16px;text-align:left;font-size:11px;font-weight:600;color:#7a8a7a;text-transform:uppercase;letter-spacing:0.05em;">Horario</th>
+                            <th style="padding:10px 16px;text-align:left;font-size:11px;font-weight:600;color:#7a8a7a;text-transform:uppercase;letter-spacing:0.05em;">Precio</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-gray-100">
+                    <tbody>
                         ${reservations.map(r => `
-                            <tr>
-                                <td class="px-4 py-2">${r.date}</td>
-                                <td class="px-4 py-2">${r.player}</td>
-                                <td class="px-4 py-2">${r.court}</td>
-                                <td class="px-4 py-2">${r.time}</td>
-                                <td class="px-4 py-2 font-medium text-green-600">${r.price}</td>
+                            <tr style="border-top:0.5px solid #f0f3ee;">
+                                <td style="padding:12px 16px;color:#2d3b2d;">${r.date}</td>
+                                <td style="padding:12px 16px;color:#5a6b5a;">${r.player}</td>
+                                <td style="padding:12px 16px;color:#5a6b5a;">${r.court}</td>
+                                <td style="padding:12px 16px;color:#5a6b5a;">${r.time}</td>
+                                <td style="padding:12px 16px;font-weight:500;color:#6b8f6b;">${r.price}</td>
                             </tr>`).join('')}
                     </tbody>
                 </table>`;
@@ -300,21 +328,21 @@
             document.getElementById('modal-loading').style.display = 'none';
             const content = document.getElementById('modal-content');
             const byCourt = data.by_court.map(c => `
-        <div style="display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px solid #f3f4f6;">
-            <span style="font-weight:500; color:#374151;">${c.court}</span>
-            <span style="color:#6b7280; font-size:0.875rem;">${c.count} reservas</span>
-            <span style="font-weight:600; color:#16a34a;">${c.total}</span>
+        <div style="display:flex; justify-content:space-between; padding:10px 0; border-bottom:0.5px solid #f0f3ee;">
+            <span style="font-weight:500; color:#2d3b2d;">${c.court}</span>
+            <span style="color:#7a8a7a; font-size:0.875rem;">${c.count} reservas</span>
+            <span style="font-weight:600; color:#6b8f6b;">${c.total}</span>
         </div>`).join('');
 
             content.innerHTML = `
         <div style="margin-bottom:24px;">
-            <h4 style="font-weight:600; color:#374151; margin-bottom:12px;">Desglose por pista</h4>
-            <div style="background:#f9fafb; border-radius:8px; padding:16px;">
-                ${byCourt || '<p style="color:#9ca3af; font-size:0.875rem;">Sin datos.</p>'}
+            <h4 style="font-weight:600; color:#2d3b2d; margin-bottom:12px;">Desglose por pista</h4>
+            <div style="background:#f7f8f5; border-radius:8px; padding:16px;">
+                ${byCourt || '<p style="color:#9aaa9a; font-size:0.875rem;">Sin datos.</p>'}
             </div>
         </div>
         <div>
-            <h4 style="font-weight:600; color:#374151; margin-bottom:12px;">Listado de reservas</h4>
+            <h4 style="font-weight:600; color:#2d3b2d; margin-bottom:12px;">Listado de reservas</h4>
             ${reservationsTable(data.reservations)}
         </div>`;
             content.style.display = 'block';
@@ -354,6 +382,8 @@
 
             const occupancyLabels = JSON.parse(element.dataset.occupancyLabels);
             const occupancyData = JSON.parse(element.dataset.occupancyData);
+            console.log('Occupancy labels:', occupancyLabels);
+            console.log('Occupancy data:', occupancyData);
             const revenueLabels = JSON.parse(element.dataset.revenueLabels);
             const revenueData = JSON.parse(element.dataset.revenueData);
             const weekData = JSON.parse(element.dataset.weekData);
@@ -361,7 +391,7 @@
             const urlWeek = element.dataset.urlWeek;
             const urlMonth = element.dataset.urlMonth;
 
-            // SELECTORES DE LOS GRÁFICAS EN HTML
+            // SELECTORES DE LAS GRÁFICAS EN HTML
             const occupancy = document.getElementById('chart-occupancy');
             const revenue = document.getElementById('chart-revenue');
 
@@ -377,6 +407,12 @@
             const chartOccupancy = echarts.init(occupancy);
             const chartRevenue = echarts.init(revenue);
 
+            // FORZAMOS RESIZE TRAS INICIALIZAR POR SI EL CONTENEDOR TENÍA DIMENSIONES CERO
+            setTimeout(() => {
+                chartOccupancy.resize();
+                chartRevenue.resize();
+            }, 50);
+
             // GRÁFICO OCUPACIÓN -> LÍNEAS
             chartOccupancy.setOption({
                 tooltip: {
@@ -385,7 +421,7 @@
                         const meta = weekData[params[0].dataIndex];
                         return `<b>${params[0].name}</b><br/>
                             Reservas: <b>${params[0].value}</b><br/>
-                            <span style="font-size:11px;color:#9ca3af">Pulsa para ver el detalle</span>`;
+                            <span style="font-size:11px;color:#9aaa9a">Pulsa para ver el detalle</span>`;
                     }
                 },
                 grid: {
@@ -410,15 +446,15 @@
                     smooth: true,
                     data: occupancyData,
                     itemStyle: {
-                        color: '#3b82f6'
+                        color: '#6b8f6b'
                     },
                     areaStyle: {
-                        color: 'rgba(59,130,246,0.1)'
+                        color: 'rgba(107,143,107,0.1)'
                     },
                     emphasis: {
                         itemStyle: {
                             borderWidth: 3,
-                            borderColor: '#1d4ed8'
+                            borderColor: '#4a6b4a'
                         }
                     },
                 }]
@@ -439,7 +475,7 @@
                     formatter: (params) => {
                         return `<b>${params[0].name}</b><br/>
                             Ingresos: <b>${params[0].value.toFixed(2)}€</b><br/>
-                            <span style="font-size:11px;color:#9ca3af">Pulsa para ver el detalle</span>`;
+                            <span style="font-size:11px;color:#9aaa9a">Pulsa para ver el detalle</span>`;
                     }
                 },
                 grid: {
@@ -461,12 +497,12 @@
                     type: 'bar',
                     data: revenueData,
                     itemStyle: {
-                        color: '#22c55e',
+                        color: '#6b8f6b',
                         borderRadius: [6, 6, 0, 0]
                     },
                     emphasis: {
                         itemStyle: {
-                            color: '#16a34a'
+                            color: '#4a6b4a'
                         }
                     },
                 }]
@@ -478,6 +514,16 @@
                 fetch(`${urlMonth}?month=${data.month}&year=${data.year}`)
                     .then(r => r.json())
                     .then(data => renderMonthModal(data));
+            });
+
+            // RESIZE AL CAMBIAR DE TAB
+            document.querySelectorAll('[\\@click]').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    setTimeout(() => {
+                        chartOccupancy.resize();
+                        chartRevenue.resize();
+                    }, 50);
+                });
             });
 
             // HACEMOS LOS GRÁFICOS RESPONSIVE

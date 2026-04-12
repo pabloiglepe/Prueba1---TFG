@@ -1,6 +1,6 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+        <h2 style="font-size: 20px; font-weight: 600; color: #2d3b2d; margin: 0;">
             Mi Perfil
         </h2>
     </x-slot>
@@ -9,108 +9,110 @@
 
         {{-- MENSAJES --}}
         @if(session('success'))
-        <div class="p-4 bg-green-100 text-green-800 rounded">{{ session('success') }}</div>
+        <div style="padding: 14px 18px; background: #e8f0e8; color: #4a6b4a; border-radius: 8px; font-size: 14px; border-left: 3px solid #6b8f6b;">
+            {{ session('success') }}
+        </div>
         @endif
-
-        <!-- {{-- TARJETAS RESUMEN --}}
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <div class="bg-white shadow rounded-lg p-5">
-                <p class="text-sm text-gray-500 mb-1">Gasto en reservas</p>
-                <p class="text-2xl font-bold text-blue-600">{{ number_format($totalSpentReservations, 2) }}€</p>
-            </div>
-            <div class="bg-white shadow rounded-lg p-5">
-                <p class="text-sm text-gray-500 mb-1">Gasto en clases</p>
-                <p class="text-2xl font-bold text-purple-600">{{ number_format($totalSpentClasses, 2) }}€</p>
-            </div>
-            <div class="bg-white shadow rounded-lg p-5">
-                <p class="text-sm text-gray-500 mb-1">Gasto total</p>
-                <p class="text-2xl font-bold text-green-600">{{ number_format($totalSpent, 2) }}€</p>
-            </div>
-        </div> -->
 
         {{-- TARJETAS RESUMEN SEGÚN ROL --}}
         @if($user->role->name === 'player')
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <div class="bg-white shadow rounded-lg p-5">
-                <p class="text-sm text-gray-500 mb-1">Gasto en reservas</p>
-                <p class="text-2xl font-bold text-blue-600">{{ number_format($totalSpentReservations, 2) }}€</p>
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
+            <div style="background: #fff; border-radius: 12px; border: 0.5px solid #d4d9cc; padding: 20px;">
+                <p style="font-size: 12px; color: #7a8a7a; margin: 0 0 6px;">Gasto en reservas</p>
+                <p style="font-size: 26px; font-weight: 600; color: #2d3b2d; margin: 0;">{{ number_format($totalSpentReservations, 2) }}€</p>
             </div>
-            <div class="bg-white shadow rounded-lg p-5">
-                <p class="text-sm text-gray-500 mb-1">Gasto en clases</p>
-                <p class="text-2xl font-bold text-purple-600">{{ number_format($totalSpentClasses, 2) }}€</p>
+            <div style="background: #fff; border-radius: 12px; border: 0.5px solid #d4d9cc; padding: 20px;">
+                <p style="font-size: 12px; color: #7a8a7a; margin: 0 0 6px;">Gasto en clases</p>
+                <p style="font-size: 26px; font-weight: 600; color: #2d3b2d; margin: 0;">{{ number_format($totalSpentClasses, 2) }}€</p>
             </div>
-            <div class="bg-white shadow rounded-lg p-5">
-                <p class="text-sm text-gray-500 mb-1">Gasto total</p>
-                <p class="text-2xl font-bold text-green-600">{{ number_format($totalSpent, 2) }}€</p>
+            <div style="background: #fff; border-radius: 12px; border: 0.5px solid #d4d9cc; padding: 20px;">
+                <p style="font-size: 12px; color: #7a8a7a; margin: 0 0 6px;">Gasto total</p>
+                <p style="font-size: 26px; font-weight: 600; color: #6b8f6b; margin: 0;">{{ number_format($totalSpent, 2) }}€</p>
             </div>
         </div>
 
         @elseif($user->role->name === 'coach')
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <div class="bg-white shadow rounded-lg p-5">
-                <p class="text-sm text-gray-500 mb-1">Clases creadas</p>
-                <p class="text-2xl font-bold text-blue-600">{{ $coachStats['total_classes'] }}</p>
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
+            <div style="background: #fff; border-radius: 12px; border: 0.5px solid #d4d9cc; padding: 20px;">
+                <p style="font-size: 12px; color: #7a8a7a; margin: 0 0 6px;">Clases creadas</p>
+                <p style="font-size: 26px; font-weight: 600; color: #2d3b2d; margin: 0;">{{ $coachStats['total_classes'] }}</p>
             </div>
-            <div class="bg-white shadow rounded-lg p-5">
-                <p class="text-sm text-gray-500 mb-1">Alumnos totales</p>
-                <p class="text-2xl font-bold text-purple-600">{{ $coachStats['total_students'] }}</p>
+            <div style="background: #fff; border-radius: 12px; border: 0.5px solid #d4d9cc; padding: 20px;">
+                <p style="font-size: 12px; color: #7a8a7a; margin: 0 0 6px;">Alumnos totales</p>
+                <p style="font-size: 26px; font-weight: 600; color: #2d3b2d; margin: 0;">{{ $coachStats['total_students'] }}</p>
             </div>
-            <div class="bg-white shadow rounded-lg p-5">
-                <p class="text-sm text-gray-500 mb-1">Ingresos generados</p>
-                <p class="text-2xl font-bold text-green-600">{{ number_format($coachStats['total_revenue'], 2) }}€</p>
+            <div style="background: #fff; border-radius: 12px; border: 0.5px solid #d4d9cc; padding: 20px;">
+                <p style="font-size: 12px; color: #7a8a7a; margin: 0 0 6px;">Ingresos generados</p>
+                <p style="font-size: 26px; font-weight: 600; color: #6b8f6b; margin: 0;">{{ number_format($coachStats['total_revenue'], 2) }}€</p>
             </div>
         </div>
         @endif
 
         {{-- DATOS PERSONALES --}}
-        <div class="bg-white shadow rounded-lg p-6">
-            <h3 class="font-semibold text-gray-700 mb-4">Datos personales</h3>
+        <div style="background: #fff; border-radius: 12px; border: 0.5px solid #d4d9cc; padding: 28px;">
+            <p style="font-size: 11px; font-weight: 600; color: #7a8a7a; text-transform: uppercase; letter-spacing: 0.05em; margin: 0 0 20px;">Datos personales</p>
             <form action="{{ route('profile.update') }}" method="POST">
                 @csrf
                 @method('PATCH')
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+                {{-- NOMBRE Y TELÉFONO --}}
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;">
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Nombre</label>
+                        <label style="display: block; font-size: 13px; font-weight: 500; color: #2d3b2d; margin-bottom: 6px;">Nombre</label>
                         <input type="text" name="name" value="{{ old('name', $user->name) }}"
-                            class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                               style="width: 100%; padding: 9px 12px; border: 0.5px solid #d4d9cc; border-radius: 8px; font-size: 14px; color: #2d3b2d; outline: none; box-sizing: border-box;"
+                               onfocus="this.style.borderColor='#6b8f6b'"
+                               onblur="this.style.borderColor='#d4d9cc'">
                         @error('name')
-                        <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
+                            <p style="color: #c0625e; font-size: 12px; margin-top: 5px;">{{ $message }}</p>
                         @enderror
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Teléfono</label>
+                        <label style="display: block; font-size: 13px; font-weight: 500; color: #2d3b2d; margin-bottom: 6px;">Teléfono</label>
                         <input type="text" name="phone_number" value="{{ old('phone_number', $user->phone_number) }}"
-                            class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                               style="width: 100%; padding: 9px 12px; border: 0.5px solid #d4d9cc; border-radius: 8px; font-size: 14px; color: #2d3b2d; outline: none; box-sizing: border-box;"
+                               onfocus="this.style.borderColor='#6b8f6b'"
+                               onblur="this.style.borderColor='#d4d9cc'">
                         @error('phone_number')
-                        <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
+                            <p style="color: #c0625e; font-size: 12px; margin-top: 5px;">{{ $message }}</p>
                         @enderror
                     </div>
                 </div>
 
-                <div class="mb-4">
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                {{-- EMAIL --}}
+                <div style="margin-bottom: 16px;">
+                    <label style="display: block; font-size: 13px; font-weight: 500; color: #2d3b2d; margin-bottom: 6px;">Email</label>
                     <input type="text" value="{{ $user->email }}" disabled
-                        class="w-full border-gray-300 rounded-lg shadow-sm bg-gray-50 text-gray-400 cursor-not-allowed">
-                    <p class="text-xs text-gray-400 mt-1">El email no puede modificarse.</p>
+                           style="width: 100%; padding: 9px 12px; border: 0.5px solid #d4d9cc; border-radius: 8px; font-size: 14px; color: #9aaa9a; background: #f7f8f5; cursor: not-allowed; box-sizing: border-box;">
+                    <p style="font-size: 11px; color: #9aaa9a; margin: 4px 0 0;">El email no puede modificarse.</p>
                 </div>
 
-                <div class="mb-4">
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Rol</label>
-                    <input type="text" value="{{ ucfirst($user->role->name) }}" disabled
-                        class="w-full border-gray-300 rounded-lg shadow-sm bg-gray-50 text-gray-400 cursor-not-allowed">
+                {{-- ROL --}}
+                <div style="margin-bottom: 24px;">
+                    <label style="display: block; font-size: 13px; font-weight: 500; color: #2d3b2d; margin-bottom: 6px;">Rol</label>
+                    <input type="text" value="{{ ucfirst($user->role->name === 'coach' ? 'Entrenador' : ($user->role->name === 'player' ? 'Jugador' : 'Administrador')) }}" disabled
+                           style="width: 100%; padding: 9px 12px; border: 0.5px solid #d4d9cc; border-radius: 8px; font-size: 14px; color: #9aaa9a; background: #f7f8f5; cursor: not-allowed; box-sizing: border-box;">
                 </div>
 
-                <div class="flex justify-between items-center">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
                     <a href="{{ route('profile.export') }}"
-                        class="inline-flex items-center gap-2 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-800 text-sm">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                       style="display: inline-flex; align-items: center; gap: 8px; background: #6b8f6b; color: #fff; font-size: 14px; font-weight: 500; padding: 9px 18px; border-radius: 8px; text-decoration: none;"
+                       onmouseover="this.style.background='#4a6b4a'"
+                       onmouseout="this.style.background='#6b8f6b'">
+                        <svg xmlns="http://www.w3.org/2000/svg" style="width:15px;height:15px;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
                         </svg>
                         Exportar mis datos
                     </a>
                     <button type="submit"
-                        class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700">
+                            style="display: inline-flex; align-items: center; gap: 8px; background: #6b8f6b; color: #fff; font-size: 14px; font-weight: 500; padding: 9px 22px; border-radius: 8px; border: none; cursor: pointer;"
+                            onmouseover="this.style.background='#4a6b4a'"
+                            onmouseout="this.style.background='#6b8f6b'">
+                        <svg xmlns="http://www.w3.org/2000/svg" style="width:15px;height:15px;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
+                            <polyline points="17 21 17 13 7 13 7 21"/>
+                            <polyline points="7 3 7 8 15 8"/>
+                        </svg>
                         Guardar cambios
                     </button>
                 </div>
@@ -118,231 +120,229 @@
         </div>
 
         {{-- CAMBIAR CONTRASEÑA --}}
-        <div class="bg-white shadow rounded-lg p-6">
-            <h3 class="font-semibold text-gray-700 mb-4">Cambiar contraseña</h3>
+        <div style="background: #fff; border-radius: 12px; border: 0.5px solid #d4d9cc; padding: 28px;">
+            <p style="font-size: 11px; font-weight: 600; color: #7a8a7a; text-transform: uppercase; letter-spacing: 0.05em; margin: 0 0 20px;">Cambiar contraseña</p>
             <form action="{{ route('profile.password') }}" method="POST">
                 @csrf
                 @method('PATCH')
 
-                <div class="space-y-4 mb-4">
+                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-bottom: 24px;">
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Contraseña actual</label>
+                        <label style="display: block; font-size: 13px; font-weight: 500; color: #2d3b2d; margin-bottom: 6px;">Contraseña actual</label>
                         <input type="password" name="current_password"
-                            class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                               style="width: 100%; padding: 9px 12px; border: 0.5px solid #d4d9cc; border-radius: 8px; font-size: 14px; color: #2d3b2d; outline: none; box-sizing: border-box;"
+                               onfocus="this.style.borderColor='#6b8f6b'"
+                               onblur="this.style.borderColor='#d4d9cc'">
                         @error('current_password')
-                        <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
+                            <p style="color: #c0625e; font-size: 12px; margin-top: 5px;">{{ $message }}</p>
                         @enderror
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Nueva contraseña</label>
+                        <label style="display: block; font-size: 13px; font-weight: 500; color: #2d3b2d; margin-bottom: 6px;">Nueva contraseña</label>
                         <input type="password" name="password"
-                            class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                               style="width: 100%; padding: 9px 12px; border: 0.5px solid #d4d9cc; border-radius: 8px; font-size: 14px; color: #2d3b2d; outline: none; box-sizing: border-box;"
+                               onfocus="this.style.borderColor='#6b8f6b'"
+                               onblur="this.style.borderColor='#d4d9cc'">
                         @error('password')
-                        <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
+                            <p style="color: #c0625e; font-size: 12px; margin-top: 5px;">{{ $message }}</p>
                         @enderror
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Confirmar nueva contraseña</label>
+                        <label style="display: block; font-size: 13px; font-weight: 500; color: #2d3b2d; margin-bottom: 6px;">Confirmar nueva contraseña</label>
                         <input type="password" name="password_confirmation"
-                            class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                               style="width: 100%; padding: 9px 12px; border: 0.5px solid #d4d9cc; border-radius: 8px; font-size: 14px; color: #2d3b2d; outline: none; box-sizing: border-box;"
+                               onfocus="this.style.borderColor='#6b8f6b'"
+                               onblur="this.style.borderColor='#d4d9cc'">
                     </div>
                 </div>
 
-                <div class="flex justify-end">
+                <div style="display: flex; justify-content: flex-end;">
                     <button type="submit"
-                        class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700">
+                            style="display: inline-flex; align-items: center; gap: 8px; background: #6b8f6b; color: #fff; font-size: 14px; font-weight: 500; padding: 9px 22px; border-radius: 8px; border: none; cursor: pointer;"
+                            onmouseover="this.style.background='#4a6b4a'"
+                            onmouseout="this.style.background='#6b8f6b'">
+                        <svg xmlns="http://www.w3.org/2000/svg" style="width:15px;height:15px;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                        </svg>
                         Cambiar contraseña
                     </button>
                 </div>
             </form>
         </div>
 
-        <!-- {{-- HISTORIAL DE RESERVAS (SOLO PLAYER) --}}
+        {{-- HISTORIAL DE RESERVAS (SOLO PLAYER) --}}
         @if($user->role->name === 'player')
-        <div class="bg-white shadow rounded-lg p-6">
-            <h3 class="font-semibold text-gray-700 mb-4">Historial de reservas</h3>
+        <div style="background: #fff; border-radius: 12px; border: 0.5px solid #d4d9cc; overflow: hidden;">
+            <div style="padding: 20px 24px; border-bottom: 0.5px solid #f0f3ee;">
+                <p style="font-size: 11px; font-weight: 600; color: #7a8a7a; text-transform: uppercase; letter-spacing: 0.05em; margin: 0;">Historial de reservas</p>
+            </div>
             @if($reservations->isEmpty())
-            <p class="text-gray-400 text-sm">No tienes reservas registradas.</p>
+                <div style="padding: 40px; text-align: center; font-size: 14px; color: #9aaa9a;">
+                    No tienes reservas registradas.
+                </div>
             @else
-            <div class="overflow-x-auto">
-                <table class="min-w-full divide-y divide-gray-200 text-sm">
-                    <thead class="bg-gray-50">
-                        <tr>
-                            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Fecha</th>
-                            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Pista</th>
-                            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Horario</th>
-                            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Precio</th>
-                            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Estado</th>
+                <table style="width: 100%; border-collapse: collapse;">
+                    <thead>
+                        <tr style="background: #f7f8f5;">
+                            <th style="padding: 12px 20px; text-align: left; font-size: 11px; font-weight: 600; color: #7a8a7a; text-transform: uppercase; letter-spacing: 0.05em;">Fecha</th>
+                            <th style="padding: 12px 20px; text-align: left; font-size: 11px; font-weight: 600; color: #7a8a7a; text-transform: uppercase; letter-spacing: 0.05em;">Pista</th>
+                            <th style="padding: 12px 20px; text-align: left; font-size: 11px; font-weight: 600; color: #7a8a7a; text-transform: uppercase; letter-spacing: 0.05em;">Horario</th>
+                            <th style="padding: 12px 20px; text-align: left; font-size: 11px; font-weight: 600; color: #7a8a7a; text-transform: uppercase; letter-spacing: 0.05em;">Precio</th>
+                            <th style="padding: 12px 20px; text-align: left; font-size: 11px; font-weight: 600; color: #7a8a7a; text-transform: uppercase; letter-spacing: 0.05em;">Estado</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-gray-100">
+                    <tbody>
                         @foreach($reservations as $reservation)
-                        <tr>
-                            <td class="px-4 py-2">{{ \Carbon\Carbon::parse($reservation->reservation_date)->format('d/m/Y') }}</td>
-                            <td class="px-4 py-2">{{ $reservation->court->name }}</td>
-                            <td class="px-4 py-2">
-                                {{ \Carbon\Carbon::parse($reservation->start_time)->format('H:i') }} -
+                        <tr style="border-top: 0.5px solid #f0f3ee;" onmouseover="this.style.background='#fafbf9'" onmouseout="this.style.background='#fff'">
+                            <td style="padding: 14px 20px; font-size: 14px; color: #2d3b2d;">
+                                {{ \Carbon\Carbon::parse($reservation->reservation_date)->format('d/m/Y') }}
+                            </td>
+                            <td style="padding: 14px 20px; font-size: 14px; color: #5a6b5a;">{{ $reservation->court->name }}</td>
+                            <td style="padding: 14px 20px; font-size: 14px; color: #5a6b5a;">
+                                {{ \Carbon\Carbon::parse($reservation->start_time)->format('H:i') }} —
                                 {{ \Carbon\Carbon::parse($reservation->end_time)->format('H:i') }}
                             </td>
-                            <td class="px-4 py-2 font-medium text-green-600">{{ number_format($reservation->total_price, 2) }}€</td>
-                            <td class="px-4 py-2">
+                            <td style="padding: 14px 20px; font-size: 14px; font-weight: 500; color: #6b8f6b;">
+                                {{ number_format($reservation->total_price, 2) }}€
+                            </td>
+                            <td style="padding: 14px 20px;">
                                 @if($reservation->status === 'pending')
-                                <span class="px-2 py-1 bg-yellow-100 text-yellow-800 rounded-full text-xs">Pendiente</span>
+                                    <span style="display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; background: #fef9e8; color: #92650a; border-radius: 20px; font-size: 12px; font-weight: 500;">Pendiente</span>
                                 @elseif($reservation->status === 'paid')
-                                <span class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs">Pagada</span>
+                                    <span style="display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; background: #e8f0e8; color: #4a6b4a; border-radius: 20px; font-size: 12px; font-weight: 500;">Pagada</span>
                                 @else
-                                <span class="px-2 py-1 bg-red-100 text-red-800 rounded-full text-xs">Cancelada</span>
+                                    <span style="display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; background: #fce8e8; color: #9b4444; border-radius: 20px; font-size: 12px; font-weight: 500;">Cancelada</span>
                                 @endif
                             </td>
                         </tr>
                         @endforeach
                     </tbody>
                 </table>
-            </div>
             @endif
         </div>
 
         {{-- HISTORIAL DE CLASES COMO ALUMNO (SOLO PLAYER) --}}
-        <div class="bg-white shadow rounded-lg p-6">
-            <h3 class="font-semibold text-gray-700 mb-4">Mis clases</h3>
+        <div style="background: #fff; border-radius: 12px; border: 0.5px solid #d4d9cc; overflow: hidden;">
+            <div style="padding: 20px 24px; border-bottom: 0.5px solid #f0f3ee;">
+                <p style="font-size: 11px; font-weight: 600; color: #7a8a7a; text-transform: uppercase; letter-spacing: 0.05em; margin: 0;">Mis clases</p>
+            </div>
             @if($classes->isEmpty())
-            <p class="text-gray-400 text-sm">No estás inscrito en ninguna clase.</p>
+                <div style="padding: 40px; text-align: center; font-size: 14px; color: #9aaa9a;">
+                    No estás inscrito en ninguna clase.
+                </div>
             @else
-            <div class="overflow-x-auto">
-                <table class="min-w-full divide-y divide-gray-200 text-sm">
-                    <thead class="bg-gray-50">
-                        <tr>
-                            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Clase</th>
-                            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Fecha</th>
-                            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Entrenador</th>
-                            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Pista</th>
-                            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Precio</th>
+                <table style="width: 100%; border-collapse: collapse;">
+                    <thead>
+                        <tr style="background: #f7f8f5;">
+                            <th style="padding: 12px 20px; text-align: left; font-size: 11px; font-weight: 600; color: #7a8a7a; text-transform: uppercase; letter-spacing: 0.05em;">Clase</th>
+                            <th style="padding: 12px 20px; text-align: left; font-size: 11px; font-weight: 600; color: #7a8a7a; text-transform: uppercase; letter-spacing: 0.05em;">Fecha</th>
+                            <th style="padding: 12px 20px; text-align: left; font-size: 11px; font-weight: 600; color: #7a8a7a; text-transform: uppercase; letter-spacing: 0.05em;">Entrenador</th>
+                            <th style="padding: 12px 20px; text-align: left; font-size: 11px; font-weight: 600; color: #7a8a7a; text-transform: uppercase; letter-spacing: 0.05em;">Pista</th>
+                            <th style="padding: 12px 20px; text-align: left; font-size: 11px; font-weight: 600; color: #7a8a7a; text-transform: uppercase; letter-spacing: 0.05em;">Precio</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-gray-100">
+                    <tbody>
                         @foreach($classes as $class)
-                        <tr>
-                            <td class="px-4 py-2 font-medium text-gray-800">{{ $class->title }}</td>
-                            <td class="px-4 py-2">{{ \Carbon\Carbon::parse($class->date)->format('d/m/Y') }}</td>
-                            <td class="px-4 py-2">{{ $class->coach->name }}</td>
-                            <td class="px-4 py-2">{{ $class->court->name }}</td>
-                            <td class="px-4 py-2 font-medium text-green-600">{{ number_format($class->price, 2) }}€</td>
+                        <tr style="border-top: 0.5px solid #f0f3ee;" onmouseover="this.style.background='#fafbf9'" onmouseout="this.style.background='#fff'">
+                            <td style="padding: 14px 20px; font-size: 14px; font-weight: 500; color: #2d3b2d;">{{ $class->title }}</td>
+                            <td style="padding: 14px 20px; font-size: 14px; color: #5a6b5a;">{{ \Carbon\Carbon::parse($class->date)->format('d/m/Y') }}</td>
+                            <td style="padding: 14px 20px; font-size: 14px; color: #5a6b5a;">{{ $class->coach->name }}</td>
+                            <td style="padding: 14px 20px; font-size: 14px; color: #5a6b5a;">{{ $class->court->name }}</td>
+                            <td style="padding: 14px 20px; font-size: 14px; font-weight: 500; color: #6b8f6b;">{{ number_format($class->price, 2) }}€</td>
                         </tr>
                         @endforeach
                     </tbody>
                 </table>
-            </div>
             @endif
         </div>
         @endif
 
         {{-- CLASES CREADAS (SOLO COACH) --}}
         @if($user->role->name === 'coach')
-        <div class="bg-white shadow rounded-lg p-6">
-            <h3 class="font-semibold text-gray-700 mb-4">Mis clases creadas</h3>
+        <div style="background: #fff; border-radius: 12px; border: 0.5px solid #d4d9cc; overflow: hidden;">
+            <div style="padding: 20px 24px; border-bottom: 0.5px solid #f0f3ee;">
+                <p style="font-size: 11px; font-weight: 600; color: #7a8a7a; text-transform: uppercase; letter-spacing: 0.05em; margin: 0;">Mis clases creadas</p>
+            </div>
             @if($user->classesByCoach->isEmpty())
-            <p class="text-gray-400 text-sm">No has creado ninguna clase todavía.</p>
+                <div style="padding: 40px; text-align: center; font-size: 14px; color: #9aaa9a;">
+                    No has creado ninguna clase todavía.
+                </div>
             @else
-            <div class="overflow-x-auto">
-                <table class="min-w-full divide-y divide-gray-200 text-sm">
-                    <thead class="bg-gray-50">
-                        <tr>
-                            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Clase</th>
-                            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Fecha</th>
-                            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Pista</th>
-                            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Alumnos</th>
-                            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Estado</th>
-                            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Ingresos</th>
+                <table style="width: 100%; border-collapse: collapse;">
+                    <thead>
+                        <tr style="background: #f7f8f5;">
+                            <th style="padding: 12px 20px; text-align: left; font-size: 11px; font-weight: 600; color: #7a8a7a; text-transform: uppercase; letter-spacing: 0.05em;">Clase</th>
+                            <th style="padding: 12px 20px; text-align: left; font-size: 11px; font-weight: 600; color: #7a8a7a; text-transform: uppercase; letter-spacing: 0.05em;">Fecha</th>
+                            <th style="padding: 12px 20px; text-align: left; font-size: 11px; font-weight: 600; color: #7a8a7a; text-transform: uppercase; letter-spacing: 0.05em;">Pista</th>
+                            <th style="padding: 12px 20px; text-align: left; font-size: 11px; font-weight: 600; color: #7a8a7a; text-transform: uppercase; letter-spacing: 0.05em;">Alumnos</th>
+                            <th style="padding: 12px 20px; text-align: left; font-size: 11px; font-weight: 600; color: #7a8a7a; text-transform: uppercase; letter-spacing: 0.05em;">Estado</th>
+                            <th style="padding: 12px 20px; text-align: left; font-size: 11px; font-weight: 600; color: #7a8a7a; text-transform: uppercase; letter-spacing: 0.05em;">Ingresos</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-gray-100">
+                    <tbody>
                         @foreach($user->classesByCoach as $class)
-                        <tr>
-                            <td class="px-4 py-2 font-medium text-gray-800">{{ $class->title }}</td>
-                            <td class="px-4 py-2">{{ \Carbon\Carbon::parse($class->date)->format('d/m/Y') }}</td>
-                            <td class="px-4 py-2">{{ $class->court->name }}</td>
-                            <td class="px-4 py-2">
+                        <tr style="border-top: 0.5px solid #f0f3ee;" onmouseover="this.style.background='#fafbf9'" onmouseout="this.style.background='#fff'">
+                            <td style="padding: 14px 20px; font-size: 14px; font-weight: 500; color: #2d3b2d;">{{ $class->title }}</td>
+                            <td style="padding: 14px 20px; font-size: 14px; color: #5a6b5a;">{{ \Carbon\Carbon::parse($class->date)->format('d/m/Y') }}</td>
+                            <td style="padding: 14px 20px; font-size: 14px; color: #5a6b5a;">{{ $class->court->name }}</td>
+                            <td style="padding: 14px 20px; font-size: 14px; color: #5a6b5a;">
                                 {{ $class->registered->count() }}/{{ $class->max_players }}
                             </td>
-                            <td class="px-4 py-2">
+                            <td style="padding: 14px 20px;">
                                 @if($class->status === 'registered')
-                                <span class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs">Programada</span>
+                                    <span style="display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; background: #e8f0e8; color: #4a6b4a; border-radius: 20px; font-size: 12px; font-weight: 500;">Programada</span>
                                 @elseif($class->status === 'completed')
-                                <span class="px-2 py-1 bg-purple-100 text-purple-800 rounded-full text-xs">Completada</span>
+                                    <span style="display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; background: #f0eaf8; color: #6b4a8f; border-radius: 20px; font-size: 12px; font-weight: 500;">Completada</span>
                                 @else
-                                <span class="px-2 py-1 bg-red-100 text-red-800 rounded-full text-xs">Cancelada</span>
+                                    <span style="display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; background: #fce8e8; color: #9b4444; border-radius: 20px; font-size: 12px; font-weight: 500;">Cancelada</span>
                                 @endif
                             </td>
-                            <td class="px-4 py-2 font-medium text-green-600">
+                            <td style="padding: 14px 20px; font-size: 14px; font-weight: 500; color: #6b8f6b;">
                                 {{ number_format($class->registered->count() * $class->price, 2) }}€
                             </td>
                         </tr>
                         @endforeach
                     </tbody>
                 </table>
-            </div>
             @endif
         </div>
-        @endif -->
-
-        <!-- {{-- HISTORIAL DE CLASES --}}
-        <div class="bg-white shadow rounded-lg p-6">
-            <h3 class="font-semibold text-gray-700 mb-4">Mis clases</h3>
-            @if($classes->isEmpty())
-                <p class="text-gray-400 text-sm">No estás inscrito en ninguna clase.</p>
-            @else
-                <div class="overflow-x-auto">
-                    <table class="min-w-full divide-y divide-gray-200 text-sm">
-                        <thead class="bg-gray-50">
-                            <tr>
-                                <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Clase</th>
-                                <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Fecha</th>
-                                <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Entrenador</th>
-                                <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Pista</th>
-                                <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Precio</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-gray-100">
-                            @foreach($classes as $class)
-                                <tr>
-                                    <td class="px-4 py-2 font-medium text-gray-800">{{ $class->title }}</td>
-                                    <td class="px-4 py-2">{{ \Carbon\Carbon::parse($class->date)->format('d/m/Y') }}</td>
-                                    <td class="px-4 py-2">{{ $class->coach->name }}</td>
-                                    <td class="px-4 py-2">{{ $class->court->name }}</td>
-                                    <td class="px-4 py-2 font-medium text-green-600">{{ number_format($class->price, 2) }}€</td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
-            @endif
-        </div> -->
+        @endif
 
         {{-- BORRAR CUENTA --}}
-        <div class="bg-white shadow rounded-lg p-6 border border-red-200">
-            <h3 class="font-semibold text-red-600 mb-2">Borrar Cuenta</h3>
-            <p class="text-sm text-gray-500 mb-4">
+        <div style="background: #fff; border-radius: 12px; border: 0.5px solid #f0c4c4; padding: 28px;">
+            <p style="font-size: 11px; font-weight: 600; color: #c0625e; text-transform: uppercase; letter-spacing: 0.05em; margin: 0 0 8px;">Zona de peligro</p>
+            <p style="font-size: 14px; color: #7a8a7a; margin: 0 0 20px; line-height: 1.6;">
                 Al eliminar tu cuenta todos tus datos serán borrados permanentemente y tus reservas pendientes serán canceladas. Esta acción no puede deshacerse.
             </p>
 
             <form action="{{ route('profile.destroy') }}" method="POST"
-                onsubmit="return confirm('¿Estás seguro de que quieres eliminar tu cuenta? Esta acción no puede deshacerse.')">
+                  onsubmit="return confirm('¿Estás seguro de que quieres eliminar tu cuenta? Esta acción no puede deshacerse.')">
                 @csrf
                 @method('DELETE')
 
-                <div class="mb-4">
-                    <label class="block text-sm font-medium text-gray-700 mb-1">
+                <div style="margin-bottom: 20px; max-width: 360px;">
+                    <label style="display: block; font-size: 13px; font-weight: 500; color: #2d3b2d; margin-bottom: 6px;">
                         Confirma tu contraseña para continuar
                     </label>
                     <input type="password" name="password"
-                        class="w-full border-red-300 rounded-lg shadow-sm focus:ring-red-500 focus:border-red-500">
+                           style="width: 100%; padding: 9px 12px; border: 0.5px solid #f0c4c4; border-radius: 8px; font-size: 14px; color: #2d3b2d; outline: none; box-sizing: border-box;"
+                           onfocus="this.style.borderColor='#c0625e'"
+                           onblur="this.style.borderColor='#f0c4c4'">
                     @error('password')
-                    <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
+                        <p style="color: #c0625e; font-size: 12px; margin-top: 5px;">{{ $message }}</p>
                     @enderror
                 </div>
 
                 <button type="submit"
-                    class="bg-red-600 text-white px-6 py-2 rounded-lg hover:bg-red-700">
+                        style="display: inline-flex; align-items: center; gap: 8px; background: #c0625e; color: #fff; font-size: 14px; font-weight: 500; padding: 9px 20px; border-radius: 8px; border: none; cursor: pointer;"
+                        onmouseover="this.style.background='#9b4444'"
+                        onmouseout="this.style.background='#c0625e'">
+                    <svg xmlns="http://www.w3.org/2000/svg" style="width:15px;height:15px;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <polyline points="3 6 5 6 21 6"/>
+                        <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
+                        <path d="M10 11v6M14 11v6"/>
+                        <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
+                    </svg>
                     Eliminar mi cuenta
                 </button>
             </form>

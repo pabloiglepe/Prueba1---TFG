@@ -14,11 +14,22 @@ class DashboardController extends Controller
     {
         $now = Carbon::now();
 
-        // KPI 1 -> OCUPACIÓN DE PISTAS PARA LAS ÚLTIMAS 8 SEMANAS
+        // KPI 1 -> OCUPACIÓN DE PISTAS PARA LAS ANTERIORES 4 SEMANAS Y LAS 4 SIGUIENTES
         $occupancyData = [];
         $occupancyLabels = [];
-        for ($i = 7; $i >= 0; $i--) {
-            $week = $now->copy()->subWeeks($i);
+        $weekData = [];
+        // for ($i = 7; $i >= 0; $i--) {
+        //     $week = $now->copy()->subWeeks($i);
+        //     $occupancyLabels[] = 'Sem ' . $week->format('W');
+        //     $occupancyData[] = Reservation::where('status', '!=', 'cancelled')
+        //         ->whereBetween('reservation_date', [
+        //             $week->copy()->startOfWeek()->format('Y-m-d'),
+        //             $week->copy()->endOfWeek()->format('Y-m-d'),
+        //         ])
+        //         ->count();
+        // }
+        for ($i = -4; $i <= 4; $i++) {
+            $week = $now->copy()->addWeeks($i);
             $occupancyLabels[] = 'Sem ' . $week->format('W');
             $occupancyData[] = Reservation::where('status', '!=', 'cancelled')
                 ->whereBetween('reservation_date', [
@@ -26,6 +37,7 @@ class DashboardController extends Controller
                     $week->copy()->endOfWeek()->format('Y-m-d'),
                 ])
                 ->count();
+            $weekData[] = ['week' => $week->isoWeek(), 'year' => $week->year];
         }
 
 
@@ -60,11 +72,11 @@ class DashboardController extends Controller
 
 
         // DAROS PARA LOS CLICKS EN LOS GRÁFICOS
-        $weekData = [];
-        for ($i = 7; $i >= 0; $i--) {
-            $week = $now->copy()->subWeeks($i);
-            $weekData[] = ['week' => $week->isoWeek(), 'year' => $week->year];
-        }
+        // $weekData = [];
+        // for ($i = 7; $i >= 0; $i--) {
+        //     $week = $now->copy()->subWeeks($i);
+        //     $weekData[] = ['week' => $week->isoWeek(), 'year' => $week->year];
+        // }
 
         $monthData = [];
         for ($i = 5; $i >= 0; $i--) {
@@ -82,7 +94,6 @@ class DashboardController extends Controller
                     ->orderBy('date')
             ])
             ->get();
-
 
         return view('admin.dashboard', compact(
             'occupancyLabels',

@@ -6,6 +6,7 @@ docker/*.log
 Thumbs.db
 .vscode/
 .idea/
+backup*.sql
 
 # --- LARAVEL ---
 src/vendor/

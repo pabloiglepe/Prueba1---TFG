@@ -41,7 +41,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->middleware(['auth'])
         ->name('dashboard');
 
-        
+
     // RUTA DE PÁGINA DE INICIO
     Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
@@ -84,6 +84,16 @@ Route::middleware(['auth', 'role:player,admin'])->prefix('player')->name('player
     Route::get('classes', [PlayerClassController::class, 'index'])->name('classes.index');
     Route::post('classes/{class}/register', [PlayerClassController::class, 'register'])->name('classes.register');
     Route::post('classes/{class}/cancel', [PlayerClassController::class, 'cancel'])->name('classes.cancel');
+});
+
+
+// RUTA QUE EJECUTA EL SCHEDULER
+Route::get('/run-scheduler', function () {
+    if (request()->header('X-Cron-Secret') !== env('CRON_SECRET')) {
+        abort(403);
+    }
+    \Artisan::call('schedule:run');
+    return 'OK';
 });
 
 

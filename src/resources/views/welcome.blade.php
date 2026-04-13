@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -20,6 +21,7 @@
         }
     </style>
 </head>
+
 <body class="font-sans antialiased" style="background: var(--gray-warm); margin: 0;">
 
     {{-- NAVBAR --}}
@@ -30,11 +32,11 @@
         </div>
         <div style="display: flex; gap: 12px; align-items: center;">
             <a href="{{ route('login') }}"
-               style="font-size: 14px; color: var(--text-mid); text-decoration: none; font-weight: 500;">
+                style="font-size: 14px; color: var(--text-mid); text-decoration: none; font-weight: 500;">
                 Iniciar sesión
             </a>
             <a href="{{ route('register') }}"
-               style="background: var(--sage); color: #fff; font-size: 14px; padding: 8px 20px; border-radius: 8px; text-decoration: none; font-weight: 500;">
+                style="background: var(--sage); color: #fff; font-size: 14px; padding: 8px 20px; border-radius: 8px; text-decoration: none; font-weight: 500;">
                 Registrarse
             </a>
         </div>
@@ -53,11 +55,11 @@
         </p>
         <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
             <a href="{{ route('register') }}"
-               style="background: var(--sage); color: #fff; font-size: 15px; padding: 13px 32px; border-radius: 8px; text-decoration: none; font-weight: 500;">
+                style="background: var(--sage); color: #fff; font-size: 15px; padding: 13px 32px; border-radius: 8px; text-decoration: none; font-weight: 500;">
                 Empieza ahora
             </a>
             <a href="{{ route('login') }}"
-               style="background: #fff; color: var(--sage-dark); font-size: 15px; padding: 13px 32px; border-radius: 8px; border: 0.5px solid var(--gray-border); text-decoration: none; font-weight: 500;">
+                style="background: #fff; color: var(--sage-dark); font-size: 15px; padding: 13px 32px; border-radius: 8px; border: 0.5px solid var(--gray-border); text-decoration: none; font-weight: 500;">
                 Iniciar sesión
             </a>
         </div>
@@ -70,7 +72,8 @@
             <div style="text-align: center; padding: 16px;">
                 <div style="width: 56px; height: 56px; background: var(--sage-light); border-radius: 14px; margin: 0 auto 18px; display: flex; align-items: center; justify-content: center;">
                     <svg xmlns="http://www.w3.org/2000/svg" style="width:26px;height:26px;stroke:var(--sage);fill:none;" viewBox="0 0 24 24" stroke-width="1.8">
-                        <circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/>
+                        <circle cx="12" cy="12" r="10" />
+                        <path d="M12 8v4l3 3" />
                     </svg>
                 </div>
                 <p style="font-size: 15px; font-weight: 600; color: var(--text-dark); margin: 0 0 10px;">Reserva de pistas</p>
@@ -82,7 +85,10 @@
             <div style="text-align: center; padding: 16px;">
                 <div style="width: 56px; height: 56px; background: var(--sage-light); border-radius: 14px; margin: 0 auto 18px; display: flex; align-items: center; justify-content: center;">
                     <svg xmlns="http://www.w3.org/2000/svg" style="width:26px;height:26px;stroke:var(--sage);fill:none;" viewBox="0 0 24 24" stroke-width="1.8">
-                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                        <circle cx="9" cy="7" r="4" />
+                        <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                        <path d="M16 3.13a4 4 0 0 1 0 7.75" />
                     </svg>
                 </div>
                 <p style="font-size: 15px; font-weight: 600; color: var(--text-dark); margin: 0 0 10px;">Gestión de clases</p>
@@ -94,7 +100,9 @@
             <div style="text-align: center; padding: 16px;">
                 <div style="width: 56px; height: 56px; background: var(--sage-light); border-radius: 14px; margin: 0 auto 18px; display: flex; align-items: center; justify-content: center;">
                     <svg xmlns="http://www.w3.org/2000/svg" style="width:26px;height:26px;stroke:var(--sage);fill:none;" viewBox="0 0 24 24" stroke-width="1.8">
-                        <line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/>
+                        <line x1="18" y1="20" x2="18" y2="10" />
+                        <line x1="12" y1="20" x2="12" y2="4" />
+                        <line x1="6" y1="20" x2="6" y2="14" />
                     </svg>
                 </div>
                 <p style="font-size: 15px; font-weight: 600; color: var(--text-dark); margin: 0 0 10px;">Dashboard analítico</p>
@@ -114,4 +122,5 @@
     </footer>
 
 </body>
+
 </html>

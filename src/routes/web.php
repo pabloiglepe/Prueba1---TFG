@@ -32,7 +32,7 @@ use Illuminate\Support\Facades\Route;
 
 
 // RUTA RAÍZ
-Route::get('/', [RedirectController::class, 'home'])->name('home');
+Route::get('/', [RedirectController::class, 'home'])->name('landing');
 
 
 // RUTAS AUTENTICADAS -> ACCESIBLES PARA CUALQUIER USUARIO LOGUEADO
@@ -40,6 +40,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', [RedirectController::class, 'home'])
         ->middleware(['auth'])
         ->name('dashboard');
+
+        
+    // RUTA DE PÁGINA DE INICIO
+    Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
 
     // RUTAS PARA MANEJO DEL PERFIL

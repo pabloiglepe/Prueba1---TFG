@@ -30,7 +30,7 @@ new class extends Component
 
                 {{-- LOGO --}}
                 <div class="shrink-0 flex items-center gap-2">
-                    <a href="{{ route('dashboard') }}" wire:navigate class="flex items-center gap-2">
+                    <a href="{{ route('home') }}" wire:navigate class="flex items-center gap-2">
                         <x-application-logo style="height: 36px; width: auto; fill: #6b8f6b;" />
                         <span style="font-size: 16px; font-weight: 600; color: #2d3b2d;">PadelSync</span>
                     </a>
@@ -41,6 +41,11 @@ new class extends Component
                     @php $role = Auth::user()->role->name; @endphp
 
                     @if($role === 'admin')
+                    <a href="{{ route('home') }}" wire:navigate
+                        style="font-size: 14px; font-weight: 500; padding: 6px 14px; border-radius: 8px; text-decoration: none;
+                        {{ request()->routeIs('home') ? 'background: #e8f0e8; color: #4a6b4a;' : 'color: #5a6b5a;' }}">
+                        Inicio
+                    </a>
                     <a href="{{ route('admin.dashboard') }}" wire:navigate
                         style="font-size: 14px; font-weight: 500; padding: 6px 14px; border-radius: 8px; text-decoration: none; transition: background 0.15s;
                            {{ request()->routeIs('admin.dashboard') ? 'background: #e8f0e8; color: #4a6b4a;' : 'color: #5a6b5a;' }}"
@@ -63,12 +68,22 @@ new class extends Component
                         Usuarios
                     </a>
                     @elseif($role === 'coach')
+                    <a href="{{ route('home') }}" wire:navigate
+                        style="font-size: 14px; font-weight: 500; padding: 6px 14px; border-radius: 8px; text-decoration: none;
+                        {{ request()->routeIs('home') ? 'background: #e8f0e8; color: #4a6b4a;' : 'color: #5a6b5a;' }}">
+                        Inicio
+                    </a>
                     <a href="{{ route('coach.classes.index') }}" wire:navigate
                         style="font-size: 14px; font-weight: 500; padding: 6px 14px; border-radius: 8px; text-decoration: none;
                            {{ request()->routeIs('coach.classes.*') ? 'background: #e8f0e8; color: #4a6b4a;' : 'color: #5a6b5a;' }}">
                         Mis Clases
                     </a>
                     @elseif($role === 'player')
+                    <a href="{{ route('home') }}" wire:navigate
+                        style="font-size: 14px; font-weight: 500; padding: 6px 14px; border-radius: 8px; text-decoration: none;
+                        {{ request()->routeIs('home') ? 'background: #e8f0e8; color: #4a6b4a;' : 'color: #5a6b5a;' }}">
+                        Inicio
+                    </a>
                     <a href="{{ route('player.reservations.index') }}" wire:navigate
                         style="font-size: 14px; font-weight: 500; padding: 6px 14px; border-radius: 8px; text-decoration: none;
                            {{ request()->routeIs('player.reservations.*') ? 'background: #e8f0e8; color: #4a6b4a;' : 'color: #5a6b5a;' }}">

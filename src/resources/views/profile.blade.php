@@ -28,6 +28,17 @@
                     </svg>
                     Perfil
                 </button>
+                @if($user->role->name === 'player' || $user->role->name === 'coach')
+                <button @click="tab = 'historial'"
+                    :style="tab === 'historial' ? 'border-bottom: 2px solid #6b8f6b; color: #4a6b4a;' : 'border-bottom: 2px solid transparent; color: #7a8a7a;'"
+                    style="display: inline-flex; align-items: center; gap: 8px; padding: 14px 40px; font-size: 14px; font-weight: 500; background: none; border-top: none; border-left: none; border-right: none; cursor: pointer; margin-bottom: -1px;">
+                    <svg xmlns="http://www.w3.org/2000/svg" style="width:15px;height:15px;flex-shrink:0;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 2.994v2.25m10.5-2.25v2.25m-14.252 13.5V7.491a2.25 2.25 0 0 1 2.25-2.25h13.5a2.25 2.25 0 0 1 2.25 2.25v11.251m-18 0a2.25 2.25 0 0 0 2.25 2.25h13.5a2.25 2.25 0 0 0 2.25-2.25m-18 0v-7.5a2.25 2.25 0 0 1 2.25-2.25h13.5a2.25 2.25 0 0 1 2.25 2.25v7.5m-6.75-6h2.25m-9 2.25h4.5m.002-2.25h.005v.006H12v-.006Zm-.001 4.5h.006v.006h-.006v-.005Zm-2.25.001h.005v.006H9.75v-.006Zm-2.25 0h.005v.005h-.006v-.005Zm6.75-2.247h.005v.005h-.005v-.005Zm0 2.247h.006v.006h-.006v-.006Zm2.25-2.248h.006V15H16.5v-.005Z" />
+                    </svg>
+
+                    Historial
+                </button>
+                @endif
                 <button @click="tab = 'seguridad'"
                     :style="tab === 'seguridad' ? 'border-bottom: 2px solid #6b8f6b; color: #4a6b4a;' : 'border-bottom: 2px solid transparent; color: #7a8a7a;'"
                     style="display: inline-flex; align-items: center; gap: 8px; padding: 14px 40px; font-size: 14px; font-weight: 500; background: none; border-top: none; border-left: none; border-right: none; cursor: pointer; margin-bottom: -1px;">
@@ -146,7 +157,10 @@
                         </div>
                     </form>
                 </div>
+            </div>
 
+            {{-- TAB 2: HISTORIAL --}}
+            <div x-show="tab === 'historial'" class="space-y-6">
                 {{-- HISTORIAL DE RESERVAS (SOLO PLAYER) --}}
                 @if($user->role->name === 'player')
                 <div style="background: #fff; border-radius: 12px; border: 0.5px solid #d4d9cc; overflow: hidden;">
@@ -287,8 +301,7 @@
 
             </div>
 
-            {{-- TAB 2: SEGURIDAD --}}
-            {{-- TAB 2: SEGURIDAD --}}
+            {{-- TAB 3: SEGURIDAD --}}
             <div x-show="tab === 'seguridad'" class="space-y-6">
 
                 {{-- CAMBIAR CONTRASEÑA --}}

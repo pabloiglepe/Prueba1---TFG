@@ -285,7 +285,6 @@ class ClassController extends Controller
             'court_id'    => 'required|exists:courts,id',
             'type'        => 'required|in:individual,group',
             'level'       => 'required|in:initiation,intermediate,advanced',
-            'visibility'  => 'prohibited',
             'date'        => 'required|date',
             'start_time'  => 'required|date_format:H:i',
             'max_players' => 'required|integer|min:1|max:4',

@@ -25,12 +25,13 @@ new #[Layout('layouts.guest')] class extends Component
             'text'  => 'Has iniciado sesión correctamente!!',
         ]);
 
+        // MANEJO DE LA RUTA SEGÚN EL ROL TRAS LOGARSE
         $role = \Illuminate\Support\Facades\Auth::user()->role->name;
         $route = match ($role) {
-            'admin'  => route('admin.dashboard', absolute: false),
-            'coach'  => route('coach.classes.index', absolute: false),
-            'player' => route('player.reservations.index', absolute: false),
-            default  => route('admin.dashboard', absolute: false),
+            'admin'  => route('home', absolute: false),
+            'coach'  => route('home', absolute: false),
+            'player' => route('home', absolute: false),
+            default  => route('home', absolute: false),
         };
 
         $this->redirectIntended(default: $route, navigate: true);

@@ -42,11 +42,13 @@
 | Runtime PHP | PHP-FPM | 8.2 |
 | Compilación assets | Vite + Tailwind CSS | — |
 | Gráficos | ECharts | 5.6.0 (npm) |
-| Iconos | Feather Icons | SVG inline |
+| Iconos | Heroicons / FontAwesome / iconify-icon | SVG inline / npm |
+| Alertas | SweetAlert2 | CDN |
 | Exportación Excel | maatwebsite/excel | 3.1 |
 | Envío de emails | Brevo API HTTP | — |
 | Contenerización | Docker + Docker Compose | — |
 | Despliegue | Railway | — |
+| Scheduler (producción) | cron-job.org | — |
 | Control de versiones | Git + GitHub | — |
 
 ---
@@ -183,19 +185,23 @@ Permite al administrador crear, editar, activar/desactivar y eliminar pistas. La
 #### Características técnicas
 
 - **Duración fija**: 1 hora 30 minutos por reserva.
-- **Anti-solapamiento**: doble validación (en búsqueda y en escritura) para evitar reservas duplicadas en la misma pista y horario.
-- **Tarifa dinámica**: el precio varía según la hora del atardecer en Sevilla para cada mes del año, sin depender de APIs externas.
+- **Tarifa dinámica**: diurna (12 €) o nocturna (16 €) según la hora de inicio y el mes del año.
+- **Tabla de atardeceres por mes** (Sevilla, sin API externa):
 
-#### Tarifa nocturna por mes (Sevilla)
-
-| Mes | Hora inicio tarifa nocturna |
+| Mes | Hora de luz artificial |
 |---|---|
-| Enero, Diciembre | 18:00 |
-| Febrero, Noviembre | 18:30 |
-| Marzo, Octubre | 19:00 |
-| Abril, Septiembre | 20:00 |
-| Mayo, Julio, Agosto | 21:15 |
+| Enero | 18:00 |
+| Febrero | 18:30 |
+| Marzo | 19:00 |
+| Abril | 21:00 |
+| Mayo | 21:30 |
 | Junio | 21:30 |
+| Julio | 21:30 |
+| Agosto | 21:00 |
+| Septiembre | 20:30 |
+| Octubre | 19:30 |
+| Noviembre | 18:00 |
+| Diciembre | 17:30 |
 
 > Tarifa diurna: **12 €** · Tarifa nocturna: **16 €**
 
@@ -349,6 +355,76 @@ MAIL_FROM_NAME="PadelSync"
 
 ---
 
+### 5.9 Scheduler — Tareas programadas
+
+**Comandos Artisan**: definidos en `routes/console.php`  
+**Ruta del endpoint**: `GET /run-scheduler`
+
+El sistema tiene dos comandos Artisan que se ejecutan periódicamente para mantener los estados de la base de datos actualizados:
+
+| Comando | Acción | Frecuencia |
+|---|---|---|
+| `classes:complete-finished` | Marca como `completed` las clases cuya hora de fin ha pasado | Cada 15 min |
+| `reservations:mark-paid` | Marca como `paid` las reservas pasadas en estado `pending` | Cada 15 min |
+
+#### Ejecución en local
+
+```bash
+docker exec -it padel-app php artisan schedule:run
+```
+
+#### Ejecución en producción (Railway + cron-job.org)
+
+Railway no ofrece cron jobs nativos en el plan gratuito. La solución implementada es un **endpoint HTTP protegido** que dispara el scheduler, llamado periódicamente por el servicio externo **cron-job.org**:
+
+```php
+// routes/web.php
+Route::get('/run-scheduler', function () {
+    if (request()->header('X-Cron-Secret') !== config('app.cron_secret')) {
+        abort(403);
+    }
+    Artisan::call('schedule:run');
+    return response('OK', 200);
+});
+```
+
+**Configuración del endpoint**:
+
+| Parámetro | Valor |
+|---|---|
+| URL | `https://prueba1-tfg-production.up.railway.app/run-scheduler` |
+| Método | GET |
+| Header de autenticación | `X-Cron-Secret: PadelsyncTfg123` |
+| Variable de entorno Railway | `CRON_SECRET=PadelsyncTfg123` |
+
+> Acceder al endpoint desde el navegador devuelve **403** — es el comportamiento correcto, ya que el header `X-Cron-Secret` no está presente.
+
+---
+
+### 5.10 Home autenticada con carrusel Alpine.js
+
+**Vista**: `resources/views/dashboard.blade.php`  
+**Ruta**: `/dashboard`
+
+Tras el login, todos los roles acceden a una página de bienvenida unificada que presenta un **carrusel de slides adaptado al rol del usuario**. Cada slide incluye imagen de pádel, título, descripción y botón de acceso rápido.
+
+#### Slides por rol
+
+| Rol | Slides |
+|---|---|
+| Admin | Bienvenida · Acceso al Dashboard · Gestión de pistas · Gestión de usuarios |
+| Coach | Bienvenida · Mis clases · Crear nueva clase |
+| Player | Bienvenida · Reservar pista · Mis clases · Mi perfil |
+
+#### Implementación técnica
+
+- **Librería**: Alpine.js (incluido con Livewire, sin dependencias adicionales).
+- **Navegación**: puntos de posición y flechas anterior/siguiente.
+- **Imágenes**: fotografías reales de pádel servidas desde `public/images/`.
+- **Adaptación por rol**: las slides se renderizan condicionalmente con `@if (auth()->user()->role->name === '...')` en la vista Blade.
+
+---
+
 ## 6. Decisiones técnicas relevantes
 
 ### `PadelClass` en lugar de `Class`
@@ -356,6 +432,9 @@ MAIL_FROM_NAME="PadelSync"
 
 ### ECharts via npm, no CDN
 ECharts se instala como dependencia npm (`import * as echarts from 'echarts'`) y se expone globalmente en `app.js` con `window.echarts = echarts`. Esto evita dependencias externas y permite que la app sea más óptima.
+
+### iconify-icon via npm, no CDN
+La librería de iconos **iconify-icon** se instala vía npm en el contenedor `padel-node` para evitar peticiones externas en tiempo de carga y garantizar disponibilidad sin conexión. Proporciona acceso a más de 200.000 iconos de múltiples colecciones (Material Design, Tabler, Phosphor, etc.) y se usa como web component en las vistas Blade.
 
 ### Datos de gráficos en atributos `data-`
 Los datos PHP para ECharts se pasan a través de atributos `data-` del HTML con `htmlspecialchars(json_encode(...), ENT_NOQUOTES)`. Esto evita el error de redeclaración de variables `const` al navegar con Livewire Navigate.
@@ -378,5 +457,8 @@ Railway bloquea los puertos SMTP salientes (25, 465, 587). Para solucionar esto 
 ### Livewire Volt para autenticación
 Se optó por Livewire Volt para mantener toda la lógica reactiva dentro del ecosistema Laravel, simplificando el despliegue.
 
-### Iconos SVG inline (Feather Icons)
-Los iconos se incluyen como SVG inline sin dependencias externas. Esto evita peticiones HTTP adicionales y permite controlar el tamaño y color directamente con CSS inline.
+### Scheduler en producción via endpoint HTTP protegido
+Railway no soporta cron jobs nativos en el plan gratuito. Se implementó un endpoint `GET /run-scheduler` protegido con el header `X-Cron-Secret` que dispara `php artisan schedule:run`. El servicio externo **cron-job.org** llama a este endpoint cada 30 minutos, simulando el comportamiento de un cron job.
+
+### Home autenticada con carrusel Alpine.js
+En lugar de redirigir directamente al panel de rol tras el login, se creó una home unificada en `/dashboard` con un carrusel de accesos rápidos adaptado al rol. Esto mejora la orientación del usuario y centraliza el punto de entrada a la aplicación.

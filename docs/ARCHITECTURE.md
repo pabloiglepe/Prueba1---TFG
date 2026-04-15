@@ -11,9 +11,11 @@
 | Runtime PHP | PHP-FPM | 8.2 |
 | Compilación assets | Vite + Tailwind CSS | — |
 | Gráficos | ECharts | 5.6.0 (npm) |
-| Iconos | Feather Icons | SVG inline |
+| Iconos | Heroicons / FontAwesome / iconify-icon | SVG inline / npm |
+| Alertas | SweetAlert2 | CDN |
 | Contenerización | Docker + Docker Compose | — |
 | Despliegue | Railway | — |
+| Scheduler (producción) | cron-job.org | — |
 | Control de versiones | Git + GitHub | — |
 
 ---
@@ -45,7 +47,7 @@ La aplicación se divide en cuatro servicios interconectados mediante la red int
 | `padel-web` | Nginx Alpine | Sirve assets estáticos |
 | `padel-app` | PHP 8.2-FPM | Backend Laravel, lógica de negocio |
 | `padel-db` | MySQL 8.0 | Persistencia de datos |
-| `padel-node` | Node.js 20 | Compilación de assets con Vite |
+| `padel-node` | Node.js 20 | Compilación de assets con Vite (ECharts, iconify-icon) |
 
 ### Puertos expuestos
 
@@ -79,6 +81,36 @@ app/Http/Controllers/
 
 ---
 
+## Scheduler — Tareas programadas
+
+El sistema dispone de dos comandos Artisan que se ejecutan periódicamente para mantener los estados de la base de datos sincronizados:
+
+| Comando | Acción | Frecuencia |
+|---|---|---|
+| `classes:complete-finished` | Marca como `completed` las clases finalizadas | Cada 15 min |
+| `reservations:mark-paid` | Marca como `paid` las reservas pasadas en `pending` | Cada 15 min |
+
+Los comandos están registrados en `routes/console.php` (en Laravel 12 no existe `Kernel.php`).
+
+### Ejecución local
+
+```bash
+docker exec -it padel-app php artisan schedule:run
+```
+
+### Ejecución en producción (Railway)
+
+Railway no ofrece cron jobs nativos en el plan gratuito. La solución implementada combina un **endpoint HTTP protegido** en la aplicación con el servicio externo **cron-job.org**:
+
+```
+cron-job.org  ──(cada 15 min)──▶  /run-scheduler  ──▶  php artisan schedule:run
+                                   (header X-Cron-Secret)
+```
+
+El endpoint verifica el header `X-Cron-Secret` contra la variable de entorno `CRON_SECRET` de Railway antes de ejecutar el scheduler. Un acceso sin el header correcto devuelve **403**.
+
+---
+
 ## Estructura del repositorio
 
 ```
@@ -89,11 +121,17 @@ app/Http/Controllers/
 │   └── mysql/          # Datos persistentes MySQL (ignorados en git)
 ├── src/                # Código fuente Laravel
 │   ├── app/
+│   │   ├── Console/
+│   │   │   └── Commands/
+│   │   │       ├── CompleteFinishedClasses.php   # Scheduler: completar clases
+│   │   │       └── MarkReservationsPaid.php       # Scheduler: marcar reservas pagadas
 │   │   ├── Exports/            # ReservationsExport, RevenueExport -> Controladores de exportación de datos
 │   │   ├── Http/
 │   │   │   ├── Controllers/    # Organizados por rol (Admin, Coach, Player)
 │   │   │   └── Middleware/
 │   │   │       └── CheckRole.php
+│   │   ├── Mail/
+│   │   │   └── BrevoTransport.php   # Transport HTTP personalizado para emails en Railway
 │   │   ├── Models/             # User, Court, Reservation, PadelClass, ClassRegistration, Role
 │   │   └── Notifications/      # ClassRegistrationNotification, PublicClassNotification
 │   ├── database/
@@ -105,10 +143,12 @@ app/Http/Controllers/
 │   │       ├── coach/          # classes/
 │   │       ├── player/         # reservations/, classes/
 │   │       ├── livewire/       # auth/, layout/
+│   │       ├── dashboard.blade.php   # Home autenticada con carrusel Alpine.js
 │   │       ├── profile.blade.php
 │   │       └── welcome.blade.php
 │   └── routes/
-│       ├── web.php
+│       ├── web.php             # Incluye el endpoint /run-scheduler
+│       ├── console.php         # Registro del scheduler (sin Kernel.php en Laravel 12)
 │       └── auth.php
 ├── docs/               # Documentación dividida por secciones
 ├── docker-compose.yml

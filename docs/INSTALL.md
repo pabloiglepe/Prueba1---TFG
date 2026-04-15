@@ -88,6 +88,8 @@ docker exec -it padel-node npm install
 docker exec -it padel-node npm run build
 ```
 
+> Este paso instala también **ECharts** e **iconify-icon**, que se distribuyen vía npm (no CDN).
+
 ### 9. Acceder a la aplicación
 
 Abre [http://localhost:8000](http://localhost:8000) en el navegador.
@@ -113,7 +115,29 @@ MAIL_MAILER=brevo
 MAIL_FROM_ADDRESS=tucuenta@gmail.com
 MAIL_FROM_NAME=PadelSync
 BREVO_API_KEY=tu_api_key_de_brevo
+CRON_SECRET=PadelsyncTfg123
 ```
+
+---
+
+## Configurar el scheduler en producción (cron-job.org)
+
+Railway no tiene cron jobs nativos en el plan gratuito. La aplicación expone el endpoint `/run-scheduler` protegido con el header `X-Cron-Secret` para que un servicio externo pueda disparar el scheduler periódicamente.
+
+**Paso 1** — Crea una cuenta gratuita en [cron-job.org](https://cron-job.org)
+
+**Paso 2** — Crea un nuevo cron job con esta configuración:
+
+| Campo | Valor |
+|---|---|
+| URL | `https://prueba1-tfg-production.up.railway.app/run-scheduler` |
+| Método | GET |
+| Intervalo | Cada 30 minutos |
+| Header personalizado | `X-Cron-Secret: PadelsyncTfg123` |
+
+**Paso 3** — Verifica en Railway que la variable `CRON_SECRET` está definida con el valor `PadelsyncTfg123`.
+
+> Acceder al endpoint desde el navegador devuelve **403** — es el comportamiento correcto, ya que el header `X-Cron-Secret` no está presente.
 
 ---
 
@@ -136,6 +160,9 @@ docker exec -it padel-app bash
 
 # Resetear la base de datos
 docker exec -it padel-app php artisan migrate:fresh --seed
+
+# Ejecutar el scheduler manualmente (para pruebas en local)
+docker exec -it padel-app php artisan schedule:run
 
 # Parar los contenedores
 docker compose down
@@ -187,3 +214,9 @@ Verificar que `MAIL_MAILER=brevo` y que `BREVO_API_KEY` contiene la API key (no 
 
 **Error `Unsupported mail transport [brevo]`**  
 Asegúrate de que el transport está registrado en `AppServiceProvider@boot` y que existe el archivo `app/Mail/BrevoTransport.php`.
+
+**El scheduler no ejecuta las tareas en producción**  
+Verificar que cron-job.org está activo y que el header `X-Cron-Secret` coincide con la variable `CRON_SECRET` de Railway. Comprobar los logs de ejecución en el panel de cron-job.org.
+
+**Los iconos de iconify-icon no aparecen**  
+Recompilar los assets con `npm run build`. Los iconos se sirven desde el bundle de Vite, no desde CDN externo.

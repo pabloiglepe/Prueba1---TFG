@@ -4,7 +4,7 @@
 
 Al entrar en la aplicación sin sesión iniciada se muestra la **landing page** con información del club. Desde ahí se puede acceder al login o al registro.
 
-Tras autenticarse, el sistema redirige automáticamente al panel correspondiente según el rol del usuario.
+Tras autenticarse, el sistema redirige automáticamente a la **home autenticada** (`/dashboard`), donde se presenta un carrusel de bienvenida con accesos rápidos adaptados al rol del usuario.
 
 ### Recuperación de contraseña
 
@@ -14,6 +14,35 @@ Si el usuario no recuerda su contraseña puede recuperarla desde la pantalla de 
 2. El sistema envía un email con un enlace de recuperación (válido durante 60 minutos).
 3. Al pulsar el enlace, se accede a un formulario para establecer una nueva contraseña.
 4. Tras confirmar la nueva contraseña, el sistema redirige al login.
+
+---
+
+## Home autenticada
+
+Ruta: `/dashboard` (accesible para todos los roles)
+
+Al iniciar sesión, todos los usuarios acceden a una página de bienvenida común con un **carrusel de slides** adaptado a su rol. Cada slide incluye una imagen de pádel, un título descriptivo y un botón de acceso directo a la sección correspondiente.
+
+### Slides por rol
+
+**Administrador**
+- Bienvenida general al sistema.
+- Acceso directo al Dashboard de analíticas.
+- Gestión de pistas.
+- Gestión de usuarios.
+
+**Entrenador**
+- Bienvenida general al sistema.
+- Mis clases (listado y gestión).
+- Crear nueva clase.
+
+**Jugador**
+- Bienvenida general al sistema.
+- Reservar una pista.
+- Mis clases (inscritas y disponibles).
+- Mi perfil.
+
+El carrusel se navega mediante las flechas laterales o los puntos de posición en la parte inferior.
 
 ---
 

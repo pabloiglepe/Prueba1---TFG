@@ -278,3 +278,101 @@ mysql -h caboose.proxy.rlwy.net -P 58770 -u root -pPASSWORD --skip-ssl railway <
 ```
 
 **Lección**: `railway run` es útil para ejecutar scripts que solo necesitan las variables de entorno, pero no sustituye a una shell remota en el servidor. Para sincronizar bases de datos entre local y Railway, usar el cliente MySQL directamente con las credenciales del proxy público de Railway.
+
+---
+
+## Hito 15 — Scheduler en producción: Railway no tiene cron nativo
+
+**Problema**: los comandos Artisan `classes:complete-finished` y `reservations:mark-paid` debían ejecutarse periódicamente en producción para marcar automáticamente clases y reservas como completadas/pagadas, pero Railway no ofrece cron jobs nativos en el plan gratuito.  
+**Causa**: Railway no expone ninguna interfaz para programar tareas periódicas en su plan gratuito. El scheduler de Laravel (`php artisan schedule:run`) necesita ser llamado cada minuto desde el exterior.
+
+### Solución — Endpoint protegido + cron-job.org
+
+Se creó una ruta protegida que Railway puede recibir desde el exterior, y se usó el servicio gratuito **cron-job.org** para llamarla cada 15 minutos:
+
+**Ruta en `routes/web.php`**:
+```php
+Route::get('/run-scheduler', function () {
+    if (request()->header('X-Cron-Secret') !== config('app.cron_secret')) {
+        abort(403);
+    }
+    Artisan::call('schedule:run');
+    return response('OK', 200);
+});
+```
+
+**Variable de entorno en Railway**:
+```env
+CRON_SECRET=PadelsyncTfg123
+```
+
+**Configuración en cron-job.org**:
+- URL: `https://prueba1-tfg-production.up.railway.app/run-scheduler`
+- Intervalo: cada 15 minutos
+- Header personalizado: `X-Cron-Secret: PadelsyncTfg123`
+
+**Comandos Artisan registrados en `routes/console.php`**:
+```php
+Schedule::command('classes:complete-finished')->everyFifteenMinutes();
+Schedule::command('reservations:mark-paid')->everyFifteenMinutes();
+```
+
+> Un 403 al acceder al endpoint desde el navegador es el comportamiento correcto, ya que falta el header de autenticación.
+
+**En local** el scheduler se ejecuta manualmente:
+```bash
+docker exec -it padel-app php artisan schedule:run
+```
+
+**Lección**: cuando la plataforma de despliegue no soporta cron jobs, la solución habitual es exponer un endpoint HTTP protegido y usar un servicio externo gratuito (cron-job.org, EasyCron, etc.) para llamarlo. El header secreto evita que cualquiera pueda disparar el scheduler desde el exterior.
+
+---
+
+## Hito 16 — Home autenticada con carrusel Alpine.js por rol
+
+**Problema**: tras el login, el sistema redirigía directamente al panel específico de cada rol (dashboard admin, listado de clases del coach, reservas del jugador), sin una página de bienvenida unificada que diera contexto y acceso rápido a las funciones principales.  
+**Decisión**: crear una home autenticada en `/dashboard` con un carrusel de slides adaptado al rol del usuario.
+
+### Implementación
+
+- **Vista**: `resources/views/dashboard.blade.php`
+- **Librería**: Alpine.js (ya incluido con Livewire), sin dependencias adicionales.
+- **Estructura**: carrusel con navegación por puntos y flechas, con slides diferentes según el rol.
+
+**Slides por rol**:
+
+| Rol | Slides |
+|---|---|
+| Admin | Bienvenida general · Acceso a Dashboard · Gestión de pistas · Gestión de usuarios |
+| Coach | Bienvenida general · Mis clases · Crear clase |
+| Player | Bienvenida general · Reservar pista · Mis clases · Mi perfil |
+
+Cada slide incluye imagen real de pádel, título descriptivo, texto de ayuda y botón de acceso rápido a la sección correspondiente.
+
+**Lección**: una home de bienvenida con accesos rápidos mejora la usabilidad, especialmente para roles con funcionalidades limitadas (coach, player) que de otro modo tendrían que navegar por el menú para encontrar sus opciones principales.
+
+---
+
+## Hito 17 — Iconos con iconify-icon (npm)
+
+**Problema**: el proyecto usaba una combinación de Heroicons (SVG inline) y FontAwesome (CDN) según la vista, lo que generaba inconsistencia visual y dependencia de CDN externo para una parte de los iconos.  
+**Decisión**: añadir **iconify-icon** como dependencia npm para unificar y ampliar el catálogo de iconos disponibles sin depender de CDN.
+
+### Instalación
+
+```bash
+docker exec -it padel-node npm install iconify-icon
+```
+
+La librería se importa en el bundle de Vite y queda disponible como web component en todas las vistas:
+
+```html
+<iconify-icon icon="mdi:tennis" width="24"></iconify-icon>
+```
+
+**Ventajas frente a CDN**:
+- Sin peticiones externas en tiempo de carga.
+- Compatible con el flujo de compilación de Vite.
+- Acceso a más de 200.000 iconos de múltiples colecciones (Material Design, Tabler, Phosphor, etc.).
+
+**Lección**: instalar librerías de iconos vía npm en lugar de CDN garantiza que los iconos estén disponibles aunque el usuario tenga acceso limitado a internet, y evita bloqueos en entornos corporativos o de producción restringidos.

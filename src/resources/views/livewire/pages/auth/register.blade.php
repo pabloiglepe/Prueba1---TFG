@@ -86,10 +86,7 @@ new #[Layout('layouts.guest')] class extends Component {
                 Nombre completo
             </label>
             <div style="position: relative;">
-                <svg xmlns="http://www.w3.org/2000/svg" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; stroke: #9aaa9a;" fill="none" viewBox="0 0 24 24" stroke-width="2">
-                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-                    <circle cx="12" cy="7" r="4" />
-                </svg>
+                <iconify-icon icon="ph:user-bold" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); font-size: 16px; color: #9aaa9a; pointer-events: none;"></iconify-icon>
                 <input wire:model="name" id="name" type="text" name="name"
                     required placeholder="User_example" autofocus autocomplete="name"
                     style="width: 100%; padding: 9px 12px 9px 38px; border: 0.5px solid #d4d9cc; border-radius: 8px; font-size: 14px; color: #2d3b2d; outline: none; box-sizing: border-box;"
@@ -105,10 +102,7 @@ new #[Layout('layouts.guest')] class extends Component {
                 Correo electrónico
             </label>
             <div style="position: relative;">
-                <svg xmlns="http://www.w3.org/2000/svg" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; stroke: #9aaa9a;" fill="none" viewBox="0 0 24 24" stroke-width="2">
-                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
-                    <polyline points="22,6 12,13 2,6" />
-                </svg>
+                <iconify-icon icon="ph:envelope-bold" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); font-size: 16px; color: #9aaa9a; pointer-events: none;"></iconify-icon>
                 <input wire:model="email" id="email" type="email" name="email"
                     required placeholder="example@gmail.com" autocomplete="username"
                     style="width: 100%; padding: 9px 12px 9px 38px; border: 0.5px solid #d4d9cc; border-radius: 8px; font-size: 14px; color: #2d3b2d; outline: none; box-sizing: border-box;"
@@ -124,9 +118,7 @@ new #[Layout('layouts.guest')] class extends Component {
                 Teléfono móvil
             </label>
             <div style="position: relative;">
-                <svg xmlns="http://www.w3.org/2000/svg" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; stroke: #9aaa9a;" fill="none" viewBox="0 0 24 24" stroke-width="2">
-                    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.4 2 2 0 0 1 3.6 1.22h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.82a16 16 0 0 0 6.29 6.29l.97-.97a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z" />
-                </svg>
+                <iconify-icon icon="ph:phone-bold" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); font-size: 16px; color: #9aaa9a; pointer-events: none;"></iconify-icon>
                 <input wire:model="phone_number" id="phone_number" type="text" name="phone_number"
                     required placeholder="600123456"
                     style="width: 100%; padding: 9px 12px 9px 38px; border: 0.5px solid #d4d9cc; border-radius: 8px; font-size: 14px; color: #2d3b2d; outline: none; box-sizing: border-box;"
@@ -142,10 +134,7 @@ new #[Layout('layouts.guest')] class extends Component {
                 Contraseña
             </label>
             <div x-data="{ show: false }" style="position: relative;">
-                <svg xmlns="http://www.w3.org/2000/svg" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; stroke: #9aaa9a;" fill="none" viewBox="0 0 24 24" stroke-width="2">
-                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
-                    <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-                </svg>
+                <iconify-icon icon="ph:lock-bold" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); font-size: 16px; color: #9aaa9a; pointer-events: none;"></iconify-icon>
                 <input wire:model="password" id="password" name="password"
                     :type="show ? 'text' : 'password'"
                     required placeholder="*******" autocomplete="new-password"
@@ -156,15 +145,8 @@ new #[Layout('layouts.guest')] class extends Component {
                     style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; padding: 2px; color: #9aaa9a;"
                     onmouseover="this.style.color='#5a6b5a'"
                     onmouseout="this.style.color='#9aaa9a'">
-                    <svg x-show="!show" xmlns="http://www.w3.org/2000/svg" style="width:16px;height:16px;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-                        <circle cx="12" cy="12" r="3" />
-                    </svg>
-                    <svg x-show="show" xmlns="http://www.w3.org/2000/svg" style="width:16px;height:16px;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94" />
-                        <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19" />
-                        <line x1="1" y1="1" x2="23" y2="23" />
-                    </svg>
+                    <iconify-icon x-show="!show" icon="ph:eye-bold" style="font-size: 16px;"></iconify-icon>
+                    <iconify-icon x-show="show" icon="ph:eye-slash-bold" style="font-size: 16px;"></iconify-icon>
                 </button>
             </div>
             <x-input-error :messages="$errors->get('password')" class="mt-2" />
@@ -176,10 +158,7 @@ new #[Layout('layouts.guest')] class extends Component {
                 Confirmar contraseña
             </label>
             <div x-data="{ show: false }" style="position: relative;">
-                <svg xmlns="http://www.w3.org/2000/svg" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; stroke: #9aaa9a;" fill="none" viewBox="0 0 24 24" stroke-width="2">
-                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
-                    <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-                </svg>
+                <iconify-icon icon="ph:lock-bold" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); font-size: 16px; color: #9aaa9a; pointer-events: none;"></iconify-icon>
                 <input wire:model="password_confirmation" id="password_confirmation" name="password_confirmation"
                     :type="show ? 'text' : 'password'"
                     required placeholder="*******" autocomplete="new-password"
@@ -190,15 +169,8 @@ new #[Layout('layouts.guest')] class extends Component {
                     style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; padding: 2px; color: #9aaa9a;"
                     onmouseover="this.style.color='#5a6b5a'"
                     onmouseout="this.style.color='#9aaa9a'">
-                    <svg x-show="!show" xmlns="http://www.w3.org/2000/svg" style="width:16px;height:16px;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-                        <circle cx="12" cy="12" r="3" />
-                    </svg>
-                    <svg x-show="show" xmlns="http://www.w3.org/2000/svg" style="width:16px;height:16px;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94" />
-                        <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19" />
-                        <line x1="1" y1="1" x2="23" y2="23" />
-                    </svg>
+                    <iconify-icon x-show="!show" icon="ph:eye-bold" style="font-size: 16px;"></iconify-icon>
+                    <iconify-icon x-show="show" icon="ph:eye-slash-bold" style="font-size: 16px;"></iconify-icon>
                 </button>
             </div>
             <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
@@ -221,12 +193,7 @@ new #[Layout('layouts.guest')] class extends Component {
             style="width: 100%; display: inline-flex; align-items: center; justify-content: center; gap: 8px; background: #6b8f6b; color: #fff; font-size: 15px; font-weight: 500; padding: 11px; border-radius: 8px; border: none; cursor: pointer; margin-bottom: 16px;"
             onmouseover="this.style.background='#4a6b4a'"
             onmouseout="this.style.background='#6b8f6b'">
-            <svg xmlns="http://www.w3.org/2000/svg" style="width:16px;height:16px;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-                <circle cx="9" cy="7" r="4" />
-                <line x1="19" y1="8" x2="19" y2="14" />
-                <line x1="22" y1="11" x2="16" y2="11" />
-            </svg>
+            <iconify-icon icon="ph:user-plus-bold" style="font-size: 18px;"></iconify-icon>
             Finalizar Registro
         </button>
 

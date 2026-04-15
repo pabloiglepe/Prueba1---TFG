@@ -50,10 +50,7 @@ new #[Layout('layouts.guest')] class extends Component
                 Correo electrónico
             </label>
             <div style="position: relative;">
-                <svg xmlns="http://www.w3.org/2000/svg" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; stroke: #9aaa9a;" fill="none" viewBox="0 0 24 24" stroke-width="2">
-                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
-                    <polyline points="22,6 12,13 2,6"/>
-                </svg>
+                <iconify-icon icon="ph:envelope-bold" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); font-size: 16px; color: #9aaa9a; pointer-events: none;"></iconify-icon>
                 <input wire:model="email" id="email" type="email" name="email"
                        required placeholder="example@gmail.com" autofocus
                        style="width: 100%; padding: 9px 12px 9px 38px; border: 0.5px solid #d4d9cc; border-radius: 8px; font-size: 14px; color: #2d3b2d; outline: none; box-sizing: border-box;"
@@ -70,10 +67,7 @@ new #[Layout('layouts.guest')] class extends Component
                 style="width: 100%; display: inline-flex; align-items: center; justify-content: center; gap: 8px; background: #6b8f6b; color: #fff; font-size: 15px; font-weight: 500; padding: 11px; border-radius: 8px; border: none; cursor: pointer; margin-bottom: 16px;"
                 onmouseover="this.style.background='#4a6b4a'"
                 onmouseout="this.style.background='#6b8f6b'">
-            <svg xmlns="http://www.w3.org/2000/svg" style="width:16px;height:16px;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
-                <polyline points="22,6 12,13 2,6"/>
-            </svg>
+            <iconify-icon icon="ph:paper-plane-tilt-bold" style="font-size: 18px;"></iconify-icon>
             Enviar enlace de recuperación
         </button>
 

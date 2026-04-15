@@ -69,12 +69,11 @@
     <div style="background: #fff; border-top: 0.5px solid var(--gray-border); border-bottom: 0.5px solid var(--gray-border); padding: 60px 2rem;">
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 32px; max-width: 860px; margin: 0 auto;">
 
+            {{-- FEATURE: RESERVA DE PISTAS --}}
             <div style="text-align: center; padding: 16px;">
                 <div style="width: 56px; height: 56px; background: var(--sage-light); border-radius: 14px; margin: 0 auto 18px; display: flex; align-items: center; justify-content: center;">
-                    <svg xmlns="http://www.w3.org/2000/svg" style="width:26px;height:26px;stroke:var(--sage);fill:none;" viewBox="0 0 24 24" stroke-width="1.8">
-                        <circle cx="12" cy="12" r="10" />
-                        <path d="M12 8v4l3 3" />
-                    </svg>
+                    <iconify-icon icon="ph:calendar-light" style="font-size: 28px; color: var(--sage);"></iconify-icon>
+                    <!-- <iconify-icon icon="ph:clock-user-light" style="font-size: 28px; color: var(--sage);"></iconify-icon> -->
                 </div>
                 <p style="font-size: 15px; font-weight: 600; color: var(--text-dark); margin: 0 0 10px;">Reserva de pistas</p>
                 <p style="font-size: 13px; color: var(--text-light); line-height: 1.7; margin: 0;">
@@ -82,14 +81,10 @@
                 </p>
             </div>
 
+            {{-- FEATURE: GESTIÓN DE CLASES --}}
             <div style="text-align: center; padding: 16px;">
                 <div style="width: 56px; height: 56px; background: var(--sage-light); border-radius: 14px; margin: 0 auto 18px; display: flex; align-items: center; justify-content: center;">
-                    <svg xmlns="http://www.w3.org/2000/svg" style="width:26px;height:26px;stroke:var(--sage);fill:none;" viewBox="0 0 24 24" stroke-width="1.8">
-                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
-                        <circle cx="9" cy="7" r="4" />
-                        <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
-                        <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-                    </svg>
+                    <iconify-icon icon="ph:users-three-light" style="font-size: 28px; color: var(--sage);"></iconify-icon>
                 </div>
                 <p style="font-size: 15px; font-weight: 600; color: var(--text-dark); margin: 0 0 10px;">Gestión de clases</p>
                 <p style="font-size: 13px; color: var(--text-light); line-height: 1.7; margin: 0;">
@@ -97,13 +92,10 @@
                 </p>
             </div>
 
+            {{-- FEATURE: DASHBOARD ANALÍTICO --}}
             <div style="text-align: center; padding: 16px;">
                 <div style="width: 56px; height: 56px; background: var(--sage-light); border-radius: 14px; margin: 0 auto 18px; display: flex; align-items: center; justify-content: center;">
-                    <svg xmlns="http://www.w3.org/2000/svg" style="width:26px;height:26px;stroke:var(--sage);fill:none;" viewBox="0 0 24 24" stroke-width="1.8">
-                        <line x1="18" y1="20" x2="18" y2="10" />
-                        <line x1="12" y1="20" x2="12" y2="4" />
-                        <line x1="6" y1="20" x2="6" y2="14" />
-                    </svg>
+                    <iconify-icon icon="ph:chart-bar-light" style="font-size: 28px; color: var(--sage);"></iconify-icon>
                 </div>
                 <p style="font-size: 15px; font-weight: 600; color: var(--text-dark); margin: 0 0 10px;">Dashboard analítico</p>
                 <p style="font-size: 13px; color: var(--text-light); line-height: 1.7; margin: 0;">
@@ -120,6 +112,9 @@
             © {{ date('Y') }} PadelSync · Desarrollado por <strong style="color: var(--text-mid); font-weight: 500;">Pablo Iglesias Peral</strong>
         </span>
     </footer>
+
+    {{-- CDN DE ICONIFY --}}
+    <script src="https://code.iconify.design/iconify-icon/2.1.0/iconify-icon.min.js"></script>
 
 </body>
 

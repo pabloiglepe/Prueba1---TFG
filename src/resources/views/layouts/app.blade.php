@@ -43,10 +43,24 @@
             --text-mid: #5a6b5a;
             --text-light: #7a8a7a;
         }
+
+        /* OCULTAR ELEMENTOS ALPINE ANTES DE INICIALIZAR */
+        [x-cloak] { display: none !important; }
+
+        /* ANIMACIÓN SPINNER BOTONES */
+        @keyframes padel-spin {
+            from { transform: rotate(0deg); }
+            to   { transform: rotate(360deg); }
+        }
+        .padel-spin {
+            display: inline-block;
+            animation: padel-spin 0.75s linear infinite;
+        }
     </style>
 </head>
 
 <body class="font-sans antialiased" style="background: var(--gray-warm);">
+
     <div class="flex flex-col min-h-screen" style="background: var(--gray-warm);">
         <livewire:layout.navigation />
 
@@ -89,8 +103,6 @@
     </div>
     @endif
 
-    <!-- CDN DE ICONIFY -->
-    <!-- <script src="https://code.iconify.design/iconify-icon/2.1.0/iconify-icon.min.js"></script> -->
 </body>
 
 </html>

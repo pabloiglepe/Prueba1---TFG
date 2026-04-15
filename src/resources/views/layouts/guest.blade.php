@@ -18,9 +18,36 @@
 
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+    <style>
+        :root {
+            --sage: #6b8f6b;
+            --sage-light: #e8f0e8;
+            --sage-dark: #4a6b4a;
+            --gray-warm: #f7f8f5;
+            --gray-border: #d4d9cc;
+            --text-dark: #2d3b2d;
+            --text-mid: #5a6b5a;
+            --text-light: #7a8a7a;
+        }
+
+        /* OCULTAR ELEMENTOS ALPINE ANTES DE INICIALIZAR */
+        [x-cloak] { display: none !important; }
+
+        /* ANIMACIÓN SPINNER BOTONES */
+        @keyframes padel-spin {
+            from { transform: rotate(0deg); }
+            to   { transform: rotate(360deg); }
+        }
+        .padel-spin {
+            display: inline-block;
+            animation: padel-spin 0.75s linear infinite;
+        }
+    </style>
 </head>
 
 <body class="font-sans text-gray-900 antialiased">
+
     <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0" style="background: #f7f8f5;">
         <div>
             <a href="/" wire:navigate class="flex items-center gap-2">
@@ -34,8 +61,6 @@
         </div>
     </div>
 
-    <!-- CDN DE ICONIFY -->
-    <!-- <script src="https://code.iconify.design/iconify-icon/2.1.0/iconify-icon.min.js"></script> -->
 </body>
 
 </html>

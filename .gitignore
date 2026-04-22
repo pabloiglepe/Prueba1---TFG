@@ -7,6 +7,7 @@ Thumbs.db
 .vscode/
 .idea/
 backup*.sql
+ToDo
 
 # --- LARAVEL ---
 src/vendor/

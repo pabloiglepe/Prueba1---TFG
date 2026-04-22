@@ -375,4 +375,42 @@ La librería se importa en el bundle de Vite y queda disponible como web compone
 - Compatible con el flujo de compilación de Vite.
 - Acceso a más de 200.000 iconos de múltiples colecciones (Material Design, Tabler, Phosphor, etc.).
 
-**Lección**: instalar librerías de iconos vía npm en lugar de CDN garantiza que los iconos estén disponibles aunque el usuario tenga acceso limitado a internet, y evita bloqueos en entornos corporativos o de producción restringidos.
+**Lección**: instalar librerías de iconos vía npm en lugar de CDN garantiza que los iconos estén disponibles aunque el usuario tenga acceso limitado a internet, y evita bloqueos en entornos de producción restringidos.
+
+---
+ 
+## Hito 18 — UX de autenticación: iconos, spinner y barra de progreso Livewire
+ 
+### Cambios realizados
+ 
+**Iconos en formularios de autenticación**  
+Se decoraron los campos de texto con iconos de la colección **Phosphor** (`ph:`) de iconify-icon, añadidos como prefijo visual dentro de los inputs y en los botones de acción.
+ 
+**Spinner de carga personalizado (`padel-spin`)**  
+Se definió la animación CSS `padel-spin` en ambos layouts (`app.blade.php` y `guest.blade.php`):
+ 
+```css
+@keyframes padel-spin {
+    0%   { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+.padel-spin {
+    animation: padel-spin 1,2s linear infinite;
+}
+```
+ 
+El spinner se muestra en los botones de submit mediante la directiva `wire:loading` de Livewire. Esto previene envíos duplicados y comunica visualmente al usuario que la acción está siendo procesada.
+ 
+**Color de la barra de progreso de Livewire**  
+Se actualizó `config/livewire.php` para alinear el color de la barra de progreso de navegación con la paleta del proyecto:
+ 
+```php
+// config/livewire.php
+'progress_bar_color' => '#6b8f6b',  
+```
+ 
+**Mensajes de estado en formularios**  
+Se añadieron mensajes de feedback en los formularios de auth siguiendo el sistema ya establecido en el resto de la aplicación: errores de validación inline con `@error`, mensaje de confirmación de envío de email en forgot-password y mensaje de error en el reset de contraseña.
+ 
+
+**Lección**: el spinner de carga en botones de formulario es una mejora en la interfaz de la aplicación. Sin él, el usuario no percibe feedback inmediato y puede pulsar el botón varias veces, generando peticiones duplicadas. Definir la animación en el layout garantiza que esté disponible en todas las vistas sin repetir código.

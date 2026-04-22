@@ -425,6 +425,41 @@ Tras el login, todos los roles acceden a una página de bienvenida unificada que
 
 ---
 
+### 5.11 UX de autenticación
+ 
+**Vistas afectadas**:
+- `resources/views/livewire/auth/login.blade.php`
+- `resources/views/livewire/auth/register.blade.php`
+- `resources/views/livewire/auth/forgot-password.blade.php`
+- `resources/views/livewire/auth/reset-password.blade.php`
+- `resources/views/welcome.blade.php`
+
+
+Se realizó un pase de mejora sobre todas las vistas del flujo de autenticación aplicando tres capas de mejora de UX:
+ 
+**Iconos Phosphor en campos y botones**  
+Los campos de formulario (email, contraseña, nombre, teléfono) y los botones de acción incorporan iconos de la colección **Phosphor** (`ph:`) de iconify-icon como prefijo visual. Los iconos se sirven desde el bundle de Vite sin peticiones externas.
+ 
+**Spinner de carga `padel-spin`**  
+La animación CSS `padel-spin` se define en ambos layouts y se aplica en los botones de submit mediante `wire:loading`:
+ 
+```css
+@keyframes padel-spin {
+    0%   { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+.padel-spin {
+    animation: padel-spin 0.7s linear infinite;
+}
+```
+ 
+El spinner sustituye al texto del botón mientras Livewire procesa la petición, previniendo envíos duplicados y comunicando el estado al usuario.
+ 
+**Mensajes de estado**  
+Errores de validación inline con `@error`, confirmación de envío en forgot-password y mensajes de error en reset-password, siguiendo el sistema de feedback ya establecido en el resto de la aplicación.
+ 
+---
+
 ## 6. Decisiones técnicas relevantes
 
 ### `PadelClass` en lugar de `Class`
@@ -462,3 +497,6 @@ Railway no soporta cron jobs nativos en el plan gratuito. Se implementó un endp
 
 ### Home autenticada con carrusel Alpine.js
 En lugar de redirigir directamente al panel de rol tras el login, se creó una home unificada en `/dashboard` con un carrusel de accesos rápidos adaptado al rol. Esto mejora la orientación del usuario y centraliza el punto de entrada a la aplicación.
+
+### Spinner `padel-spin` definido en los layouts
+La animación de carga se define una única vez en `app.blade.php` y `guest.blade.php`, garantizando disponibilidad en todas las vistas sin duplicar código. Se activa con `wire:loading` en los botones de submit de los formularios de autenticación para prevenir envíos duplicados y dar feedback inmediato al usuario.

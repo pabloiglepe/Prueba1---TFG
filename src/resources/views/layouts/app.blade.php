@@ -52,9 +52,10 @@
             from { transform: rotate(0deg); }
             to   { transform: rotate(360deg); }
         }
+        
         .padel-spin {
             display: inline-block;
-            animation: padel-spin 0.75s linear infinite;
+            animation: padel-spin 1.2s linear infinite;
         }
     </style>
 </head>

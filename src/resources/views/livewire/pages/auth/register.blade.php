@@ -78,6 +78,13 @@ new #[Layout('layouts.guest')] class extends Component {
 ?>
 
 <div>
+    {{-- MENSAJE DE ERROR GLOBAL DE VALIDACIÓN --}}
+    @if ($errors->any())
+    <div style="margin-bottom: 16px; padding: 14px 18px; background: #fdf0f0; color: #c0625e; border-radius: 8px; font-size: 14px; border-left: 3px solid #c0625e;">
+        Revisa los campos marcados en rojo antes de continuar.
+    </div>
+    @endif
+
     <form wire:submit="register">
 
         {{-- NOMBRE --}}
@@ -134,7 +141,7 @@ new #[Layout('layouts.guest')] class extends Component {
                 Contraseña
             </label>
             <div x-data="{ show: false }" style="position: relative;">
-                <iconify-icon icon="ph:lock-bold" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); font-size: 16px; color: #9aaa9a; pointer-events: none;"></iconify-icon>
+                <iconify-icon icon="ph:lock-open-bold" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); font-size: 16px; color: #9aaa9a; pointer-events: none;"></iconify-icon>
                 <input wire:model="password" id="password" name="password"
                     :type="show ? 'text' : 'password'"
                     required placeholder="*******" autocomplete="new-password"
@@ -158,7 +165,7 @@ new #[Layout('layouts.guest')] class extends Component {
                 Confirmar contraseña
             </label>
             <div x-data="{ show: false }" style="position: relative;">
-                <iconify-icon icon="ph:lock-bold" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); font-size: 16px; color: #9aaa9a; pointer-events: none;"></iconify-icon>
+                <iconify-icon icon="ph:lock-open-bold" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); font-size: 16px; color: #9aaa9a; pointer-events: none;"></iconify-icon>
                 <input wire:model="password_confirmation" id="password_confirmation" name="password_confirmation"
                     :type="show ? 'text' : 'password'"
                     required placeholder="*******" autocomplete="new-password"
@@ -190,10 +197,14 @@ new #[Layout('layouts.guest')] class extends Component {
 
         {{-- BOTÓN DE REGISTRO --}}
         <button type="submit"
+            wire:loading.attr="disabled"
             style="width: 100%; display: inline-flex; align-items: center; justify-content: center; gap: 8px; background: #6b8f6b; color: #fff; font-size: 15px; font-weight: 500; padding: 11px; border-radius: 8px; border: none; cursor: pointer; margin-bottom: 16px;"
             onmouseover="this.style.background='#4a6b4a'"
             onmouseout="this.style.background='#6b8f6b'">
-            <iconify-icon icon="ph:user-plus-bold" style="font-size: 18px;"></iconify-icon>
+            {{-- ICONO NORMAL --}}
+            <iconify-icon wire:loading.remove wire:target="register" icon="ph:user-plus-bold" style="font-size: 18px;"></iconify-icon>
+            {{-- SPINNER --}}
+            <iconify-icon wire:loading wire:target="register" icon="ph:spinner-bold" class="padel-spin" style="font-size: 18px;"></iconify-icon>
             Finalizar Registro
         </button>
 

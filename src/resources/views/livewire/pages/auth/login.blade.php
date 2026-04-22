@@ -39,7 +39,19 @@ new #[Layout('layouts.guest')] class extends Component
 }; ?>
 
 <div>
-    <x-auth-session-status class="mb-4" :status="session('status')" />
+    {{-- MENSAJE DE ÉXITO (ej: contraseña restablecida) --}}
+    @if (session('status'))
+    <div style="margin-bottom: 16px; padding: 14px 18px; background: #e8f0e8; color: #4a6b4a; border-radius: 8px; font-size: 14px; border-left: 3px solid #6b8f6b;">
+        {{ session('status') }}
+    </div>
+    @endif
+
+    {{-- MENSAJE DE ERROR GLOBAL (credenciales incorrectas) --}}
+    @if ($errors->any())
+    <div style="margin-bottom: 16px; padding: 14px 18px; background: #fdf0f0; color: #c0625e; border-radius: 8px; font-size: 14px; border-left: 3px solid #c0625e;">
+        {{ $errors->first() }}
+    </div>
+    @endif
 
     <form wire:submit="login">
 
@@ -57,7 +69,6 @@ new #[Layout('layouts.guest')] class extends Component
                     onfocus="this.style.borderColor='#6b8f6b'"
                     onblur="this.style.borderColor='#d4d9cc'">
             </div>
-            <x-input-error :messages="$errors->get('form.email')" class="mt-2" />
         </div>
 
         {{-- CONTRASEÑA --}}
@@ -66,7 +77,7 @@ new #[Layout('layouts.guest')] class extends Component
                 Contraseña
             </label>
             <div x-data="{ show: false }" style="position: relative;">
-                <iconify-icon icon="ph:lock-bold" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); font-size: 16px; color: #9aaa9a; pointer-events: none;"></iconify-icon>
+                <iconify-icon icon="ph:lock-open-bold" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); font-size: 16px; color: #9aaa9a; pointer-events: none;"></iconify-icon>
                 <input wire:model="form.password"
                     id="password" name="password"
                     :type="show ? 'text' : 'password'"
@@ -83,7 +94,6 @@ new #[Layout('layouts.guest')] class extends Component
                     <iconify-icon x-show="show" icon="ph:eye-slash-bold" style="font-size: 16px;"></iconify-icon>
                 </button>
             </div>
-            <x-input-error :messages="$errors->get('form.password')" class="mt-2" />
         </div>
 
         {{-- BLOQUE DE ENLACE PARA RECUPERAR CONTRASEÑA Y CASILLA 'REMEMBER ME' --}}
@@ -109,10 +119,14 @@ new #[Layout('layouts.guest')] class extends Component
 
         {{-- BOTÓN DE LOGIN --}}
         <button type="submit"
+            wire:loading.attr="disabled"
             style="width: 100%; display: inline-flex; align-items: center; justify-content: center; gap: 8px; background: #6b8f6b; color: #fff; font-size: 15px; font-weight: 500; padding: 11px; border-radius: 8px; border: none; cursor: pointer; margin-bottom: 16px;"
             onmouseover="this.style.background='#4a6b4a'"
             onmouseout="this.style.background='#6b8f6b'">
-            <iconify-icon icon="ph:sign-in-bold" style="font-size: 18px;"></iconify-icon>
+            {{-- ICONO NORMAL --}}
+            <iconify-icon wire:loading.remove wire:target="login" icon="ph:sign-in-bold" style="font-size: 18px;"></iconify-icon>
+            {{-- SPINNER --}}
+            <iconify-icon wire:loading wire:target="login" icon="ph:spinner-bold" class="padel-spin" style="font-size: 18px;"></iconify-icon>
             Acceder
         </button>
 

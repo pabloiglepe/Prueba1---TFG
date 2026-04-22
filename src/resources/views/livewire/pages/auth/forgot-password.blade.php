@@ -32,9 +32,16 @@ new #[Layout('layouts.guest')] class extends Component
 
 <div>
     {{-- MENSAJE DE ÉXITO --}}
-    @if(session('status'))
+    @if (session('status'))
     <div style="margin-bottom: 16px; padding: 14px 18px; background: #e8f0e8; color: #4a6b4a; border-radius: 8px; font-size: 14px; border-left: 3px solid #6b8f6b;">
         {{ __('Te hemos enviado un enlace de recuperación a tu correo electrónico.') }}
+    </div>
+    @endif
+
+    {{-- MENSAJE DE ERROR --}}
+    @if ($errors->any())
+    <div style="margin-bottom: 16px; padding: 14px 18px; background: #fdf0f0; color: #c0625e; border-radius: 8px; font-size: 14px; border-left: 3px solid #c0625e;">
+        {{ $errors->first() }}
     </div>
     @endif
 
@@ -57,17 +64,18 @@ new #[Layout('layouts.guest')] class extends Component
                        onfocus="this.style.borderColor='#6b8f6b'"
                        onblur="this.style.borderColor='#d4d9cc'">
             </div>
-            @error('email')
-                <p style="color: #c0625e; font-size: 12px; margin-top: 5px;">{{ $message }}</p>
-            @enderror
         </div>
 
         {{-- BOTÓN ENVIAR --}}
         <button type="submit"
+                wire:loading.attr="disabled"
                 style="width: 100%; display: inline-flex; align-items: center; justify-content: center; gap: 8px; background: #6b8f6b; color: #fff; font-size: 15px; font-weight: 500; padding: 11px; border-radius: 8px; border: none; cursor: pointer; margin-bottom: 16px;"
                 onmouseover="this.style.background='#4a6b4a'"
                 onmouseout="this.style.background='#6b8f6b'">
-            <iconify-icon icon="ph:paper-plane-tilt-bold" style="font-size: 18px;"></iconify-icon>
+            {{-- ICONO NORMAL --}}
+            <iconify-icon wire:loading.remove wire:target="sendPasswordResetLink" icon="ph:paper-plane-tilt-bold" style="font-size: 18px;"></iconify-icon>
+            {{-- SPINNER --}}
+            <iconify-icon wire:loading wire:target="sendPasswordResetLink" icon="ph:spinner-bold" class="padel-spin" style="font-size: 18px;"></iconify-icon>
             Enviar enlace de recuperación
         </button>
 

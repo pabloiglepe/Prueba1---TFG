@@ -160,12 +160,13 @@
                         onmouseover="this.style.borderColor='#6b8f6b'"
                         onmouseout="this.style.borderColor='#d4d9cc'">
                         <div style="width: 36px; height: 36px; border-radius: 9px; background: #e8f0e8; display: flex; align-items: center; justify-content: center; margin-bottom: 12px;">
-                            <svg xmlns="http://www.w3.org/2000/svg" style="width:18px;height:18px;" fill="none" viewBox="0 0 24 24" stroke="#6b8f6b" stroke-width="2">
+                            <!-- <svg xmlns="http://www.w3.org/2000/svg" style="width:18px;height:18px;" fill="none" viewBox="0 0 24 24" stroke="#6b8f6b" stroke-width="2">
                                 <rect x="3" y="4" width="18" height="18" rx="2" />
                                 <line x1="16" y1="2" x2="16" y2="6" />
                                 <line x1="8" y1="2" x2="8" y2="6" />
                                 <line x1="3" y1="10" x2="21" y2="10" />
-                            </svg>
+                            </svg> -->
+                            <iconify-icon icon="ph:calendar-check-light" style="font-size: 28px; color:var(--sage);"></iconify-icon>
                         </div>
                         <p style="font-size: 14px; font-weight: 500; color: #2d3b2d; margin: 0 0 4px;">Reservar pista</p>
                         <p style="font-size: 15px; color: #7a8a7a; margin: 0 0 12px; line-height: 1.5;">Consulta disponibilidad y reserva tu pista favorita</p>
@@ -177,12 +178,13 @@
                         onmouseover="this.style.borderColor='#6b8f6b'"
                         onmouseout="this.style.borderColor='#d4d9cc'">
                         <div style="width: 36px; height: 36px; border-radius: 9px; background: #e8f0e8; display: flex; align-items: center; justify-content: center; margin-bottom: 12px;">
-                            <svg xmlns="http://www.w3.org/2000/svg" style="width:18px;height:18px;" fill="none" viewBox="0 0 24 24" stroke="#6b8f6b" stroke-width="2">
+                            <!-- <svg xmlns="http://www.w3.org/2000/svg" style="width:18px;height:18px;" fill="none" viewBox="0 0 24 24" stroke="#6b8f6b" stroke-width="2">
                                 <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
                                 <circle cx="9" cy="7" r="4" />
                                 <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
                                 <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-                            </svg>
+                            </svg> -->
+                            <iconify-icon icon="ph:person-simple-throw-light" style="font-size: 28px; color:var(--sage);"></iconify-icon>
                         </div>
                         <p style="font-size: 14px; font-weight: 500; color: #2d3b2d; margin: 0 0 4px;">Clases disponibles</p>
                         <p style="font-size: 15px; color: #7a8a7a; margin: 0 0 12px; line-height: 1.5;">Descubre las clases públicas con plazas libres</p>
@@ -194,10 +196,11 @@
                         onmouseover="this.style.borderColor='#6b8f6b'"
                         onmouseout="this.style.borderColor='#d4d9cc'">
                         <div style="width: 36px; height: 36px; border-radius: 9px; background: #e8f0e8; display: flex; align-items: center; justify-content: center; margin-bottom: 12px;">
-                            <svg xmlns="http://www.w3.org/2000/svg" style="width:18px;height:18px;" fill="none" viewBox="0 0 24 24" stroke="#6b8f6b" stroke-width="2">
+                            <!-- <svg xmlns="http://www.w3.org/2000/svg" style="width:18px;height:18px;" fill="none" viewBox="0 0 24 24" stroke="#6b8f6b" stroke-width="2">
                                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
                                 <circle cx="12" cy="7" r="4" />
-                            </svg>
+                            </svg> -->
+                            <iconify-icon icon="ph:person-simple-light" style="font-size: 28px; color:var(--sage);"></iconify-icon>
                         </div>
                         <p style="font-size: 14px; font-weight: 500; color: #2d3b2d; margin: 0 0 4px;">Mi perfil</p>
                         <p style="font-size: 15px; color: #7a8a7a; margin: 0 0 12px; line-height: 1.5;">Consulta tu historial y gestiona tu cuenta</p>
@@ -213,10 +216,11 @@
                         onmouseover="this.style.borderColor='#6b8f6b'"
                         onmouseout="this.style.borderColor='#d4d9cc'">
                         <div style="width: 36px; height: 36px; border-radius: 9px; background: #e8f0e8; display: flex; align-items: center; justify-content: center; margin-bottom: 12px;">
-                            <svg xmlns="http://www.w3.org/2000/svg" style="width:18px;height:18px;" fill="none" viewBox="0 0 24 24" stroke="#6b8f6b" stroke-width="2">
+                            <!-- <svg xmlns="http://www.w3.org/2000/svg" style="width:18px;height:18px;" fill="none" viewBox="0 0 24 24" stroke="#6b8f6b" stroke-width="2">
                                 <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
                                 <circle cx="9" cy="7" r="4" />
-                            </svg>
+                            </svg> -->
+                            <iconify-icon icon="ph:clock-user-light" style="font-size: 28px; color:var(--sage);"></iconify-icon>
                         </div>
                         <p style="font-size: 14px; font-weight: 500; color: #2d3b2d; margin: 0 0 4px;">Mis clases</p>
                         <p style="font-size: 15px; color: #7a8a7a; margin: 0 0 12px; line-height: 1.5;">Gestiona tus clases y alumnos inscritos</p>
@@ -228,10 +232,11 @@
                         onmouseover="this.style.borderColor='#6b8f6b'"
                         onmouseout="this.style.borderColor='#d4d9cc'">
                         <div style="width: 36px; height: 36px; border-radius: 9px; background: #e8f0e8; display: flex; align-items: center; justify-content: center; margin-bottom: 12px;">
-                            <svg xmlns="http://www.w3.org/2000/svg" style="width:18px;height:18px;" fill="none" viewBox="0 0 24 24" stroke="#6b8f6b" stroke-width="2">
+                            <!-- <svg xmlns="http://www.w3.org/2000/svg" style="width:18px;height:18px;" fill="none" viewBox="0 0 24 24" stroke="#6b8f6b" stroke-width="2">
                                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
                                 <circle cx="12" cy="7" r="4" />
-                            </svg>
+                            </svg> -->
+                            <iconify-icon icon="ph:user-circle-light" style="font-size: 28px; color:var(--sage);"></iconify-icon>
                         </div>
                         <p style="font-size: 14px; font-weight: 500; color: #2d3b2d; margin: 0 0 4px;">Mi perfil</p>
                         <p style="font-size: 15px; color: #7a8a7a; margin: 0 0 12px; line-height: 1.5;">Consulta tus estadísticas y gestiona tu cuenta</p>
@@ -247,11 +252,12 @@
                         onmouseover="this.style.borderColor='#6b8f6b'"
                         onmouseout="this.style.borderColor='#d4d9cc'">
                         <div style="width: 36px; height: 36px; border-radius: 9px; background: #e8f0e8; display: flex; align-items: center; justify-content: center; margin-bottom: 12px;">
-                            <svg xmlns="http://www.w3.org/2000/svg" style="width:18px;height:18px;" fill="none" viewBox="0 0 24 24" stroke="#6b8f6b" stroke-width="2">
+                            <!-- <svg xmlns="http://www.w3.org/2000/svg" style="width:18px;height:18px;" fill="none" viewBox="0 0 24 24" stroke="#6b8f6b" stroke-width="2">
                                 <line x1="18" y1="20" x2="18" y2="10" />
                                 <line x1="12" y1="20" x2="12" y2="4" />
                                 <line x1="6" y1="20" x2="6" y2="14" />
-                            </svg>
+                            </svg> -->
+                            <iconify-icon icon="ph:chart-line-up-light" style="font-size: 28px; color: var(--sage);"></iconify-icon>
                         </div>
                         <p style="font-size: 14px; font-weight: 500; color: #2d3b2d; margin: 0 0 4px;">Dashboard</p>
                         <p style="font-size: 15px; color: #7a8a7a; margin: 0 0 12px; line-height: 1.5;">KPIs, gráficos y exportación de datos</p>
@@ -263,11 +269,13 @@
                         onmouseover="this.style.borderColor='#6b8f6b'"
                         onmouseout="this.style.borderColor='#d4d9cc'">
                         <div style="width: 36px; height: 36px; border-radius: 9px; background: #e8f0e8; display: flex; align-items: center; justify-content: center; margin-bottom: 12px;">
-                            <svg xmlns="http://www.w3.org/2000/svg" style="width:18px;height:18px;" fill="none" viewBox="0 0 24 24" stroke="#6b8f6b" stroke-width="2">
+                            <!-- <svg xmlns="http://www.w3.org/2000/svg" style="width:18px;height:18px;" fill="none" viewBox="0 0 24 24" stroke="#6b8f6b" stroke-width="2">
                                 <rect x="3" y="3" width="18" height="18" rx="2" />
                                 <line x1="3" y1="12" x2="21" y2="12" />
                                 <line x1="12" y1="3" x2="12" y2="21" />
-                            </svg>
+                            </svg> -->
+                            <!-- <iconify-icon icon="ph:court-basketball-light" style="font-size: 28px; color: var(--sage);"></iconify-icon> -->
+                            <iconify-icon icon="ph:squares-four-light" style="font-size: 28px; color: var(--sage);"></iconify-icon>
                         </div>
                         <p style="font-size: 14px; font-weight: 500; color: #2d3b2d; margin: 0 0 4px;">Pistas</p>
                         <p style="font-size: 15px; color: #7a8a7a; margin: 0 0 12px; line-height: 1.5;">Gestiona las pistas del club</p>
@@ -279,12 +287,13 @@
                         onmouseover="this.style.borderColor='#6b8f6b'"
                         onmouseout="this.style.borderColor='#d4d9cc'">
                         <div style="width: 36px; height: 36px; border-radius: 9px; background: #e8f0e8; display: flex; align-items: center; justify-content: center; margin-bottom: 12px;">
-                            <svg xmlns="http://www.w3.org/2000/svg" style="width:18px;height:18px;" fill="none" viewBox="0 0 24 24" stroke="#6b8f6b" stroke-width="2">
+                            <!-- <svg xmlns="http://www.w3.org/2000/svg" style="width:18px;height:18px;" fill="none" viewBox="0 0 24 24" stroke="#6b8f6b" stroke-width="2">
                                 <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
                                 <circle cx="9" cy="7" r="4" />
                                 <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
                                 <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-                            </svg>
+                            </svg> -->
+                            <iconify-icon icon="ph:users-three-light" style="font-size: 28px; color: var(--sage);"></iconify-icon>
                         </div>
                         <p style="font-size: 14px; font-weight: 500; color: #2d3b2d; margin: 0 0 4px;">Usuarios</p>
                         <p style="font-size: 15px; color: #7a8a7a; margin: 0 0 12px; line-height: 1.5;">Gestiona jugadores y entrenadores</p>

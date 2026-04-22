@@ -95,7 +95,7 @@
             {{-- FEATURE: DASHBOARD ANALÍTICO --}}
             <div style="text-align: center; padding: 16px;">
                 <div style="width: 56px; height: 56px; background: var(--sage-light); border-radius: 14px; margin: 0 auto 18px; display: flex; align-items: center; justify-content: center;">
-                    <iconify-icon icon="ph:chart-bar-light" style="font-size: 28px; color: var(--sage);"></iconify-icon>
+                    <iconify-icon icon="ph:chart-line-up-light" style="font-size: 28px; color: var(--sage);"></iconify-icon>
                 </div>
                 <p style="font-size: 15px; font-weight: 600; color: var(--text-dark); margin: 0 0 10px;">Dashboard analítico</p>
                 <p style="font-size: 13px; color: var(--text-light); line-height: 1.7; margin: 0;">
@@ -114,7 +114,7 @@
     </footer>
 
     {{-- CDN DE ICONIFY --}}
-    <script src="https://code.iconify.design/iconify-icon/2.1.0/iconify-icon.min.js"></script>
+    <!-- <script src="https://code.iconify.design/iconify-icon/2.1.0/iconify-icon.min.js"></script> -->
 
 </body>
 

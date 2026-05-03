@@ -31,9 +31,10 @@ class CourtController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'name'    => 'required|string|max:30|unique:courts',
-            'type'    => 'required|in:cristal,muro',
-            'surface' => 'required|in:cesped,cemento',
+            'name'       => 'required|string|max:30|unique:courts',
+            'type'       => 'required|in:cristal,muro',
+            'surface'    => 'required|in:cesped,cemento',
+            'is_outdoor' => 'boolean'
         ]);
 
         Court::create($validated);
@@ -56,12 +57,12 @@ class CourtController extends Controller
     public function edit(Court $court)
     {
         $court->load('reservations');
-        
+
         $futureReservations = $court->reservations()
-        ->where('status', '!=', 'cancelled')
-        ->where('reservation_date', '>=', today())
-        ->exists();
-        
+            ->where('status', '!=', 'cancelled')
+            ->where('reservation_date', '>=', today())
+            ->exists();
+
         return view('admin.courts.edit', compact('court', 'futureReservations'));
     }
 
@@ -71,10 +72,11 @@ class CourtController extends Controller
     public function update(Request $request, Court $court)
     {
         $validated = $request->validate([
-            'name'      => 'required|string|max:30|unique:courts,name,' . $court->id,
-            'type'      => 'required|in:cristal,muro',
-            'surface'   => 'required|in:cesped,cemento',
-            'is_active' => 'boolean',
+            'name'       => 'required|string|max:30|unique:courts,name,' . $court->id,
+            'type'       => 'required|in:cristal,muro',
+            'surface'    => 'required|in:cesped,cemento',
+            'is_active'  => 'boolean',
+            'is_outdoor' => 'boolean'
         ]);
 
         $court->update($validated);

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Player;
 use App\Http\Controllers\Controller;
 use App\Models\Reservation;
 use App\Models\Court;
+use App\Models\WeatherCache;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -36,10 +37,18 @@ class ReservationController extends Controller
         $slots  = collect();
         $courts = collect();
 
+        // DATOS METEOROLÓGICOS Y LLUVIA PARA LA FECHA SELECCIONADA
+        $weather = null;
+        $isRainy = false;
+
         if ($request->filled('date')) {
             $request->validate([
                 'date' => 'required|date|after_or_equal:today',
             ]);
+
+            // OBTENEMOS DATOS DEL CLIMA DESDE LA CACHÉ LOCAL (SACADA DE PETICIÓN A OPEN-METEO)
+            $weather = WeatherCache::forDate($request->date);
+            $isRainy = $weather ? $weather->isRainy() : false;
 
             // DEFINICIÓN Y GENERACIÓN DE LAS FRANJAS HORARIAS DISPONIBLES (09:00 - 22:00 CADA 30 MIN)
             $openingTime = Carbon::createFromFormat('H:i', '09:00');
@@ -70,7 +79,9 @@ class ReservationController extends Controller
                     ->addMinutes(self::DURATION)
                     ->format('H:i');
 
+
                 $courts = Court::where('is_active', true)
+                    ->when($isRainy, fn($q) => $q->where('is_outdoor', false)) // SI HAY LLUVIA, EXCLUIMOS PISTAS EXTERIORES
                     ->whereDoesntHave('reservations', function ($query) use ($request, $startTime, $endTime) {
                         $query->where('reservation_date', $request->date)
                             ->where('status', '!=', 'cancelled')
@@ -83,12 +94,12 @@ class ReservationController extends Controller
             }
         }
 
-        // GUARDO LA HORA A LA QUE EMPIEZA EL ATARDECER PARA PODER MOSTRAR CUANTO SERÁ EL PRECIO DE LA PISTA
+        // HORA DE INICIO DE TARIFA NOCTURNA (REAL DESDE CACHÉ O ESTÁTICO)
         $nightStartTime = $request->filled('date')
             ? $this->getNightStartTime($request->date)->format('H:i')
             : '20:00';
 
-        return view('player.reservations.create', compact('slots', 'courts', 'nightStartTime'));
+        return view('player.reservations.create', compact('slots', 'courts', 'nightStartTime', 'isRainy'));
     }
 
     /**
@@ -123,13 +134,23 @@ class ReservationController extends Controller
             ])->withInput();
         }
 
+        // NO PERMITIR RESERVAR PISTA EXTERIOR SI HAY LLUVIA
+        $court   = Court::findOrFail($validated['court_id']);
+        $weather = WeatherCache::forDate($validated['date']);
+
+        if ($court->is_outdoor && $weather && $weather->isRainy()) {
+            return back()->withErrors([
+                'court_id' => 'No se puede reservar una pista exterior cuando hay lluvia prevista.'
+            ])->withInput();
+        }
+
         Reservation::create([
             'user_id'          => $request->user()->id,
             'court_id'         => $validated['court_id'],
             'reservation_date' => $validated['date'],
             'start_time'       => $startTime,
             'end_time'         => $endTime,
-            'total_price' => $this->calculatePrice($startTime, $validated['date']),
+            'total_price'      => $this->calculatePrice($startTime, $validated['date']),
             'status'           => 'pending',
         ]);
 
@@ -173,9 +194,11 @@ class ReservationController extends Controller
     // }
 
     /**
-     * MÉTODO QUE DEVUELVE EL PRECIO SEGÚN SI ESTAMOS EN HORARIO NOCTURNO O NO -> SE CONSIDERA HORARIO NOCTURNO A PARTIR DE LAS 20:00 
+     * MÉTODO QUE DEVUELVE EL PRECIO SEGÚN SI ESTAMOS EN HORARIO NOCTURNO O NO
+     * UTILIZA EL OCASO REAL DE OPEN-METEO O EL FALLBACK ESTÁTICO
      *
-     * @param  mixed $startTime
+     * @param  string $startTime
+     * @param  string $date
      * @return float
      */
     private function calculatePrice(string $startTime, string $date): float
@@ -187,13 +210,22 @@ class ReservationController extends Controller
     }
 
     /**
-     * MÉTODO QUE DEVUELVE LA HORA APROXIMADA A LA QUE ATARDECE EN FUNCIÓN DE LA FECHA PASADA POR PARÁMETRO
+     * MÉTODO QUE DEVUELVE LA HORA DE OCASO PARA UNA FECHA DADA
+     * PRIORIZA EL DATO REAL DE OPEN-METEO (weather_cache) Y CAE AL FALLBACK ESTÁTICO SI NO HAY DATO
      *
      * @param  string $date
      * @return Carbon
      */
     private function getNightStartTime(string $date): Carbon
     {
+        // INTENTAMOS OBTENER EL DATO REAL DE OPEN-METEO
+        $weather = WeatherCache::forDate($date);
+
+        if ($weather) {
+            return Carbon::createFromFormat('H:i:s', $weather->sunset);
+        }
+
+        // FALLBACK -> TABLA ESTÁTICA APROXIMADA POR MES EN CASO DE QUE NO HAYA DATOS EN CACHÉ (MÉTODO ANTIGUO)
         $month = Carbon::parse($date)->month;
 
         // HORAS APROXIMADAS EN LAS QUE ATARDECE EN SEVILLA POR MES -> MESES DE ENERO A DICIEMBRE (1-12)

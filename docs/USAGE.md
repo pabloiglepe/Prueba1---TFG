@@ -72,7 +72,8 @@ El dashboard se organiza en tres pestañas:
 Ruta: `/admin/courts`
 
 - Crear, editar y eliminar pistas.
-- Cada pista tiene nombre, tipo (`cristal` / `muro`) y superficie (`césped` / `cemento`).
+- Cada pista tiene nombre, tipo (`cristal` / `muro`), superficie (`césped` / `cemento`) y ubicación (`interior` / `exterior`).
+- Las pistas exteriores (`is_outdoor`) se bloquean automáticamente para reservas y clases cuando la previsión de lluvia supera 1 mm.
 - Una pista con reservas futuras no puede desactivarse hasta que finalicen.
 - La vista de edición muestra estadísticas de la pista: reservas totales, ingresos generados y fecha de la última reserva.
 
@@ -94,11 +95,12 @@ El entrenador gestiona sus propias clases desde `/coach/classes`.
 
 ### Crear una clase
 
-El proceso de creación sigue tres pasos:
+El proceso de creación sigue cuatro pasos:
 
-1. **Seleccionar pista y fecha**: el sistema comprueba disponibilidad en tiempo real.
-2. **Elegir franja horaria**: se muestran solo las franjas disponibles (sin solapamiento con otras clases ni reservas de jugadores). Duración fija de 1h 30min.
-3. **Rellenar datos de la clase**: título, tipo, nivel, visibilidad, plazas máximas y precio.
+1. **Seleccionar fecha**: si hay lluvia prevista, se muestra un aviso y solo se muestran pistas cubiertas.
+2. **Seleccionar pista** disponible para esa fecha.
+3. **Elegir franja horaria**: se muestran solo las franjas disponibles (sin solapamiento con otras clases ni reservas de jugadores). Duración fija de 1h 30min.
+4. **Rellenar datos de la clase**: título, tipo, nivel, visibilidad, plazas máximas y precio.
 
 ### Tipos de clase
 
@@ -130,13 +132,14 @@ Desde el listado de clases, el botón "Cancelar" cambia el estado de la clase a 
 Ruta: `/player/reservations/create`
 
 1. Seleccionar una **fecha**.
-2. El sistema muestra las **franjas horarias disponibles** (09:00 - 22:00, cada 30 minutos).
-3. Al seleccionar una franja, se muestran las **pistas libres**.
-4. Elegir pista y confirmar la reserva.
+2. Si hay lluvia prevista, aparece un aviso informativo y las pistas exteriores no están disponibles.
+3. El sistema muestra las **franjas horarias disponibles** (09:00 - 22:00, cada 30 minutos).
+4. Al seleccionar una franja, se muestran las **pistas libres** (interiores siempre; exteriores solo si no llueve).
+5. Elegir pista y confirmar la reserva.
 
 **Tarifa dinámica**:
 - Tarifa diurna: **12 €**
-- Tarifa nocturna: **16 €** (la hora de inicio varía por mes según el atardecer en Sevilla)
+- Tarifa nocturna: **16 €** (calculada con la hora de ocaso real obtenida de Open-Meteo; fallback estático por mes si no hay dato disponible)
 
 ### Mis Reservas
 

@@ -49,6 +49,22 @@
             </form>
         </div>
 
+        {{-- AVISO DE LLUVIA --}}
+        @if(request('date') && $isRainy)
+            <div style="padding: 14px 18px; background: #eaf2fb; border: 0.5px solid #a8c8e8; border-radius: 10px; font-size: 14px; color: #2a5f8a; display: flex; align-items: center; gap: 10px;">
+                <svg xmlns="http://www.w3.org/2000/svg" style="width:18px;height:18px;stroke:#2a5f8a;flex-shrink:0;" fill="none" viewBox="0 0 24 24" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M20 17.58A5 5 0 0 0 18 8h-1.26A8 8 0 1 0 4 16.25"/>
+                    <line x1="8" y1="19" x2="8" y2="21"/><line x1="8" y1="13" x2="8" y2="15"/>
+                    <line x1="12" y1="15" x2="12" y2="17"/><line x1="12" y1="21" x2="12" y2="23"/>
+                    <line x1="16" y1="19" x2="16" y2="21"/><line x1="16" y1="13" x2="16" y2="15"/>
+                </svg>
+                <span>
+                    <strong>Se prevé lluvia para este día.</strong>
+                    Las pistas exteriores no están disponibles. Solo se muestran pistas interiores.
+                </span>
+            </div>
+        @endif
+
         {{-- PASO 2: ELEGIR FRANJA HORARIA --}}
         @if(request('date'))
             @if($slots->isEmpty())
@@ -66,7 +82,7 @@
                 </div>
 
                 {{-- TARIFAS --}}
-                <div style="display: flex; gap: 16px; margin-bottom: 16px; padding-left: 36px;">
+                <div style="display: flex; gap: 16px; margin-bottom: 16px; padding-left: 36px; flex-wrap: wrap;">
                     <span style="display: inline-flex; align-items: center; gap: 5px; font-size: 13px; color: #5a6b5a;">
                         <svg xmlns="http://www.w3.org/2000/svg" style="width:14px;height:14px;stroke:#6b8f6b;" fill="none" viewBox="0 0 24 24" stroke-width="2">
                             <circle cx="12" cy="12" r="5"/>
@@ -144,8 +160,33 @@
                                        onmouseout="this.style.borderColor='#d4d9cc'; this.style.background='#fff';">
                                     <input type="radio" name="court_id" value="{{ $court->id }}" required
                                            style="accent-color: #6b8f6b; width: 16px; height: 16px; flex-shrink: 0;">
-                                    <div>
-                                        <p style="font-size: 14px; font-weight: 500; color: #2d3b2d; margin: 0 0 3px;">{{ $court->name }}</p>
+                                    <div style="flex: 1;">
+                                        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 3px;">
+                                            <p style="font-size: 14px; font-weight: 500; color: #2d3b2d; margin: 0;">{{ $court->name }}</p>
+                                            {{-- BADGE INTERIOR / EXTERIOR --}}
+                                            @if($court->is_outdoor)
+                                                <span style="display: inline-flex; align-items: center; gap: 3px; padding: 2px 7px; background: #e8f4e8; color: #4a6b4a; border-radius: 20px; font-size: 11px; font-weight: 500;">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" style="width:10px;height:10px;stroke:#4a6b4a;" fill="none" viewBox="0 0 24 24" stroke-width="2">
+                                                        <circle cx="12" cy="12" r="5"/>
+                                                        <line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
+                                                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+                                                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+                                                        <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
+                                                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+                                                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+                                                    </svg>
+                                                    Exterior
+                                                </span>
+                                            @else
+                                                <span style="display: inline-flex; align-items: center; gap: 3px; padding: 2px 7px; background: #f0f0f8; color: #5a5a8a; border-radius: 20px; font-size: 11px; font-weight: 500;">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" style="width:10px;height:10px;stroke:#5a5a8a;" fill="none" viewBox="0 0 24 24" stroke-width="2">
+                                                        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+                                                        <polyline points="9 22 9 12 15 12 15 22"/>
+                                                    </svg>
+                                                    Interior
+                                                </span>
+                                            @endif
+                                        </div>
                                         <p style="font-size: 12px; color: #7a8a7a; margin: 0; text-transform: capitalize;">{{ $court->type }} · {{ $court->surface }}</p>
                                     </div>
                                 </label>

@@ -33,6 +33,7 @@
                         <th style="padding: 12px 20px; text-align: left; font-size: 11px; font-weight: 600; color: #7a8a7a; text-transform: uppercase; letter-spacing: 0.05em;">Nombre</th>
                         <th style="padding: 12px 20px; text-align: left; font-size: 11px; font-weight: 600; color: #7a8a7a; text-transform: uppercase; letter-spacing: 0.05em;">Tipo</th>
                         <th style="padding: 12px 20px; text-align: left; font-size: 11px; font-weight: 600; color: #7a8a7a; text-transform: uppercase; letter-spacing: 0.05em;">Superficie</th>
+                        <th style="padding: 12px 20px; text-align: left; font-size: 11px; font-weight: 600; color: #7a8a7a; text-transform: uppercase; letter-spacing: 0.05em;">Ubicación</th>
                         <th style="padding: 12px 20px; text-align: left; font-size: 11px; font-weight: 600; color: #7a8a7a; text-transform: uppercase; letter-spacing: 0.05em;">Estado</th>
                         <th style="padding: 12px 20px; text-align: left; font-size: 11px; font-weight: 600; color: #7a8a7a; text-transform: uppercase; letter-spacing: 0.05em;">Acciones</th>
                     </tr>
@@ -44,6 +45,20 @@
                         <td style="padding: 14px 20px; font-size: 14px; font-weight: 500; color: #2d3b2d;">{{ $court->name }}</td>
                         <td style="padding: 14px 20px; font-size: 14px; color: #5a6b5a; text-transform: capitalize;">{{ $court->type }}</td>
                         <td style="padding: 14px 20px; font-size: 14px; color: #5a6b5a; text-transform: capitalize;">{{ $court->surface }}</td>
+                        <td style="padding: 14px 20px;">
+                            {{-- BADGE INTERIOR / EXTERIOR --}}
+                            @if($court->is_outdoor)
+                                <span style="display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; background: #e8f4e8; color: #4a6b4a; border-radius: 20px; font-size: 12px; font-weight: 500;">
+                                    <svg xmlns="http://www.w3.org/2000/svg" style="width:10px;height:10px;fill:#4a6b4a;" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>
+                                    Exterior
+                                </span>
+                            @else
+                                <span style="display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; background: #f0f0f8; color: #5a5a8a; border-radius: 20px; font-size: 12px; font-weight: 500;">
+                                    <svg xmlns="http://www.w3.org/2000/svg" style="width:10px;height:10px;fill:#5a5a8a;" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>
+                                    Cubiertas
+                                </span>
+                            @endif
+                        </td>
                         <td style="padding: 14px 20px;">
                             @if($court->is_active)
                                 <span style="display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; background: #e8f0e8; color: #4a6b4a; border-radius: 20px; font-size: 12px; font-weight: 500;">
@@ -95,7 +110,7 @@
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="6" style="padding: 48px 20px; text-align: center; font-size: 14px; color: #9aaa9a;">
+                        <td colspan="7" style="padding: 48px 20px; text-align: center; font-size: 14px; color: #9aaa9a;">
                             No hay pistas registradas todavía.
                         </td>
                     </tr>

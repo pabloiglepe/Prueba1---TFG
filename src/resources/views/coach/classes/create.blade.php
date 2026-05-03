@@ -19,29 +19,34 @@
 
     <div class="py-6 max-w-3xl mx-auto sm:px-6 lg:px-8 space-y-4">
 
-        {{-- PASO 1: PISTA Y FECHA --}}
+        {{-- AVISO DE LLUVIA (SOLO SI HAY FECHA SELECCIONADA Y HAY LLUVIA) --}}
+        @if(request('date') && $isRainy)
+        <div style="padding: 14px 18px; background: #eaf2fb; border: 0.5px solid #a8c8e8; border-radius: 10px; font-size: 14px; color: #2a5f8a; display: flex; align-items: center; gap: 10px;">
+            <svg xmlns="http://www.w3.org/2000/svg" style="width:18px;height:18px;stroke:#2a5f8a;flex-shrink:0;" fill="none" viewBox="0 0 24 24" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M20 17.58A5 5 0 0 0 18 8h-1.26A8 8 0 1 0 4 16.25" />
+                <line x1="8" y1="19" x2="8" y2="21" />
+                <line x1="8" y1="13" x2="8" y2="15" />
+                <line x1="12" y1="15" x2="12" y2="17" />
+                <line x1="12" y1="21" x2="12" y2="23" />
+                <line x1="16" y1="19" x2="16" y2="21" />
+                <line x1="16" y1="13" x2="16" y2="15" />
+            </svg>
+            <span>
+                <strong>Se prevé lluvia para este día.</strong>
+                Las pistas exteriores no están disponibles. Solo se muestran pistas cubiertas.
+            </span>
+        </div>
+        @endif
+
+        {{-- PASO 1: FECHA --}}
         <div style="background: #fff; border-radius: 12px; border: 0.5px solid #d4d9cc; padding: 24px;">
             <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 16px;">
                 <div style="width: 26px; height: 26px; background: #6b8f6b; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600; color: #fff; flex-shrink: 0;">1</div>
-                <h3 style="font-size: 15px; font-weight: 600; color: #2d3b2d; margin: 0;">Elige una pista y una fecha</h3>
+                <h3 style="font-size: 15px; font-weight: 600; color: #2d3b2d; margin: 0;">Elige una fecha</h3>
             </div>
             <form method="GET" action="{{ route('coach.classes.create') }}">
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;">
-                    <div>
-                        <label style="display: block; font-size: 13px; font-weight: 500; color: #2d3b2d; margin-bottom: 6px;">Pista</label>
-                        <select name="court_id"
-                            style="width: 100%; padding: 9px 12px; border: 0.5px solid #d4d9cc; border-radius: 8px; font-size: 14px; color: #2d3b2d; outline: none; background: #fff; box-sizing: border-box;"
-                            onfocus="this.style.borderColor='#6b8f6b'"
-                            onblur="this.style.borderColor='#d4d9cc'">
-                            <option value="">Selecciona una pista</option>
-                            @foreach($courts as $court)
-                            <option value="{{ $court->id }}" {{ request('court_id') == $court->id ? 'selected' : '' }}>
-                                {{ $court->name }} ({{ $court->type }} · {{ $court->surface }})
-                            </option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div>
+                <div style="display: flex; gap: 12px; align-items: flex-end;">
+                    <div style="flex: 1;">
                         <label style="display: block; font-size: 13px; font-weight: 500; color: #2d3b2d; margin-bottom: 6px;">Fecha</label>
                         <input type="date" name="date"
                             value="{{ request('date') }}"
@@ -50,6 +55,47 @@
                             onfocus="this.style.borderColor='#6b8f6b'"
                             onblur="this.style.borderColor='#d4d9cc'">
                     </div>
+                    <button type="submit"
+                        style="display: inline-flex; align-items: center; gap: 8px; background: #6b8f6b; color: #fff; font-size: 14px; font-weight: 500; padding: 9px 20px; border-radius: 8px; border: none; cursor: pointer; white-space: nowrap;"
+                        onmouseover="this.style.background='#4a6b4a'"
+                        onmouseout="this.style.background='#6b8f6b'">
+                        <svg xmlns="http://www.w3.org/2000/svg" style="width:15px;height:15px;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <circle cx="11" cy="11" r="8" />
+                            <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                        </svg>
+                        Consultar
+                    </button>
+                </div>
+            </form>
+        </div>
+
+
+
+        {{-- PASO 2: PISTA (SOLO SI HAY FECHA SELECCIONADA) --}}
+        @if(request('date'))
+        <div style="background: #fff; border-radius: 12px; border: 0.5px solid #d4d9cc; padding: 24px;">
+            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 16px;">
+                <div style="width: 26px; height: 26px; background: #6b8f6b; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600; color: #fff; flex-shrink: 0;">2</div>
+                <h3 style="font-size: 15px; font-weight: 600; color: #2d3b2d; margin: 0;">Elige una pista</h3>
+            </div>
+            <form method="GET" action="{{ route('coach.classes.create') }}">
+                <input type="hidden" name="date" value="{{ request('date') }}">
+                <div style="margin-bottom: 16px;">
+                    <label style="display: block; font-size: 13px; font-weight: 500; color: #2d3b2d; margin-bottom: 6px;">Pista disponible</label>
+                    @error('court_id')
+                    <p style="color: #c0625e; font-size: 12px; margin-bottom: 6px;">{{ $message }}</p>
+                    @enderror
+                    <select name="court_id"
+                        style="width: 100%; padding: 9px 12px; border: 0.5px solid #d4d9cc; border-radius: 8px; font-size: 14px; color: #2d3b2d; outline: none; background: #fff; box-sizing: border-box;"
+                        onfocus="this.style.borderColor='#6b8f6b'"
+                        onblur="this.style.borderColor='#d4d9cc'">
+                        <option value="">Selecciona una pista</option>
+                        @foreach($courts as $court)
+                        <option value="{{ $court->id }}" {{ request('court_id') == $court->id ? 'selected' : '' }}>
+                            {{ $court->name }} ({{ $court->type }} · {{ $court->surface }} · {{ $court->is_outdoor ? 'Exterior' : 'Interior' }})
+                        </option>
+                        @endforeach
+                    </select>
                 </div>
                 <div style="display: flex; justify-content: flex-end;">
                     <button type="submit"
@@ -65,8 +111,9 @@
                 </div>
             </form>
         </div>
+        @endif
 
-        {{-- PASO 2: FRANJA HORARIA --}}
+        {{-- PASO 3: FRANJA HORARIA --}}
         @if(request('court_id') && request('date'))
         @if($slots->isEmpty())
         <div style="padding: 16px 20px; background: #fdf6e8; border: 0.5px solid #e8d4a0; border-radius: 10px; font-size: 14px; color: #92650a; display: flex; align-items: center; gap: 10px;">
@@ -78,10 +125,9 @@
         @else
         <div style="background: #fff; border-radius: 12px; border: 0.5px solid #d4d9cc; padding: 24px;">
             <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
-                <div style="width: 26px; height: 26px; background: #6b8f6b; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600; color: #fff; flex-shrink: 0;">2</div>
+                <div style="width: 26px; height: 26px; background: #6b8f6b; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600; color: #fff; flex-shrink: 0;">3</div>
                 <h3 style="font-size: 15px; font-weight: 600; color: #2d3b2d; margin: 0;">Elige una franja horaria</h3>
             </div>
-
             <div style="display: flex; gap: 16px; margin-bottom: 16px; padding-left: 36px;">
                 <span style="display: inline-flex; align-items: center; gap: 5px; font-size: 13px; color: #5a6b5a;">
                     <svg xmlns="http://www.w3.org/2000/svg" style="width:14px;height:14px;stroke:#6b8f6b;" fill="none" viewBox="0 0 24 24" stroke-width="2">
@@ -91,17 +137,15 @@
                     Duración: <strong style="color: #2d3b2d;">1h 30min</strong>
                 </span>
                 <span style="display: inline-flex; align-items: center; gap: 5px; font-size: 13px; color: #5a6b5a;">
-                    <svg xmlns="http://www.w3.org/2000/svg" style="width:14px;height:14px;stroke:#6b8f6b;" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                    <svg xmlns="http://www.w3.org/2000/svg" style="width:14px;height:14px;stroke:#6b8f6b;" fill="none" viewBox="0 0 24 24" stroke-width="1.5">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M14.25 7.756a4.5 4.5 0 1 0 0 8.488M7.5 10.5h5.25m-5.25 3h5.25M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                     </svg>
                     El precio por alumno se define en el paso siguiente
                 </span>
             </div>
-
             @error('start_time')
             <p style="color: #c0625e; font-size: 12px; margin-bottom: 10px; padding-left: 36px;">{{ $message }}</p>
             @enderror
-
             <form method="GET" action="{{ route('coach.classes.create') }}">
                 <input type="hidden" name="court_id" value="{{ request('court_id') }}">
                 <input type="hidden" name="date" value="{{ request('date') }}">
@@ -109,9 +153,9 @@
                     @foreach($slots as $slot)
                     <button type="submit" name="start_time" value="{{ $slot }}"
                         style="padding: 9px 6px; border-radius: 8px; font-size: 13px; font-weight: 500; border: 0.5px solid; cursor: pointer;
-                                        {{ request('start_time') == $slot
-                                            ? 'background: #6b8f6b; color: #fff; border-color: #6b8f6b;'
-                                            : 'background: #fff; color: #2d3b2d; border-color: #d4d9cc;' }}"
+                            {{ request('start_time') == $slot
+                                ? 'background: #6b8f6b; color: #fff; border-color: #6b8f6b;'
+                                : 'background: #fff; color: #2d3b2d; border-color: #d4d9cc;' }}"
                         onmouseover="if('{{ request('start_time') }}' !== '{{ $slot }}') { this.style.borderColor='#6b8f6b'; this.style.color='#4a6b4a'; }"
                         onmouseout="if('{{ request('start_time') }}' !== '{{ $slot }}') { this.style.borderColor='#d4d9cc'; this.style.color='#2d3b2d'; }">
                         {{ $slot }}
@@ -123,11 +167,11 @@
         @endif
         @endif
 
-        {{-- PASO 3: DATOS DE LA CLASE --}}
+        {{-- PASO 4: DATOS DE LA CLASE --}}
         @if(request('start_time'))
         <div style="background: #fff; border-radius: 12px; border: 0.5px solid #d4d9cc; padding: 24px;">
             <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px;">
-                <div style="width: 26px; height: 26px; background: #6b8f6b; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600; color: #fff; flex-shrink: 0;">3</div>
+                <div style="width: 26px; height: 26px; background: #6b8f6b; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600; color: #fff; flex-shrink: 0;">4</div>
                 <h3 style="font-size: 15px; font-weight: 600; color: #2d3b2d; margin: 0;">Datos de la clase</h3>
             </div>
 
@@ -180,25 +224,19 @@
                             x-data="{ type: '{{ old('type', 'individual') }}' }"
                             x-model="type"
                             x-on:change="
-                                        const max = document.getElementById('max_players');
-                                        const maxHidden = document.getElementById('max_players_hidden');
-                                        if (type === 'individual') {
-                                            max.value = 1;
-                                            max.disabled = true;
-                                            max.style.background = '#f7f8f5';
-                                            max.style.color = '#9aaa9a';
-                                            maxHidden.value = 1;
-                                        } else {
-                                            max.disabled = false;
-                                            max.style.background = '#fff';
-                                            max.style.color = '#2d3b2d';
-                                            max.min = 2;
-                                            if (parseInt(max.value) < 2) {
-                                                max.value = 2;
-                                            }
-                                            maxHidden.value = max.value;
-                                        }
-                                    "
+                                const max = document.getElementById('max_players');
+                                const maxHidden = document.getElementById('max_players_hidden');
+                                if (type === 'individual') {
+                                    max.value = 1; max.disabled = true;
+                                    max.style.background = '#f7f8f5'; max.style.color = '#9aaa9a';
+                                    maxHidden.value = 1;
+                                } else {
+                                    max.disabled = false;
+                                    max.style.background = '#fff'; max.style.color = '#2d3b2d';
+                                    max.min = 2;
+                                    if (parseInt(max.value) < 2) max.value = 2;
+                                    maxHidden.value = max.value;
+                                }"
                             style="width: 100%; padding: 9px 12px; border: 0.5px solid #d4d9cc; border-radius: 8px; font-size: 14px; color: #2d3b2d; outline: none; background: #fff; box-sizing: border-box;"
                             onfocus="this.style.borderColor='#6b8f6b'"
                             onblur="this.style.borderColor='#d4d9cc'">
@@ -233,10 +271,7 @@
                             style="width: 100%; padding: 9px 12px; border: 0.5px solid #d4d9cc; border-radius: 8px; font-size: 14px; color: #2d3b2d; outline: none; background: #fff; box-sizing: border-box;"
                             onfocus="this.style.borderColor='#6b8f6b'"
                             onblur="this.style.borderColor='#d4d9cc'"
-                            x-data x-on:change="
-                                    document.getElementById('players-section').style.display =
-                                        $event.target.value === 'private' ? 'block' : 'none';
-                                ">
+                            x-data x-on:change="document.getElementById('players-section').style.display = $event.target.value === 'private' ? 'block' : 'none';">
                             <option value="public" {{ old('visibility', 'public') == 'public'  ? 'selected' : '' }}>Pública</option>
                             <option value="private" {{ old('visibility') == 'private' ? 'selected' : '' }}>Privada</option>
                         </select>
@@ -246,7 +281,6 @@
                     </div>
                     <div>
                         <label style="display: block; font-size: 13px; font-weight: 500; color: #2d3b2d; margin-bottom: 6px;">Plazas máximas</label>
-                        {{-- HIDDEN QUE SIEMPRE SE ENVÍA --}}
                         <input type="hidden" name="max_players" id="max_players_hidden"
                             value="{{ old('type', 'individual') === 'individual' ? '1' : old('max_players', 4) }}">
                         <input type="number" id="max_players"
@@ -279,12 +313,8 @@
                 {{-- ALUMNOS (SOLO VISIBLE EN CLASES PRIVADAS) --}}
                 <div id="players-section" style="display:{{ old('visibility') == 'private' ? 'block' : 'none' }}; margin-bottom: 24px;">
                     <div style="border: 0.5px solid #d4d9cc; border-radius: 10px; padding: 16px;">
-                        <label style="display: block; font-size: 13px; font-weight: 500; color: #2d3b2d; margin-bottom: 4px;">
-                            Alumnos a inscribir
-                        </label>
-                        <p style="font-size: 12px; color: #7a8a7a; margin: 0 0 14px;">
-                            Recibirán una notificación al ser inscritos.
-                        </p>
+                        <label style="display: block; font-size: 13px; font-weight: 500; color: #2d3b2d; margin-bottom: 4px;">Alumnos a inscribir</label>
+                        <p style="font-size: 12px; color: #7a8a7a; margin: 0 0 14px;">Recibirán una notificación al ser inscritos.</p>
                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; max-height: 180px; overflow-y: auto;">
                             @foreach($players as $player)
                             <label style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: #2d3b2d; cursor: pointer; padding: 6px 8px; border-radius: 6px;"

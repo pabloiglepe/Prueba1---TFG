@@ -89,6 +89,7 @@ El sistema dispone de dos comandos Artisan que se ejecutan periódicamente para 
 |---|---|---|
 | `classes:complete-finished` | Marca como `completed` las clases finalizadas | Cada 15 min |
 | `reservations:mark-paid` | Marca como `paid` las reservas pasadas en `pending` | Cada 15 min |
+| `weather:fetch` | Obtiene datos meteorológicos de Open-Meteo para los próximos 14 días | Diaria (06:00) |
 
 Los comandos están registrados en `routes/console.php` (en Laravel 12 no existe `Kernel.php`).
 
@@ -124,7 +125,8 @@ El endpoint verifica el header `X-Cron-Secret` contra la variable de entorno `CR
 │   │   ├── Console/
 │   │   │   └── Commands/
 │   │   │       ├── CompleteFinishedClasses.php   # Scheduler: completar clases
-│   │   │       └── MarkReservationsPaid.php       # Scheduler: marcar reservas pagadas
+│   │   │       ├── MarkReservationsPaid.php       # Scheduler: marcar reservas pagadas
+│   │   │       └── FetchWeatherData.php           # Scheduler: caché meteorológica (Open-Meteo)
 │   │   ├── Exports/            # ReservationsExport, RevenueExport -> Controladores de exportación de datos
 │   │   ├── Http/
 │   │   │   ├── Controllers/    # Organizados por rol (Admin, Coach, Player)
@@ -132,7 +134,7 @@ El endpoint verifica el header `X-Cron-Secret` contra la variable de entorno `CR
 │   │   │       └── CheckRole.php
 │   │   ├── Mail/
 │   │   │   └── BrevoTransport.php   # Transport HTTP personalizado para emails en Railway
-│   │   ├── Models/             # User, Court, Reservation, PadelClass, ClassRegistration, Role
+│   │   ├── Models/             # User, Court, Reservation, PadelClass, ClassRegistration, Role, WeatherCache
 │   │   └── Notifications/      # ClassRegistrationNotification, PublicClassNotification
 │   ├── database/
 │   │   ├── migrations/

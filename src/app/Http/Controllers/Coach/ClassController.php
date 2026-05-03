@@ -7,6 +7,7 @@ use App\Models\ClassRegistration;
 use App\Models\Court;
 use App\Models\PadelClass;
 use App\Models\User;
+use App\Models\WeatherCache;
 use App\Notifications\ClassRegistrationNotification;
 use App\Notifications\PublicClassNotification;
 use Illuminate\Http\Request;
@@ -32,7 +33,20 @@ class ClassController extends Controller
      */
     public function create(Request $request)
     {
-        $courts  = Court::where('is_active', true)->get();
+        // DATOS METEOROLÓGICOS PARA LA FECHA SELECCIONADA
+        $weather = null;
+        $isRainy = false;
+
+        if ($request->filled('date')) {
+            $weather = WeatherCache::forDate($request->date);
+            $isRainy = $weather ? $weather->isRainy() : false;
+        }
+
+        // SI HAY LLUVIA, EXCLUIMOS LAS PISTAS EXTERIORES DEL LISTADO
+        $courts  = Court::where('is_active', true)
+            ->when($isRainy, fn($q) => $q->where('is_outdoor', false))
+            ->get();
+
         $players = User::whereHas('role', fn($q) => $q->where('name', 'player'))->get();
 
         $slots         = collect();
@@ -90,7 +104,7 @@ class ClassController extends Controller
             }
         }
 
-        return view('coach.classes.create', compact('courts', 'players', 'slots', 'selectedCourt', 'courtId', 'date'));
+        return view('coach.classes.create', compact('courts', 'players', 'slots', 'selectedCourt', 'courtId', 'date', 'isRainy'));
     }
 
     /**
@@ -144,6 +158,16 @@ class ClassController extends Controller
         if ($reservationOverlap) {
             return back()->withErrors([
                 'start_time' => 'Ya existe una reserva de jugador en esa pista para ese horario.'
+            ])->withInput();
+        }
+
+        // COMPROBACIÓN ADICIONAL EN SERVIDOR: NO PERMITIR PISTA EXTERIOR CON LLUVIA PREVISTA
+        $court   = Court::findOrFail($validated['court_id']);
+        $weather = WeatherCache::forDate($validated['date']);
+
+        if ($court->is_outdoor && $weather && $weather->isRainy()) {
+            return back()->withErrors([
+                'court_id' => 'No se puede crear una clase en una pista exterior cuando hay lluvia prevista.'
             ])->withInput();
         }
 
@@ -212,17 +236,23 @@ class ClassController extends Controller
             abort(403);
         }
 
-        $courts      = Court::where('is_active', true)->get();
-        $players     = User::whereHas('role', fn($q) => $q->where('name', 'player'))->get();
-        $enrolledIds = $class->players->pluck('id')->toArray();
-
-        $slots         = collect();
-        $selectedCourt = null;
-
         // USAMOS LA PISTA Y FECHA DE LA CLASE POR DEFECTO SI NO SE HA SELECCIONADO OTRA
         $courtId = $request->filled('court_id') ? $request->court_id : $class->court_id;
         $date    = $request->filled('date')     ? $request->date     : $class->date;
 
+        // DATOS METEOROLÓGICOS PARA LA FECHA SELECCIONADA
+        $weather = WeatherCache::forDate($date);
+        $isRainy = $weather ? $weather->isRainy() : false;
+
+        // SI HAY LLUVIA, EXCLUIMOS LAS PISTAS EXTERIORES DEL LISTADO
+        $courts      = Court::where('is_active', true)
+            ->when($isRainy, fn($q) => $q->where('is_outdoor', false))
+            ->get();
+
+        $players     = User::whereHas('role', fn($q) => $q->where('name', 'player'))->get();
+        $enrolledIds = $class->players->pluck('id')->toArray();
+
+        $slots         = collect();
         $selectedCourt = Court::find($courtId);
 
         $allSlots = [];
@@ -266,7 +296,7 @@ class ClassController extends Controller
             })->values();
         }
 
-        return view('coach.classes.edit', compact('class', 'courts', 'players', 'enrolledIds', 'slots', 'selectedCourt', 'courtId', 'date'));
+        return view('coach.classes.edit', compact('class', 'courts', 'players', 'enrolledIds', 'slots', 'selectedCourt', 'courtId', 'date', 'isRainy'));
     }
 
     /**
@@ -325,6 +355,16 @@ class ClassController extends Controller
         if ($reservationOverlap) {
             return back()->withErrors([
                 'start_time' => 'Ya existe una reserva de jugador en esa pista para ese horario.'
+            ])->withInput();
+        }
+
+        // COMPROBACIÓN ADICIONAL EN SERVIDOR: NO PERMITIR PISTA EXTERIOR CON LLUVIA PREVISTA
+        $court   = Court::findOrFail($validated['court_id']);
+        $weather = WeatherCache::forDate($validated['date']);
+
+        if ($court->is_outdoor && $weather && $weather->isRainy()) {
+            return back()->withErrors([
+                'court_id' => 'No se puede asignar una pista exterior cuando hay lluvia prevista para ese día.'
             ])->withInput();
         }
 

@@ -200,7 +200,8 @@
                                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
                                 <circle cx="12" cy="7" r="4" />
                             </svg> -->
-                            <iconify-icon icon="ph:person-simple-light" style="font-size: 28px; color:var(--sage);"></iconify-icon>
+                            <!-- <iconify-icon icon="ph:person-simple-light" style="font-size: 28px; color:var(--sage);"></iconify-icon> -->
+                            <iconify-icon icon="ph:user-circle-light" style="font-size: 28px; color:var(--sage);"></iconify-icon>
                         </div>
                         <p style="font-size: 14px; font-weight: 500; color: #2d3b2d; margin: 0 0 4px;">Mi perfil</p>
                         <p style="font-size: 15px; color: #7a8a7a; margin: 0 0 12px; line-height: 1.5;">Consulta tu historial y gestiona tu cuenta</p>

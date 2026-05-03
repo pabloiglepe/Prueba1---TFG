@@ -7,7 +7,7 @@ Thumbs.db
 .vscode/
 .idea/
 backup*.sql
-ToDo
+
 
 # --- LARAVEL ---
 src/vendor/
@@ -28,6 +28,7 @@ src/.env.backup
 src/.env.production
 
 # --- HERRAMIENTAS Y OTROS ---
+./ToDo
 src/Homestead.json
 src/Homestead.yaml
 src/auth.json

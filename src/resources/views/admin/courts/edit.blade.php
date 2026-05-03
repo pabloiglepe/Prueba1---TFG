@@ -78,6 +78,22 @@
 
                 </div>
 
+                {{-- UBICACIÓN: INTERIOR / EXTERIOR --}}
+                <div style="margin-bottom: 20px; padding: 16px; background: #f7f8f5; border-radius: 8px; border: 0.5px solid #d4d9cc;">
+                    <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                        <input type="hidden" name="is_outdoor" value="0">
+                        <input type="checkbox" name="is_outdoor" value="1"
+                               {{ old('is_outdoor', $court->is_outdoor) ? 'checked' : '' }}
+                               style="width: 18px; height: 18px; accent-color: #6b8f6b; cursor: pointer;">
+                        <div>
+                            <p style="font-size: 14px; font-weight: 500; color: #2d3b2d; margin: 0;">Pista exterior (outdoor)</p>
+                            <p style="font-size: 12px; color: #7a8a7a; margin: 2px 0 0;">
+                                Las pistas exteriores no estarán disponibles cuando se prevea lluvia.
+                            </p>
+                        </div>
+                    </label>
+                </div>
+
                 {{-- ESTADÍSTICAS DE LA PISTA --}}
                 <div style="background: #f7f8f5; border-radius: 10px; border: 0.5px solid #d4d9cc; padding: 18px; margin-bottom: 20px;">
                     <p style="font-size: 11px; font-weight: 600; color: #7a8a7a; text-transform: uppercase; letter-spacing: 0.05em; margin: 0 0 14px;">Estadísticas de la pista</p>
@@ -105,7 +121,6 @@
                     </div>
                 </div>
 
-                {{-- ESTADO --}}
                 {{-- ESTADO --}}
                 <div style="margin-bottom: 28px; padding: 16px; background: {{ $futureReservations ? '#fdf6e8' : '#f7f8f5' }}; border-radius: 8px; border: 0.5px solid {{ $futureReservations ? '#e8d4a0' : '#d4d9cc' }};">
                     <label style="display: flex; align-items: center; gap: 10px; cursor: {{ $futureReservations ? 'not-allowed' : 'pointer' }};">

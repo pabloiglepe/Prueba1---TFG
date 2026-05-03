@@ -39,7 +39,7 @@
                 </div>
 
                 {{-- TIPO Y SUPERFICIE EN GRID --}}
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 28px;">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px;">
 
                     {{-- TIPO --}}
                     <div>
@@ -75,6 +75,22 @@
                         @enderror
                     </div>
 
+                </div>
+
+                {{-- UBICACIÓN: INTERIOR / EXTERIOR --}}
+                <div style="margin-bottom: 28px; padding: 16px; background: #f7f8f5; border-radius: 8px; border: 0.5px solid #d4d9cc;">
+                    <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                        <input type="hidden" name="is_outdoor" value="0">
+                        <input type="checkbox" name="is_outdoor" value="1"
+                               {{ old('is_outdoor') ? 'checked' : '' }}
+                               style="width: 18px; height: 18px; accent-color: #6b8f6b; cursor: pointer;">
+                        <div>
+                            <p style="font-size: 14px; font-weight: 500; color: #2d3b2d; margin: 0;">Pista exterior (outdoor)</p>
+                            <p style="font-size: 12px; color: #7a8a7a; margin: 2px 0 0;">
+                                Las pistas exteriores no estarán disponibles cuando se prevea lluvia.
+                            </p>
+                        </div>
+                    </label>
                 </div>
 
                 <div style="display: flex; justify-content: flex-end; gap: 10px;">

@@ -414,3 +414,55 @@ Se añadieron mensajes de feedback en los formularios de auth siguiendo el siste
  
 
 **Lección**: el spinner de carga en botones de formulario es una mejora en la interfaz de la aplicación. Sin él, el usuario no percibe feedback inmediato y puede pulsar el botón varias veces, generando peticiones duplicadas. Definir la animación en el layout garantiza que esté disponible en todas las vistas sin repetir código.
+
+---
+
+## Hito 19 — Integración de Open-Meteo para precios dinámicos reales y bloqueo de pistas exteriores por lluvia
+
+**Problema**: el cálculo de la tarifa nocturna usaba una tabla estática de atardeceres aproximados por mes para Sevilla, y no existía ningún mecanismo para gestionar pistas exteriores ni condiciones meteorológicas adversas.
+
+**Decisión**: integrar la API gratuita **Open-Meteo** para obtener datos reales de amanecer, ocaso y precipitación, y añadir el concepto de pista exterior (`is_outdoor`) al modelo `Court`.
+
+### Cambios en base de datos
+
+**Nueva tabla `weather_cache`**:
+
+```
+date (PK)  sunrise  sunset  precipitation_mm  fetched_at
+```
+
+Almacena un registro por día con los datos meteorológicos de Open-Meteo. Actúa como caché local para que las vistas no hagan llamadas a la API en cada render.
+
+**Nueva columna `courts.is_outdoor`** (boolean, default `false`): distingue entre pistas interiores y exteriores. Las pistas exteriores quedan bloqueadas automáticamente cuando la precipitación prevista supera el umbral de 1 mm.
+
+### Comando Artisan `weather:fetch`
+
+Nuevo comando en `app/Console/Commands/FetchWeatherData.php` que llama a Open-Meteo una vez al día y almacena 14 días de datos en `weather_cache`:
+
+```php
+Http::get('https://api.open-meteo.com/v1/forecast', [
+    'latitude'      => 37.39,   // Sevilla
+    'longitude'     => -5.99,
+    'daily'         => 'sunrise,sunset,precipitation_sum',
+    'timezone'      => 'Europe/Madrid',
+    'forecast_days' => 14,
+]);
+```
+
+Se registra en `routes/console.php` con `dailyAt('06:00')`. Los otros dos comandos (`classes:complete-finished`, `reservations:mark-paid`) mantienen su frecuencia de 15 minutos. El endpoint `/run-scheduler` existente de cron-job.org lanza los tres comandos sin cambios en la infraestructura.
+
+### Lógica de precios y bloqueo
+
+**`ReservationController`** y **`ClassController`** consultan `WeatherCache::forDate($date)` antes de cada operación:
+
+- Si hay dato de ocaso real → se usa como inicio de tarifa nocturna.
+- Si no hay dato en caché → se aplica el fallback estático por mes (tabla original, preservada como seguridad).
+- Si `precipitation_mm >= 1.0` → las pistas con `is_outdoor = true` se excluyen de los resultados y el formulario muestra un aviso azul informativo.
+
+La validación se aplica en dos capas: la vista filtra visualmente las pistas no disponibles, y el servidor rechaza la petición si se intenta reservar una pista exterior con lluvia prevista.
+
+### Corrección de timezone
+
+Se detectó que el contenedor Docker corría en UTC, lo que provocaba que las franjas horarias pasadas del día actual no se filtraran correctamente (a las 18:00 hora Madrid, `Carbon::now()` devolvía las 16:00). Solución: configurar `'timezone' => 'Europe/Madrid'` en `config/app.php`.
+
+**Lección**: Open-Meteo es una API meteorológica gratuita, sin registro y sin API key que devuelve datos de ocaso y precipitación en una sola llamada. La combinación de una tabla de caché local + un comando diario es el patrón óptimo para este caso: cero latencia en las vistas, datos reales y sin dependencia en tiempo real de un servicio externo. El fallback estático garantiza que la aplicación funcione aunque la API esté temporalmente caída.

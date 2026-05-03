@@ -14,7 +14,8 @@ class Court extends Model
         'name',
         'type',
         'surface',
-        'is_active'
+        'is_active',
+        'is_outdoor'
     ];
 
     /**

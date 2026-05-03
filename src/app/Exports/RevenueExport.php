@@ -45,7 +45,7 @@ class RevenueExport implements FromCollection, WithHeadings, WithMapping, WithTi
 
         
     /**
-     * headings
+     * FUNCION QUE DEFINE LAS CABECERAS DEL EXCEL EXPORTADO
      *
      * @return array
      */
@@ -60,7 +60,7 @@ class RevenueExport implements FromCollection, WithHeadings, WithMapping, WithTi
     
     
     /**
-     * map
+     * FUNCION QUE DEFINE EL CONTENIDO DE LAS FILAS DEL EXCEL EXPORTADO
      *
      * @param  mixed $row
      * @return array
@@ -76,7 +76,7 @@ class RevenueExport implements FromCollection, WithHeadings, WithMapping, WithTi
 
   
     /**
-     * title
+     * FUNCIÓN QUE DEFINE EL NOMBRE QUE VA A TENER EL EXCEL EXPORTADO
      *
      * @return string
      */

@@ -89,7 +89,7 @@ Route::middleware(['auth', 'role:player,admin'])->prefix('player')->name('player
 
 // RUTA QUE EJECUTA EL SCHEDULER
 Route::get('/run-scheduler', function () {
-    if (request()->header('X-Cron-Secret') !== env('CRON_SECRET')) {
+    if (request()->header('X-Cron-Secret') !== config('padelsync.cron_secret')) {
         abort(403);
     }
     \Artisan::call('schedule:run');

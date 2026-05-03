@@ -30,9 +30,10 @@ class AuthenticationTest extends TestCase
 
         $component->call('login');
 
+        // PADELSYNC REDIRIGE A /home TRAS EL LOGIN, NO A /dashboard
         $component
             ->assertHasNoErrors()
-            ->assertRedirect(route('dashboard', absolute: false));
+            ->assertRedirect(route('home', absolute: false));
 
         $this->assertAuthenticated();
     }
@@ -60,7 +61,7 @@ class AuthenticationTest extends TestCase
 
         $this->actingAs($user);
 
-        $response = $this->get('/dashboard');
+        $response = $this->get('/home');
 
         $response
             ->assertOk()

@@ -19,9 +19,9 @@ class ProfileTest extends TestCase
 
         $response
             ->assertOk()
-            ->assertSeeVolt('profile.update-profile-information-form')
-            ->assertSeeVolt('profile.update-password-form')
-            ->assertSeeVolt('profile.delete-user-form');
+            ->assertSee('Mi Perfil')
+            ->assertSee('Datos personales')
+            ->assertSee('Seguridad');
     }
 
     public function test_profile_information_can_be_updated(): void

@@ -375,7 +375,7 @@ Railway no ofrece cron jobs nativos en el plan gratuito. La solución implementa
 ```php
 // routes/web.php
 Route::get('/run-scheduler', function () {
-    if (request()->header('X-Cron-Secret') !== config('app.cron_secret')) {
+    if (request()->header('X-Cron-Secret') !== config('padelsync.cron_secret')) {
         abort(403);
     }
     Artisan::call('schedule:run');
@@ -622,3 +622,9 @@ En lugar de redirigir directamente al panel de rol tras el login, se creó una h
 
 ### Spinner `padel-spin` definido en los layouts
 La animación de carga se define una única vez en `app.blade.php` y `guest.blade.php`, garantizando disponibilidad en todas las vistas sin duplicar código. Se activa con `wire:loading` en los botones de submit de los formularios de autenticación para prevenir envíos duplicados y dar feedback inmediato al usuario.
+
+### `config/padelsync.php` para configuración propia del proyecto
+La configuración específica de PadelSync (como `cron_secret`) se centraliza en `config/padelsync.php` en lugar de llamar a `env()` directamente en rutas o controladores. Esto sigue la práctica recomendada de Laravel y permite sobreescribir valores en tests con `config([...])`, algo que `env()` no permite en runtime.
+
+### Tests automatizados con UserFactory por roles
+La `UserFactory` incluye estados `->admin()`, `->coach()`, `->player()` para crear usuarios con el rol correcto en los tests. El rol `player` es el estado base del `definition()` para que los tests de Breeze funcionen sin estado explícito.

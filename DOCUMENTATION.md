@@ -354,12 +354,13 @@ MAIL_FROM_NAME="PadelSync"
 **Comandos Artisan**: definidos en `routes/console.php`  
 **Ruta del endpoint**: `GET /run-scheduler`
 
-El sistema tiene dos comandos Artisan que se ejecutan periódicamente para mantener los estados de la base de datos actualizados:
+El sistema tiene tres comandos Artisan registrados en el scheduler:
 
 | Comando | Acción | Frecuencia |
 |---|---|---|
 | `classes:complete-finished` | Marca como `completed` las clases cuya hora de fin ha pasado | Cada 15 min |
 | `reservations:mark-paid` | Marca como `paid` las reservas pasadas en estado `pending` | Cada 15 min |
+| `weather:fetch` | Obtiene datos meteorológicos de Open-Meteo para los próximos 14 días | Diaria (06:00) |
 
 #### Ejecución en local
 
@@ -392,6 +393,8 @@ Route::get('/run-scheduler', function () {
 | Variable de entorno Railway | `CRON_SECRET=PadelsyncTfg123` |
 
 > Acceder al endpoint desde el navegador devuelve **403** — es el comportamiento correcto, ya que el header `X-Cron-Secret` no está presente.
+
+> **Nota sobre `weather:fetch`**: este comando está cubierto por la misma configuración de cron-job.org sin ningún cambio adicional. cron-job.org llama al endpoint cada 15 minutos y Laravel decide qué comandos ejecutar según su schedule. Cuando la llamada coincide con las 06:00, Laravel ejecuta `weather:fetch`; el resto del día lo omite automáticamente. No se necesita un cron job adicional en cron-job.org.
 
 ---
 

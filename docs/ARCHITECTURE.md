@@ -29,7 +29,7 @@ La aplicación se divide en cuatro servicios interconectados mediante la red int
 │                padel-network                │
 │                                             │
 │  ┌──────────┐    ┌──────────┐    ┌────────┐ │
-│  │  Nginx   │───▶│ PHP-FPM  │───▶│ MySQL │ │
+│  │  Nginx   │───▶│ PHP-FPM  │───▶│ MySQL  │ │
 │  │(padel-web│    │(padel-app│    │(padel- │ │
 │  │ :8000)   │    │ :9000)   │    │ db)    │ │
 │  └──────────┘    └──────────┘    └────────┘ │
@@ -91,7 +91,7 @@ El sistema dispone de dos comandos Artisan que se ejecutan periódicamente para 
 | `reservations:mark-paid` | Marca como `paid` las reservas pasadas en `pending` | Cada 15 min |
 | `weather:fetch` | Obtiene datos meteorológicos de Open-Meteo para los próximos 14 días | Diaria (06:00) |
 
-Los comandos están registrados en `routes/console.php` (en Laravel 12 no existe `Kernel.php`).
+Los comandos están registrados en `routes/console.php`.
 
 ### Ejecución local
 
@@ -109,6 +109,8 @@ cron-job.org  ──(cada 15 min)──▶  /run-scheduler  ──▶  php artis
 ```
 
 El endpoint verifica el header `X-Cron-Secret` contra la variable de entorno `CRON_SECRET` de Railway antes de ejecutar el scheduler. Un acceso sin el header correcto devuelve **403**.
+
+> **Importante**: el comando `weather:fetch` está cubierto por la misma configuración de cron-job.org sin ningún cambio adicional. Cuando cron-job.org llama al endpoint a las 06:00, Laravel ejecuta `weather:fetch` porque le toca según su schedule `dailyAt('06:00')`. En el resto de llamadas del día, el scheduler lo ignora automáticamente. No es necesario crear un cron job separado en cron-job.org para este comando.
 
 ---
 

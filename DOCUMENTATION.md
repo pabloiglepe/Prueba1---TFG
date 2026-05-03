@@ -572,8 +572,8 @@ docker exec -it padel-app php artisan db:restore padelsync_backup_2026-05-03_191
 #### Backup automático en el scheduler
 
 ```php
-// routes/console.php — backup automático cada domingo a las 03:00
-app(Schedule::class)->command('db:backup')->weeklyOn(0, '03:00');
+// routes/console.php — backup automático cada todos los días a las 03:00
+app(Schedule::class)->command('db:backup')->dailyAt('03:00');
 ```
 
 En producción, cron-job.org llama al endpoint `/run-scheduler` y Laravel ejecuta el backup cuando le corresponde según el schedule.

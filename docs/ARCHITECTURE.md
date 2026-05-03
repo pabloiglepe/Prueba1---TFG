@@ -90,7 +90,7 @@ El sistema dispone de comandos Artisan que se ejecutan periódicamente para mant
 | `classes:complete-finished` | Marca como `completed` las clases finalizadas | Cada 15 min |
 | `reservations:complete-finished` | Marca como `paid` las reservas pasadas en `pending` | Cada 15 min |
 | `weather:fetch` | Obtiene datos meteorológicos de Open-Meteo para los próximos 14 días | Diaria (06:00) |
-| `db:backup` | Genera un backup SQL de la BD en `storage/app/backups/` | Semanal (domingo 03:00) |
+| `db:backup` | Genera un backup SQL de la BD en `storage/app/backups/` | Diaria (03:00) |
 
 Los comandos están registrados en `routes/console.php`.
 

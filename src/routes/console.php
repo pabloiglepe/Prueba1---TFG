@@ -17,6 +17,7 @@ app(Schedule::class)->command('reservations:complete-finished')->everyFifteenMin
 // OBTIENE DATOS METEOROLÓGICOS DE OPEN-METEO PARA LOS PRÓXIMOS 14 DÍAS, SE EJECUTA UNA VEZ AL DÍA
 app(Schedule::class)->command('weather:fetch')->dailyAt('06:00');
 
-// BACKUP AUTOMÁTICO DE LA BASE DE DATOS, SE EJECUTA CADA DOMINGO A LAS 03:00
+
+// BACKUP AUTOMÁTICO DE LA BASE DE DATOS, SE EJECUTA DIARIAMENTE A LAS 03:00
 // LOS ARCHIVOS SE GUARDAN EN storage/app/backups/ Y SE CONSERVAN LOS ÚLTIMOS 7
-app(Schedule::class)->command('db:backup')->weeklyOn(0, '03:00');
+app(Schedule::class)->command('db:backup')->dailyAt('03:00');

@@ -466,3 +466,141 @@ La validación se aplica en dos capas: la vista filtra visualmente las pistas no
 Se detectó que el contenedor Docker corría en UTC, lo que provocaba que las franjas horarias pasadas del día actual no se filtraran correctamente (a las 18:00 hora Madrid, `Carbon::now()` devolvía las 16:00). Solución: configurar `'timezone' => 'Europe/Madrid'` en `config/app.php`.
 
 **Lección**: Open-Meteo es una API meteorológica gratuita, sin registro y sin API key que devuelve datos de ocaso y precipitación en una sola llamada. La combinación de una tabla de caché local + un comando diario es el patrón óptimo para este caso: cero latencia en las vistas, datos reales y sin dependencia en tiempo real de un servicio externo. El fallback estático garantiza que la aplicación funcione aunque la API esté temporalmente caída.
+
+## Hito 20 — Plan de pruebas y tests PHPUnit
+
+**Contexto**: el hito de integración y estabilidad del TFG requería diseñar y ejecutar un plan de pruebas con casos claros y resultados documentados.
+
+### Estrategia adoptada
+
+Se combinaron **tests automatizados** (PHPUnit + Livewire Volt Test) con una **lista de comprobación manual** para los flujos que no pueden cubrirse de forma automatizada (gráficos ECharts, interacciones Alpine.js, envío real de email).
+
+La base de datos de tests usa **SQLite en memoria** (configurada en `phpunit.xml`), completamente aislada de la BD de desarrollo. Cada test usa el trait `RefreshDatabase`.
+
+### Archivos creados
+
+```
+database/factories/UserFactory.php          ← actualizada con estados por rol
+tests/Feature/AuthTest.php                  ← nuevo
+tests/Feature/ReservationTest.php           ← nuevo
+tests/Feature/CourtTest.php                 ← nuevo
+tests/Feature/ClassTest.php                 ← nuevo
+tests/Feature/SchedulerEndpointTest.php     ← nuevo
+docs/TEST_PLAN.md                           ← nuevo
+```
+
+Los tests de Breeze existentes (`Auth/*`, `ProfileTest`) también se adaptaron al flujo personalizado de PadelSync.
+
+### Resultado final
+
+```
+Tests:    51 passed (114 assertions)
+Duration: 33.02s
+```
+
+### Incidencias encontradas y resueltas durante las pruebas
+
+**I-01** — 20 tests de Breeze fallaban con `NOT NULL constraint failed: users.role_id`  
+**Causa**: `UserFactory` tenía `role_id = null` por defecto.  
+**Solución**: añadir `role_id` con rol `player` en el `definition()` de la factory.
+
+**I-02** — `ClassTest` usaba status `enrolled` inexistente en el enum de BD  
+**Causa**: el valor real del enum es `registered`.  
+**Solución**: corregido en los asserts y en las inserciones directas de los tests.
+
+**I-03** — `SchedulerEndpointTest` devolvía 403 con el secreto correcto  
+**Causa**: `env()` en Laravel no es sobreescribible en runtime durante los tests.  
+**Solución**: migrar a `config('padelsync.cron_secret')` con archivo `config/padelsync.php`. Esto también es la práctica correcta en Laravel — nunca llamar `env()` fuera de archivos de configuración.
+
+**I-04** — `AuthTest` login/logout devolvían 405/404  
+**Causa**: el auth de PadelSync usa Livewire Volt, no rutas POST clásicas.  
+**Solución**: reescribir usando `Auth::attempt()` y `Auth::logout()` directamente.
+
+**I-05** — `ProfileTest > profile page is displayed` fallaba buscando componentes Volt  
+**Causa**: el perfil de PadelSync es una vista Blade estándar, no usa componentes Volt.  
+**Solución**: adaptar el test a verificar el contenido HTML real de la página.
+
+**I-06** — `RegistrationTest > new users can register` fallaba con `Attempt to read property "id" on null`  
+**Causa**: el componente de registro busca el rol `player` en BD, vacía con `RefreshDatabase`.  
+**Solución**: añadir `setUp()` en `RegistrationTest` que crea los 3 roles antes de cada test.
+
+**Lección**: los tests de Breeze generados automáticamente asumen el flujo por defecto del framework. Cuando se personaliza la autenticación (campos extra en registro, redirects diferentes, perfil reconstruido), los tests de Breeze deben actualizarse para reflejar el flujo real de la aplicación. Detectar estos desajustes forma parte del valor del plan de pruebas.
+
+---
+
+## Hito 21 — Sistema de backup y restauración de la base de datos
+
+**Contexto**: el hito requería implementar un sistema de copias de seguridad y restauración y comprobar que funciona.
+
+### Decisión de implementación
+
+Se descartó usar `mysqldump` desde el contenedor de la app porque no está garantizado en un contenedor PHP-FPM estándar (y tampoco en Railway). En su lugar, se implementaron dos comandos Artisan que usan Laravel DB directamente para generar y restaurar volcados SQL en PHP puro.
+
+### Comandos creados
+
+**`php artisan db:backup`** (`app/Console/Commands/BackupDatabase.php`)
+- Itera todas las tablas de la BD (excepto `cache`, `sessions`, `jobs` y similares).
+- Para cada tabla genera el `CREATE TABLE` (DDL real) y bloques de `INSERT` con hasta 100 filas.
+- Guarda el archivo en `storage/app/backups/padelsync_backup_YYYY-MM-DD_HHmmss.sql`.
+- Elimina automáticamente los backups más antiguos conservando solo los últimos 7.
+- Soporta la opción `--path=` para especificar una ruta de destino diferente.
+
+**`php artisan db:restore`** (`app/Console/Commands/RestoreDatabase.php`)
+- Sin argumento: restaura el backup más reciente disponible.
+- Con argumento `{file}`: restaura el archivo especificado.
+- Con `--force`: omite la confirmación interactiva.
+- Desactiva `FOREIGN_KEY_CHECKS` durante la restauración y los reactiva al terminar (también en caso de error).
+- Parsea el SQL línea a línea sin depender de herramientas externas.
+
+**`config/padelsync.php`** — Archivo de configuración propio del proyecto:
+```php
+return [
+    'cron_secret' => env('CRON_SECRET'),
+];
+```
+Centraliza la configuración específica de PadelSync. La ruta `/run-scheduler` y su test usan `config('padelsync.cron_secret')` en lugar de `env()` directamente.
+
+### Scheduler actualizado
+
+Se añadió el backup automático al scheduler en `routes/console.php`:
+
+```php
+// BACKUP AUTOMÁTICO DE LA BASE DE DATOS, SE EJECUTA CADA DOMINGO A LAS 03:00
+app(Schedule::class)->command('db:backup')->weeklyOn(0, '03:00');
+```
+
+### Verificación en local
+
+```
+PS> docker exec -it padel-app php artisan db:backup
+Iniciando backup de la base de datos...
+  → Exportando tabla: classes
+  → Exportando tabla: classes_reservations
+  → Exportando tabla: courts
+  → Exportando tabla: migrations
+  → Exportando tabla: notifications
+  → Exportando tabla: password_reset_tokens
+  → Exportando tabla: reservations
+  → Exportando tabla: roles
+  → Exportando tabla: users
+  → Exportando tabla: weather_cache
+✓ Backup completado correctamente.
+  Archivo : /var/www/storage/app/backups/padelsync_backup_2026-05-03_191746.sql
+  Tamaño  : 22.4 KB
+
+PS> docker exec -it padel-app php artisan db:restore
+  ADVERTENCIA: Esta operación REEMPLAZARÁ todos los datos actuales de la BD.
+  Archivo  : .../padelsync_backup_2026-05-03_191746.sql
+  Tamaño   : 22.4 KB
+  Base de datos destino: padel_club
+ ¿Deseas continuar con la restauración? (yes/no) [no]: yes
+Iniciando restauración...
+✓ Restauración completada correctamente.
+  Sentencias ejecutadas: 31
+```
+
+### Sistema de backup del código fuente
+
+El **código fuente** no requiere un sistema adicional: **Git + GitHub** actúa como sistema de backup versionado. Cada `git push` guarda el estado completo del código. Lo que `db:backup` aporta es la cobertura de los **datos de la BD** (usuarios, reservas, clases), que cambian en tiempo de ejecución y no están en el repositorio.
+
+**Lección**: implementar el backup como comandos Artisan integrados en el proyecto (en lugar de scripts externos) tiene varias ventajas: se ejecutan dentro del entorno de Laravel, tienen acceso a la configuración de la aplicación, funcionan igual en local y en Railway, y pueden programarse en el scheduler como cualquier otro comando. El backup de código fuente ya lo cubre Git — no hay que inventar nada para eso.

@@ -83,13 +83,14 @@ app/Http/Controllers/
 
 ## Scheduler — Tareas programadas
 
-El sistema dispone de dos comandos Artisan que se ejecutan periódicamente para mantener los estados de la base de datos sincronizados:
+El sistema dispone de comandos Artisan que se ejecutan periódicamente para mantener los estados de la base de datos sincronizados:
 
 | Comando | Acción | Frecuencia |
 |---|---|---|
 | `classes:complete-finished` | Marca como `completed` las clases finalizadas | Cada 15 min |
-| `reservations:mark-paid` | Marca como `paid` las reservas pasadas en `pending` | Cada 15 min |
+| `reservations:complete-finished` | Marca como `paid` las reservas pasadas en `pending` | Cada 15 min |
 | `weather:fetch` | Obtiene datos meteorológicos de Open-Meteo para los próximos 14 días | Diaria (06:00) |
+| `db:backup` | Genera un backup SQL de la BD en `storage/app/backups/` | Semanal (domingo 03:00) |
 
 Los comandos están registrados en `routes/console.php`.
 
@@ -108,9 +109,46 @@ cron-job.org  ──(cada 15 min)──▶  /run-scheduler  ──▶  php artis
                                    (header X-Cron-Secret)
 ```
 
-El endpoint verifica el header `X-Cron-Secret` contra la variable de entorno `CRON_SECRET` de Railway antes de ejecutar el scheduler. Un acceso sin el header correcto devuelve **403**.
+El endpoint verifica el header `X-Cron-Secret` contra `config('padelsync.cron_secret')` antes de ejecutar el scheduler. Un acceso sin el header correcto devuelve **403**.
 
 > **Importante**: el comando `weather:fetch` está cubierto por la misma configuración de cron-job.org sin ningún cambio adicional. Cuando cron-job.org llama al endpoint a las 06:00, Laravel ejecuta `weather:fetch` porque le toca según su schedule `dailyAt('06:00')`. En el resto de llamadas del día, el scheduler lo ignora automáticamente. No es necesario crear un cron job separado en cron-job.org para este comando.
+
+---
+
+## Tests automatizados
+
+La suite de tests usa **PHPUnit** con **SQLite en memoria** como base de datos de pruebas, completamente aislada de la BD de desarrollo.
+
+```bash
+# Ejecutar todos los tests
+docker exec -it padel-app php artisan test
+```
+
+Resultado actual: **51 tests pasados, 0 fallos, 114 assertions**.
+
+### Archivos de test
+
+```
+tests/
+├── Unit/
+│   └── ExampleTest.php
+└── Feature/
+    ├── Auth/
+    │   ├── AuthenticationTest.php
+    │   ├── EmailVerificationTest.php
+    │   ├── PasswordConfirmationTest.php
+    │   ├── PasswordResetTest.php
+    │   ├── PasswordUpdateTest.php
+    │   └── RegistrationTest.php
+    ├── AuthTest.php               # Login, logout, control de acceso por rol
+    ├── ClassTest.php              # Clases: acceso, inscripción, duplicados
+    ├── CourtTest.php              # Pistas: CRUD, desactivación con reservas
+    ├── ProfileTest.php            # Perfil: renderizado, edición, borrado de cuenta
+    ├── ReservationTest.php        # Reservas: acceso, cancelación, seguridad
+    └── SchedulerEndpointTest.php  # Endpoint /run-scheduler: autenticación con header
+```
+
+Ver `docs/TEST_PLAN.md` para el plan de pruebas completo con casos manuales y automatizados.
 
 ---
 
@@ -126,10 +164,12 @@ El endpoint verifica el header `X-Cron-Secret` contra la variable de entorno `CR
 │   ├── app/
 │   │   ├── Console/
 │   │   │   └── Commands/
-│   │   │       ├── CompleteFinishedClasses.php   # Scheduler: completar clases
-│   │   │       ├── MarkReservationsPaid.php       # Scheduler: marcar reservas pagadas
-│   │   │       └── FetchWeatherData.php           # Scheduler: caché meteorológica (Open-Meteo)
-│   │   ├── Exports/            # ReservationsExport, RevenueExport -> Controladores de exportación de datos
+│   │   │       ├── CompleteFinishedClasses.php    # Scheduler: completar clases
+│   │   │       ├── CompleteFinishedReservations.php # Scheduler: marcar reservas pagadas
+│   │   │       ├── FetchWeatherData.php            # Scheduler: caché meteorológica (Open-Meteo)
+│   │   │       ├── BackupDatabase.php              # Backup SQL de la BD → storage/app/backups/
+│   │   │       └── RestoreDatabase.php             # Restauración desde archivo de backup
+│   │   ├── Exports/            # ReservationsExport, RevenueExport
 │   │   ├── Http/
 │   │   │   ├── Controllers/    # Organizados por rol (Admin, Coach, Player)
 │   │   │   └── Middleware/
@@ -138,7 +178,11 @@ El endpoint verifica el header `X-Cron-Secret` contra la variable de entorno `CR
 │   │   │   └── BrevoTransport.php   # Transport HTTP personalizado para emails en Railway
 │   │   ├── Models/             # User, Court, Reservation, PadelClass, ClassRegistration, Role, WeatherCache
 │   │   └── Notifications/      # ClassRegistrationNotification, PublicClassNotification
+│   ├── config/
+│   │   └── padelsync.php       # Configuración propia del proyecto (cron_secret)
 │   ├── database/
+│   │   ├── factories/
+│   │   │   └── UserFactory.php # Factory con estados por rol (admin, coach, player)
 │   │   ├── migrations/
 │   │   └── seeders/
 │   ├── resources/
@@ -150,11 +194,20 @@ El endpoint verifica el header `X-Cron-Secret` contra la variable de entorno `CR
 │   │       ├── dashboard.blade.php   # Home autenticada con carrusel Alpine.js
 │   │       ├── profile.blade.php
 │   │       └── welcome.blade.php
-│   └── routes/
-│       ├── web.php             # Incluye el endpoint /run-scheduler
-│       ├── console.php         # Registro del scheduler (sin Kernel.php en Laravel 12)
-│       └── auth.php
-├── docs/               # Documentación dividida por secciones
+│   ├── routes/
+│   │   ├── web.php             # Incluye el endpoint /run-scheduler
+│   │   ├── console.php         # Registro del scheduler (sin Kernel.php en Laravel 12)
+│   │   └── auth.php
+│   ├── storage/
+│   │   └── app/
+│   │       └── backups/        # Backups SQL generados por db:backup
+│   └── tests/
+│       └── Feature/            # Tests de integración por módulo
+├── docs/
+│   ├── ARCHITECTURE.md
+│   ├── INSTALL.md
+│   ├── USAGE.md
+│   └── TEST_PLAN.md            # Plan de pruebas con casos y resultados
 ├── docker-compose.yml
 ├── README.md
 ├── DOCUMENTATION.md

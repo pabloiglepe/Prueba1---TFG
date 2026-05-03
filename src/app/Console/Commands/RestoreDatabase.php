@@ -65,7 +65,7 @@ class RestoreDatabase extends Command
         // MOSTRAR INFO Y PEDIR CONFIRMACIÓN
         $sizeKb = round(filesize($filePath) / 1024, 2);
 
-        $this->warn("⚠️  ADVERTENCIA: Esta operación REEMPLAZARÁ todos los datos actuales de la BD.");
+        $this->warn("  ADVERTENCIA: Esta operación REEMPLAZARÁ todos los datos actuales de la BD.");
         $this->line("  Archivo  : {$filePath}");
         $this->line("  Tamaño   : {$sizeKb} KB");
         $this->line("  Base de datos destino: " . config('database.connections.mysql.database'));

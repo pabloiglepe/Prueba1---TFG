@@ -55,6 +55,7 @@ Accede en [http://localhost:8000](http://localhost:8000)
 | Email | Brevo API HTTP |
 | Scheduler (prod) | cron-job.org + endpoint protegido |
 | Infraestructura | Docker (local) · Railway (producción) |
+| Pruebas Unitarias | PHPUnit / Laravel TestCase |
 
 ---
 
@@ -65,5 +66,6 @@ Accede en [http://localhost:8000](http://localhost:8000)
 | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | Arquitectura del sistema y stack tecnológico |
 | [docs/INSTALL.md](docs/INSTALL.md) | Guía de instalación detallada |
 | [docs/USAGE.md](docs/USAGE.md) | Manual de uso por roles |
+| [docs/TEST_PLAN.md](docs/TEST_PLAN.md) | Plan de pruebas y resultados de ejecución |
 | [DOCUMENTATION.md](DOCUMENTATION.md) | Documentación técnica completa |
 | [BITACORA.md](BITACORA.md) | Registro de desarrollo y lecciones aprendidas |

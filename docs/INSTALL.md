@@ -169,7 +169,38 @@ docker compose down
 
 # Parar y eliminar volúmenes
 docker compose down -v
+
+# Ejecutar todos los tests
+docker exec -it padel-app php artisan test
+
+# Ejecutar un grupo de tests concreto
+docker exec -it padel-app php artisan test tests/Feature/AuthTest.php
 ```
+
+---
+
+## Backup y restauración de la base de datos
+
+La aplicación incluye comandos Artisan para hacer y restaurar backups de la BD sin depender de herramientas externas como `mysqldump`. Los backups se guardan en `storage/app/backups/` y se conservan los últimos 7 automáticamente.
+
+```bash
+# Hacer un backup manual
+docker exec -it padel-app php artisan db:backup
+
+# Ver los backups disponibles
+docker exec -it padel-app ls -lh storage/app/backups/
+
+# Restaurar el backup más reciente (pedirá confirmación)
+docker exec -it padel-app php artisan db:restore
+
+# Restaurar un backup concreto
+docker exec -it padel-app php artisan db:restore padelsync_backup_2026-05-03_191746.sql
+
+# Restaurar sin confirmación interactiva
+docker exec -it padel-app php artisan db:restore --force
+```
+
+> El backup automático semanal se ejecuta cada domingo a las 03:00 vía el scheduler (en producción, disparado por cron-job.org). Para el **código fuente**, Git + GitHub actúa como sistema de backup versionado — cada `git push` es un backup completo.
 
 ---
 
@@ -220,3 +251,9 @@ Verificar que cron-job.org está activo y que el header `X-Cron-Secret` coincide
 
 **Los iconos de iconify-icon no aparecen**  
 Recompilar los assets con `npm run build`. Los iconos se sirven desde el bundle de Vite, no desde CDN externo.
+
+**El backup falla con error de permisos**  
+Dar permisos de escritura al directorio de backups:
+```bash
+docker exec -it padel-app chmod -R 775 storage/app/backups
+```

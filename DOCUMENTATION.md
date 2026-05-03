@@ -491,6 +491,97 @@ Cuando `precipitation_mm >= 1.0`, la propiedad `isRainy()` devuelve `true` y las
 
 ---
 
+### 5.13 Plan de pruebas — Tests PHPUnit
+
+**Archivos de test**: `tests/Feature/`  
+**Documento de resultados**: `docs/TEST_PLAN.md`
+
+#### Estrategia
+
+Se combinan tests automatizados con PHPUnit y una lista de comprobación manual para los flujos que dependen de renderizado visual o servicios externos (ECharts, Alpine.js, email real).
+
+La base de datos de tests usa **SQLite en memoria** configurada en `phpunit.xml`, completamente aislada de la BD de desarrollo. Cada test usa el trait `RefreshDatabase` para partir de un estado limpio.
+
+#### Tests automatizados creados
+
+| Archivo | Qué cubre |
+|---|---|
+| `AuthTest.php` | Login, logout, acceso por rol (8 tests) |
+| `CourtTest.php` | CRUD de pistas, desactivación con reservas futuras (5 tests) |
+| `ReservationTest.php` | Acceso, cancelación propia, seguridad entre usuarios (4 tests) |
+| `ClassTest.php` | Acceso por rol, inscripción, inscripción duplicada (5 tests) |
+| `SchedulerEndpointTest.php` | Autenticación del endpoint `/run-scheduler` (3 tests) |
+
+Los tests de Breeze existentes (`Auth/*`, `ProfileTest`) se adaptaron al flujo personalizado de PadelSync.
+
+#### Resultado de ejecución
+
+```
+Tests:    51 passed (114 assertions)
+Duration: 33.02s
+```
+
+#### `UserFactory` con estados por rol
+
+La `UserFactory` se actualizó para incluir estados por rol y un rol `player` por defecto:
+
+```php
+User::factory()->admin()->create();
+User::factory()->coach()->create();
+User::factory()->player()->create();
+User::factory()->create(); // player por defecto
+```
+
+El rol por defecto evita el `NOT NULL constraint failed: users.role_id` en los tests de Breeze que usan `User::factory()` sin estado explícito.
+
+---
+
+### 5.14 Sistema de backup y restauración
+
+**Comandos**: `app/Console/Commands/BackupDatabase.php`, `app/Console/Commands/RestoreDatabase.php`  
+**Directorio de backups**: `storage/app/backups/`
+
+#### `php artisan db:backup`
+
+Genera un volcado SQL completo de la base de datos sin depender de `mysqldump` (no disponible en contenedores PHP-FPM estándar ni en Railway). Usa Laravel DB directamente:
+
+- Obtiene el DDL de cada tabla con `SHOW CREATE TABLE`.
+- Exporta las filas en bloques de 100 INSERT para evitar sentencias demasiado largas.
+- Excluye tablas de datos volátiles: `cache`, `sessions`, `jobs`, `failed_jobs` y similares.
+- Conserva los últimos 7 backups y elimina los más antiguos automáticamente.
+- Acepta `--path=` para especificar una ruta de destino diferente.
+
+```bash
+docker exec -it padel-app php artisan db:backup
+```
+
+#### `php artisan db:restore`
+
+Restaura la BD desde un archivo de backup generado por `db:backup`:
+
+- Sin argumento: restaura el backup más reciente disponible.
+- Con argumento `{file}`: restaura el archivo especificado por nombre.
+- Con `--force`: omite la confirmación interactiva.
+- Desactiva `FOREIGN_KEY_CHECKS` durante la restauración (y los reactiva siempre, incluso en caso de error).
+
+```bash
+docker exec -it padel-app php artisan db:restore
+docker exec -it padel-app php artisan db:restore padelsync_backup_2026-05-03_191746.sql
+```
+
+#### Backup automático en el scheduler
+
+```php
+// routes/console.php — backup automático cada domingo a las 03:00
+app(Schedule::class)->command('db:backup')->weeklyOn(0, '03:00');
+```
+
+En producción, cron-job.org llama al endpoint `/run-scheduler` y Laravel ejecuta el backup cuando le corresponde según el schedule.
+
+#### Backup del código fuente
+
+El código fuente no requiere un sistema adicional: **Git + GitHub** actúa como backup versionado. Cada `git push` es un backup completo del código. `db:backup` cubre exclusivamente los **datos de la BD** que no están en el repositorio.
+
 ## 6. Decisiones técnicas relevantes
 
 ### `PadelClass` en lugar de `Class`

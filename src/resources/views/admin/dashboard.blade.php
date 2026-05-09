@@ -62,26 +62,75 @@
                 x-on:click.window="if(tab === 'resumen') { setTimeout(() => { window.dispatchEvent(new Event('resize')); }, 50); }"
                 class="space-y-6">
 
+                {{-- PANEL HOY --}}
+                <div style="background: #fff; border-radius: 12px; border: 0.5px solid #d4d9cc; padding: 24px;">
+                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                        <p style="font-size: 11px; font-weight: 600; color: #7a8a7a; text-transform: uppercase; letter-spacing: 0.05em; margin: 0;">
+                            Hoy · {{ now()->translatedFormat('l d/m/Y') }}
+                        </p>
+                        <div style="display: flex; gap: 20px;">
+                            <span style="font-size: 13px; color: #5a6b5a;">
+                                <b style="color: #2d3b2d;">{{ $todayCount }}</b> reservas
+                            </span>
+                            <span style="font-size: 13px; color: #6b8f6b; font-weight: 600;">
+                                {{ number_format($todayRevenue, 2) }}€
+                            </span>
+                        </div>
+                    </div>
+                    <div style="display: flex; flex-wrap: wrap; gap: 10px;">
+                        @forelse($courtStatusNow as $c)
+                        <div style="padding: 8px 14px; border-radius: 8px; font-size: 13px;
+                            background: {{ $c['occupied'] ? '#fce8e8' : '#e8f0e8' }};
+                            color: {{ $c['occupied'] ? '#9b4444' : '#4a6b4a' }};">
+                            <b>{{ $c['name'] }}</b>
+                            @if($c['occupied'])
+                                · Ocupada hasta {{ $c['until'] }}
+                                @if($c['player']) <span style="font-size: 12px; opacity: 0.8;">({{ $c['player'] }})</span> @endif
+                            @else
+                                · Libre
+                            @endif
+                        </div>
+                        @empty
+                        <p style="font-size: 13px; color: #9aaa9a; margin: 0;">No hay pistas activas configuradas.</p>
+                        @endforelse
+                    </div>
+                </div>
+
                 {{-- TARJETAS RESUMEN --}}
-                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
+                <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px;">
                     <div style="background: #fff; border-radius: 12px; border: 0.5px solid #d4d9cc; padding: 24px;">
                         <p style="font-size: 12px; color: #7a8a7a; margin: 0 0 8px;">Reservas totales</p>
                         <p style="font-size: 32px; font-weight: 600; color: #2d3b2d; margin: 0;">{{ $totalReservations }}</p>
+                        @if($reservationsTrend !== null)
+                        <p style="font-size: 12px; margin: 6px 0 0; color: {{ $reservationsTrend >= 0 ? '#4a6b4a' : '#9b4444' }};">
+                            {{ $reservationsTrend >= 0 ? '▲' : '▼' }} {{ abs($reservationsTrend) }}% vs mes anterior
+                        </p>
+                        @endif
                     </div>
                     <div style="background: #fff; border-radius: 12px; border: 0.5px solid #d4d9cc; padding: 24px;">
                         <p style="font-size: 12px; color: #7a8a7a; margin: 0 0 8px;">Ingresos totales</p>
                         <p style="font-size: 32px; font-weight: 600; color: #6b8f6b; margin: 0;">{{ number_format($totalRevenue, 2) }}€</p>
+                        @if($revenueTrend !== null)
+                        <p style="font-size: 12px; margin: 6px 0 0; color: {{ $revenueTrend >= 0 ? '#4a6b4a' : '#9b4444' }};">
+                            {{ $revenueTrend >= 0 ? '▲' : '▼' }} {{ abs($revenueTrend) }}% vs mes anterior
+                        </p>
+                        @endif
                     </div>
                     <div style="background: #fff; border-radius: 12px; border: 0.5px solid #d4d9cc; padding: 24px;">
                         <p style="font-size: 12px; color: #7a8a7a; margin: 0 0 8px;">Jugadores registrados</p>
                         <p style="font-size: 32px; font-weight: 600; color: #2d3b2d; margin: 0;">{{ $totalPlayers }}</p>
                         <p style="font-size: 12px; color: #9aaa9a; margin: 4px 0 0;">{{ $activePlayersCount }} activos últimos 30 días</p>
                     </div>
+                    <div style="background: #fff; border-radius: 12px; border: 0.5px solid #d4d9cc; padding: 24px;">
+                        <p style="font-size: 12px; color: #7a8a7a; margin: 0 0 8px;">Tasa de cancelación</p>
+                        <p style="font-size: 32px; font-weight: 600; color: #2d3b2d; margin: 0;">{{ $cancellationRate }}%</p>
+                        <p style="font-size: 12px; color: #9aaa9a; margin: 4px 0 0;">{{ $totalCancelled }} reservas canceladas</p>
+                    </div>
                 </div>
 
                 {{-- GRÁFICO OCUPACIÓN --}}
                 <div style="background: #fff; border-radius: 12px; border: 0.5px solid #d4d9cc; padding: 24px;">
-                    <h3 style="font-size: 15px; font-weight: 600; color: #2d3b2d; margin: 0 0 4px;">Ocupación de pistas (últimas 8 semanas)</h3>
+                    <h3 style="font-size: 15px; font-weight: 600; color: #2d3b2d; margin: 0 0 4px;">Ocupación de pistas (semanas -4 / +4 desde hoy)</h3>
                     <p style="font-size: 12px; color: #9aaa9a; margin: 0 0 20px;">Pulsa en un punto para ver el detalle de esa semana</p>
                     <div id="chart-occupancy" style="height: 300px;"></div>
                 </div>
@@ -382,8 +431,6 @@
 
             const occupancyLabels = JSON.parse(element.dataset.occupancyLabels);
             const occupancyData = JSON.parse(element.dataset.occupancyData);
-            console.log('Occupancy labels:', occupancyLabels);
-            console.log('Occupancy data:', occupancyData);
             const revenueLabels = JSON.parse(element.dataset.revenueLabels);
             const revenueData = JSON.parse(element.dataset.revenueData);
             const weekData = JSON.parse(element.dataset.weekData);

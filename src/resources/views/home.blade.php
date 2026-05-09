@@ -154,6 +154,85 @@
 
             {{-- ACCESOS RÁPIDOS SEGÚN ROL --}}
             @if($user->role->name === 'player')
+
+            {{-- STATS DEL MES --}}
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+                <div style="background: #fff; border-radius: 12px; border: 0.5px solid #d4d9cc; padding: 20px;">
+                    <p style="font-size: 12px; color: #7a8a7a; margin: 0 0 6px;">Reservas este mes</p>
+                    <p style="font-size: 28px; font-weight: 600; color: #2d3b2d; margin: 0;">{{ $playerData['monthReservationCount'] }}</p>
+                </div>
+                <div style="background: #fff; border-radius: 12px; border: 0.5px solid #d4d9cc; padding: 20px;">
+                    <p style="font-size: 12px; color: #7a8a7a; margin: 0 0 6px;">Gasto este mes</p>
+                    <p style="font-size: 28px; font-weight: 600; color: #6b8f6b; margin: 0;">{{ number_format($playerData['monthSpent'], 2) }}€</p>
+                </div>
+            </div>
+
+            {{-- PRÓXIMAS RESERVAS --}}
+            <div style="background: #fff; border-radius: 12px; border: 0.5px solid #d4d9cc; padding: 24px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                    <p style="font-size: 11px; font-weight: 600; color: #7a8a7a; text-transform: uppercase; letter-spacing: 0.05em; margin: 0;">Próximas reservas</p>
+                    <a href="{{ route('player.reservations.create') }}" wire:navigate
+                        style="font-size: 13px; color: #6b8f6b; font-weight: 500; text-decoration: none;">
+                        + Nueva reserva
+                    </a>
+                </div>
+                @forelse($playerData['upcomingReservations'] as $res)
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 0.5px solid #f0f3ee;">
+                    <div>
+                        <p style="font-size: 14px; font-weight: 500; color: #2d3b2d; margin: 0;">{{ $res->court->name }}</p>
+                        <p style="font-size: 12px; color: #7a8a7a; margin: 2px 0 0;">
+                            {{ \Carbon\Carbon::parse($res->reservation_date)->format('d/m/Y') }}
+                            · {{ \Carbon\Carbon::parse($res->start_time)->format('H:i') }}
+                            – {{ \Carbon\Carbon::parse($res->end_time)->format('H:i') }}
+                        </p>
+                    </div>
+                    <div style="text-align: right;">
+                        <p style="font-size: 14px; font-weight: 600; color: #6b8f6b; margin: 0;">{{ number_format($res->total_price, 2) }}€</p>
+                        <span style="font-size: 11px; padding: 2px 8px; border-radius: 20px;
+                            background: {{ $res->status === 'paid' ? '#e8f0e8' : '#fef9e8' }};
+                            color: {{ $res->status === 'paid' ? '#4a6b4a' : '#92650a' }};">
+                            {{ $res->status === 'paid' ? 'Pagada' : 'Pendiente' }}
+                        </span>
+                    </div>
+                </div>
+                @empty
+                <p style="font-size: 14px; color: #9aaa9a; margin: 0;">No tienes reservas próximas.</p>
+                @endforelse
+                @if($playerData['upcomingReservations']->isNotEmpty())
+                <a href="{{ route('player.reservations.index') }}" wire:navigate
+                    style="display: block; text-align: center; font-size: 13px; color: #6b8f6b; font-weight: 500; text-decoration: none; margin-top: 14px;">
+                    Ver todas mis reservas →
+                </a>
+                @endif
+            </div>
+
+            {{-- PRÓXIMAS CLASES --}}
+            <div style="background: #fff; border-radius: 12px; border: 0.5px solid #d4d9cc; padding: 24px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                    <p style="font-size: 11px; font-weight: 600; color: #7a8a7a; text-transform: uppercase; letter-spacing: 0.05em; margin: 0;">Mis próximas clases</p>
+                    <a href="{{ route('player.classes.index') }}" wire:navigate
+                        style="font-size: 13px; color: #6b8f6b; font-weight: 500; text-decoration: none;">
+                        Ver todas
+                    </a>
+                </div>
+                @forelse($playerData['upcomingClasses'] as $class)
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 0.5px solid #f0f3ee;">
+                    <div>
+                        <p style="font-size: 14px; font-weight: 500; color: #2d3b2d; margin: 0;">{{ $class->title }}</p>
+                        <p style="font-size: 12px; color: #7a8a7a; margin: 2px 0 0;">
+                            {{ \Carbon\Carbon::parse($class->date)->format('d/m/Y') }}
+                            · {{ \Carbon\Carbon::parse($class->start_time)->format('H:i') }}
+                            · {{ $class->coach->name }}
+                        </p>
+                    </div>
+                    <p style="font-size: 14px; font-weight: 600; color: #6b8f6b; margin: 0;">{{ number_format($class->price, 2) }}€</p>
+                </div>
+                @empty
+                <p style="font-size: 14px; color: #9aaa9a; margin: 0;">No tienes clases próximas programadas.</p>
+                @endforelse
+            </div>
+
+            {{-- ACCESOS RÁPIDOS --}}
             <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px;">
                 <a href="{{ route('player.reservations.create') }}" wire:navigate style="text-decoration: none;">
                     <div style="background: #fff; border-radius: 12px; border: 0.5px solid #d4d9cc; padding: 20px;"

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Court;
 use App\Models\Reservation;
 use App\Models\User;
 use Carbon\Carbon;
@@ -70,6 +71,60 @@ class DashboardController extends Controller
         $totalRevenue      = (float) Reservation::where('status', '!=', 'cancelled')->sum('total_price');
         $totalPlayers      = User::whereHas('role', fn($q) => $q->where('name', 'player'))->count();
 
+        // TENDENCIAS: COMPARATIVA ESTE MES VS MES ANTERIOR
+        $thisMonthStart = $now->copy()->startOfMonth()->format('Y-m-d');
+        $thisMonthEnd   = $now->copy()->endOfMonth()->format('Y-m-d');
+        $prevMonthStart = $now->copy()->subMonth()->startOfMonth()->format('Y-m-d');
+        $prevMonthEnd   = $now->copy()->subMonth()->endOfMonth()->format('Y-m-d');
+
+        $reservationsThisMonth = Reservation::where('status', '!=', 'cancelled')
+            ->whereBetween('reservation_date', [$thisMonthStart, $thisMonthEnd])->count();
+        $reservationsPrevMonth = Reservation::where('status', '!=', 'cancelled')
+            ->whereBetween('reservation_date', [$prevMonthStart, $prevMonthEnd])->count();
+        $reservationsTrend = $reservationsPrevMonth > 0
+            ? round((($reservationsThisMonth - $reservationsPrevMonth) / $reservationsPrevMonth) * 100, 1)
+            : null;
+
+        $revenueThisMonth = (float) Reservation::where('status', '!=', 'cancelled')
+            ->whereBetween('reservation_date', [$thisMonthStart, $thisMonthEnd])->sum('total_price');
+        $revenuePrevMonth = (float) Reservation::where('status', '!=', 'cancelled')
+            ->whereBetween('reservation_date', [$prevMonthStart, $prevMonthEnd])->sum('total_price');
+        $revenueTrend = $revenuePrevMonth > 0
+            ? round((($revenueThisMonth - $revenuePrevMonth) / $revenuePrevMonth) * 100, 1)
+            : null;
+
+        // TASA DE CANCELACIÓN
+        $totalAll        = Reservation::count();
+        $totalCancelled  = Reservation::where('status', 'cancelled')->count();
+        $cancellationRate = $totalAll > 0 ? round(($totalCancelled / $totalAll) * 100, 1) : 0.0;
+
+
+        // PANEL "HOY": RESERVAS, INGRESOS Y ESTADO DE CADA PISTA AHORA MISMO
+        $today       = $now->format('Y-m-d');
+        $currentTime = $now->format('H:i:s');
+
+        $todayReservations = Reservation::where('reservation_date', $today)
+            ->where('status', '!=', 'cancelled')
+            ->with(['court', 'user'])
+            ->orderBy('start_time')
+            ->get();
+
+        $todayCount   = $todayReservations->count();
+        $todayRevenue = (float) $todayReservations->sum('total_price');
+
+        $courtStatusNow = Court::where('is_active', true)->get()->map(function ($court) use ($today, $currentTime, $todayReservations) {
+            $activeRes = $todayReservations
+                ->where('court_id', $court->id)
+                ->first(fn($r) => $r->start_time <= $currentTime && $r->end_time > $currentTime);
+
+            return [
+                'name'     => $court->name,
+                'occupied' => (bool) $activeRes,
+                'until'    => $activeRes ? substr($activeRes->end_time, 0, 5) : null,
+                'player'   => $activeRes ? $activeRes->user->name : null,
+            ];
+        });
+
 
         // DAROS PARA LOS CLICKS EN LOS GRÁFICOS
         // $weekData = [];
@@ -106,7 +161,14 @@ class DashboardController extends Controller
             'totalPlayers',
             'weekData',
             'monthData',
-            'coaches'
+            'coaches',
+            'reservationsTrend',
+            'revenueTrend',
+            'cancellationRate',
+            'totalCancelled',
+            'todayCount',
+            'todayRevenue',
+            'courtStatusNow'
         ));
     }
 

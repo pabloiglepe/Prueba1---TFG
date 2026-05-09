@@ -11,7 +11,7 @@
 | Runtime PHP | PHP-FPM | 8.2 |
 | Compilación assets | Vite + Tailwind CSS | — |
 | Gráficos | ECharts | 5.6.0 (npm) |
-| Iconos | Heroicons / FontAwesome / iconify-icon | SVG inline / npm |
+| Iconos | iconify-icon (Phosphor Icons `ph:`) | npm |
 | Alertas | SweetAlert2 | CDN |
 | Contenerización | Docker + Docker Compose | — |
 | Despliegue | Railway | — |

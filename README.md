@@ -51,7 +51,7 @@ Accede en [http://localhost:8000](http://localhost:8000)
 | Frontend | Blade + Alpine.js + Tailwind CSS |
 | Base de datos | MySQL 8 |
 | Gráficos | ECharts (npm) |
-| Iconos | Heroicons / FontAwesome / iconify-icon (npm) |
+| Iconos | iconify-icon (npm) |
 | Email | Brevo API HTTP |
 | Scheduler (prod) | cron-job.org + endpoint protegido |
 | Infraestructura | Docker (local) · Railway (producción) |

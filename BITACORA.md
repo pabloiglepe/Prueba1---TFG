@@ -604,3 +604,84 @@ Iniciando restauración...
 El **código fuente** no requiere un sistema adicional: **Git + GitHub** actúa como sistema de backup versionado. Cada `git push` guarda el estado completo del código. Lo que `db:backup` aporta es la cobertura de los **datos de la BD** (usuarios, reservas, clases), que cambian en tiempo de ejecución y no están en el repositorio.
 
 **Lección**: implementar el backup como comandos Artisan integrados en el proyecto (en lugar de scripts externos) tiene varias ventajas: se ejecutan dentro del entorno de Laravel, tienen acceso a la configuración de la aplicación, funcionan igual en local y en Railway, y pueden programarse en el scheduler como cualquier otro comando. El backup de código fuente ya lo cubre Git — no hay que inventar nada para eso.
+
+---
+
+## Hito 22 — Migración completa de iconos SVG inline a iconify-icon (Phosphor Icons)
+
+**Problema**: las vistas del proyecto mezclaban tres fuentes de iconos distintas: SVGs inline copiados de Heroicons, FontAwesome vía CDN y la librería iconify-icon (ya instalada) usada solo en la landing. Esto generaba inconsistencia visual, SVGs verbosos de 20-30 líneas embebidos en el HTML y una dependencia CDN externa para parte de los iconos.
+
+**Decisión**: eliminar todos los SVGs inline y la dependencia CDN de FontAwesome, y unificar todos los iconos de la aplicación bajo la colección **Phosphor Icons** (`ph:`) de iconify-icon.
+
+### Archivos migrados
+
+| Vista | Iconos reemplazados |
+|---|---|
+| `admin/dashboard.blade.php` | 5 SVGs (gráfico, usuarios, descarga ×3) |
+| `admin/courts/index.blade.php` | SVGs de acciones y estados |
+| `admin/courts/create.blade.php` | SVGs de formulario |
+| `admin/courts/edit.blade.php` | SVGs de formulario y estadísticas |
+| `admin/users/index.blade.php` | SVGs de listado y acciones |
+| `admin/users/create.blade.php` | SVGs de formulario |
+| `admin/users/edit.blade.php` | SVGs de formulario y estadísticas |
+| `coach/classes/index.blade.php` | SVGs de tabs, cards y acciones |
+| `coach/classes/create.blade.php` | 8 SVGs (navegación, formulario, botones) |
+| `coach/classes/edit.blade.php` | 10 SVGs (navegación, formulario, visibilidad) |
+| `player/classes/index.blade.php` | 12 SVGs (tabs, secciones, cards disponibles) |
+| `player/classes/_card.blade.php` | 5 SVGs (fecha, hora, pista, entrenador, cancelar) |
+| `player/reservations/index.blade.php` | SVGs de acciones y estados |
+| `player/reservations/create.blade.php` | 11 SVGs (pasos, franjas, iconos de resumen) |
+| `livewire/layout/navigation.blade.php` | 6 SVGs incluyendo el menú hamburguesa |
+| `profile.blade.php` | 17 SVGs incluyendo iconos de campos de contraseña |
+
+### Patrón de uso
+
+```html
+{{-- Antes: SVG inline de 15-30 líneas --}}
+<svg xmlns="..." viewBox="0 0 24 24" fill="none" stroke="currentColor" ...>
+    <path d="..." />
+</svg>
+
+{{-- Después: web component de una línea --}}
+<iconify-icon icon="ph:calendar" style="font-size: 15px;"></iconify-icon>
+```
+
+El menú hamburguesa (un SVG con dos rutas que alternaban con Alpine.js `:class`) se resolvió con dos web components independientes usando `x-show`:
+
+```html
+<iconify-icon x-show="!open" icon="ph:list" style="font-size: 22px;"></iconify-icon>
+<iconify-icon x-show="open"  icon="ph:x"    style="font-size: 22px;"></iconify-icon>
+```
+
+**Lección**: los SVGs inline son legibles por los diseñadores pero penalizan al desarrollador que tiene que mantenerlos. El web component `iconify-icon` ocupa una línea, es autoexplicativo por el nombre del icono y permite cambiar de colección sin tocar las vistas. La colección Phosphor (`ph:`) cubre todos los casos de uso de la aplicación con un estilo coherente.
+
+---
+
+## Hito 23 — Rediseño de "Mis Reservas" con cards y tabs por estado
+
+**Problema**: la vista `player/reservations/index.blade.php` mostraba todas las reservas en una única tabla HTML plana con columnas Fecha / Horario / Pista / Precio / Estado / Acciones. La tabla era funcionalmente correcta pero visualmente inconsistente con el resto de la aplicación (el panel de clases del coach ya usaba cards con date-block lateral y tabs Alpine.js).
+
+**Decisión**: rediseñar la vista con el mismo patrón que `coach/classes/index.blade.php`:
+- **Tabs Alpine.js**: "Activas" (reservas `pending` + `paid`) y "Canceladas" (reservas `cancelled`).
+- **Cards en fila**: date-block izquierdo con día + mes, bloque central con nombre de pista, badge interior/exterior, tipo · superficie y horario, bloque derecho con badge de estado, precio y botón de cancelar.
+- **Estilo diferenciado**: cards blancas con borde `#d4d9cc` para activas; cards en `#fafbf9` con borde `#e4e9e0` para canceladas (igual que las clases completadas/canceladas del coach).
+
+### Incidencia — Alpine.js sobreescribe `display: flex` en `x-show`
+
+**Problema**: tras implementar el rediseño, el `gap` entre cards no se aplicaba aunque estaba en el `style` del contenedor.  
+**Causa**: `x-show` de Alpine.js gestiona la visibilidad del elemento modificando su propiedad `display`. Al mostrar el elemento, puede sobreescribir el `display: flex` definido en el `style` inline con `display: block`.  
+**Solución**: separar la directiva `x-show` en un div wrapper externo y el `display: flex` con el `gap` en un div interno que Alpine nunca toca:
+
+```html
+{{-- INCORRECTO: Alpine puede anular display:flex --}}
+<div x-show="tab === 'active'" style="display: flex; flex-direction: column; gap: 16px;">
+
+{{-- CORRECTO: wrapper para x-show + div interno para el layout --}}
+<div x-show="tab === 'active'">
+    <div style="display: flex; flex-direction: column; gap: 16px;">
+        ...
+    </div>
+</div>
+```
+
+**Lección**: nunca combinar `x-show` con `display: flex` en el mismo elemento. Usar siempre un wrapper externo para Alpine y un div interno para el layout flex/grid. Este mismo patrón se aplica con `x-if`, `x-transition` y cualquier directiva Alpine que gestione visibilidad.

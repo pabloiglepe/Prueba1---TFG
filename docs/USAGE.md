@@ -145,7 +145,10 @@ Ruta: `/player/reservations/create`
 
 Ruta: `/player/reservations`
 
-Listado de todas las reservas con fecha, horario, pista, precio y estado. Las reservas no canceladas pueden cancelarse desde aquí.
+Vista organizada en dos pestañas:
+
+- **Activas**: reservas con estado `Pendiente` o `Pagada`. Cada card muestra el día y mes, nombre de pista, interior/exterior, tipo y superficie, horario, estado, precio y botón de cancelar.
+- **Canceladas**: reservas canceladas con el mismo layout en tono grisáceo, sin opción de acción.
 
 ### Clases
 

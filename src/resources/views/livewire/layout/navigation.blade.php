@@ -107,10 +107,7 @@ new class extends Component
                         style="position: relative; padding: 8px; color: #5a6b5a; background: none; border: none; cursor: pointer; border-radius: 8px;"
                         onmouseover="this.style.background='#f7f8f5'"
                         onmouseout="this.style.background='none'">
-                        <svg xmlns="http://www.w3.org/2000/svg" style="width:22px;height:22px;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6 6 0 10-12 0v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-                        </svg>
+                        <iconify-icon icon="ph:bell" style="font-size: 22px;"></iconify-icon>
                         @if($notifications->count() > 0)
                         <span style="position: absolute; top: 4px; right: 4px; width: 16px; height: 16px; background: #e05c5c; color: #fff; font-size: 10px; font-weight: 700; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
                             {{ $notifications->count() }}
@@ -149,9 +146,7 @@ new class extends Component
                                 <button wire:click="markAsRead('{{ $notification->id }}')"
                                     style="color: #b8c9b8; background: none; border: none; cursor: pointer; flex-shrink: 0; padding: 2px;"
                                     title="Marcar como leída">
-                                    <svg xmlns="http://www.w3.org/2000/svg" style="width:16px;height:16px;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
-                                    </svg>
+                                    <iconify-icon icon="ph:check-light" style="font-size: 16px;"></iconify-icon>
                                 </button>
                             </div>
                             @empty
@@ -172,17 +167,13 @@ new class extends Component
                             <div x-data="{{ json_encode(['name' => Auth::user()->name]) }}"
                                 x-text="name"
                                 x-on:profile-updated.window="name = $event.detail.name"></div>
-                            <svg style="width:14px;height:14px;fill:#5a6b5a;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
-                            </svg>
+                            <iconify-icon icon="ph:caret-down" style="font-size: 14px; color: #5a6b5a;"></iconify-icon>
                         </button>
                     </x-slot>
                     <x-slot name="content">
                         <x-dropdown-link :href="route('profile')" wire:navigate>
                             <div style="display: flex; align-items: center; gap: 8px;">
-                                <svg xmlns="http://www.w3.org/2000/svg" style="width:15px;height:15px;stroke:#5a6b5a;flex-shrink:0;" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
-                                </svg>
+                                <iconify-icon icon="ph:user-circle" style="font-size: 15px; color: #5a6b5a; flex-shrink: 0;"></iconify-icon>
 
                                 Perfil
                             </div>
@@ -190,11 +181,7 @@ new class extends Component
                         <button wire:click="logout" class="w-full text-start">
                             <x-dropdown-link>
                                 <div style="display: flex; align-items: center; gap: 8px;">
-                                    <svg xmlns="http://www.w3.org/2000/svg" style="width:15px;height:15px;stroke:#5a6b5a;flex-shrink:0;" fill="none" viewBox="0 0 24 24" stroke-width="2">
-                                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
-                                        <polyline points="16 17 21 12 16 7" />
-                                        <line x1="21" y1="12" x2="9" y2="12" />
-                                    </svg>
+                                    <iconify-icon icon="ph:sign-out" style="font-size: 15px; color: #5a6b5a; flex-shrink: 0;"></iconify-icon>
                                     Cerrar sesión
                                 </div>
                             </x-dropdown-link>
@@ -208,10 +195,8 @@ new class extends Component
             <div class="-me-2 flex items-center sm:hidden">
                 <button @click="open = ! open"
                     style="padding: 8px; border-radius: 8px; border: none; background: none; cursor: pointer; color: #5a6b5a;">
-                    <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
-                        <path :class="{'hidden': open, 'inline-flex': ! open }" class="inline-flex" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-                        <path :class="{'hidden': ! open, 'inline-flex': open }" class="hidden" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
+                    <iconify-icon x-show="!open" icon="ph:list-light" style="font-size: 24px;"></iconify-icon>
+                    <iconify-icon x-show="open" icon="ph:x-light" style="font-size: 24px;"></iconify-icon>
                 </button>
             </div>
         </div>

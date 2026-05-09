@@ -14,27 +14,19 @@
 
         <div style="display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px;">
             <div style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: #5a6b5a;">
-                <svg xmlns="http://www.w3.org/2000/svg" style="width:14px;height:14px;stroke:#6b8f6b;flex-shrink:0;" fill="none" viewBox="0 0 24 24" stroke-width="2">
-                    <rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
-                </svg>
+                <iconify-icon icon="ph:calendar" style="font-size: 14px; color: #6b8f6b; flex-shrink: 0;"></iconify-icon>
                 {{ \Carbon\Carbon::parse($class->date)->format('d/m/Y') }}
             </div>
             <div style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: #5a6b5a;">
-                <svg xmlns="http://www.w3.org/2000/svg" style="width:14px;height:14px;stroke:#6b8f6b;flex-shrink:0;" fill="none" viewBox="0 0 24 24" stroke-width="2">
-                    <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
-                </svg>
+                <iconify-icon icon="ph:clock" style="font-size: 14px; color: #6b8f6b; flex-shrink: 0;"></iconify-icon>
                 {{ \Carbon\Carbon::parse($class->start_time)->format('H:i') }} — {{ \Carbon\Carbon::parse($class->end_time)->format('H:i') }}
             </div>
             <div style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: #5a6b5a;">
-                <svg xmlns="http://www.w3.org/2000/svg" style="width:14px;height:14px;stroke:#6b8f6b;flex-shrink:0;" fill="none" viewBox="0 0 24 24" stroke-width="2">
-                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
-                </svg>
+                <iconify-icon icon="ph:house" style="font-size: 14px; color: #6b8f6b; flex-shrink: 0;"></iconify-icon>
                 {{ $class->court->name }}
             </div>
             <div style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: #5a6b5a;">
-                <svg xmlns="http://www.w3.org/2000/svg" style="width:14px;height:14px;stroke:#6b8f6b;flex-shrink:0;" fill="none" viewBox="0 0 24 24" stroke-width="2">
-                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
-                </svg>
+                <iconify-icon icon="ph:user" style="font-size: 14px; color: #6b8f6b; flex-shrink: 0;"></iconify-icon>
                 {{ $class->coach->name }}
             </div>
         </div>
@@ -53,9 +45,7 @@
                     style="display: inline-flex; align-items: center; gap: 6px; font-size: 13px; color: #c0625e; font-weight: 500; background: none; border: none; cursor: pointer; padding: 0;"
                     onmouseover="this.style.color='#9b4444'"
                     onmouseout="this.style.color='#c0625e'">
-                <svg xmlns="http://www.w3.org/2000/svg" style="width:14px;height:14px;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/>
-                </svg>
+                <iconify-icon icon="ph:x-circle" style="font-size: 14px;"></iconify-icon>
                 Cancelar inscripción
             </button>
         </form>

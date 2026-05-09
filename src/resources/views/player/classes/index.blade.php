@@ -26,20 +26,13 @@
                 <button @click="tab = 'mis-clases'"
                     :style="tab === 'mis-clases' ? 'border-bottom: 2px solid #6b8f6b; color: #4a6b4a;' : 'border-bottom: 2px solid transparent; color: #7a8a7a;'"
                     style="display: inline-flex; align-items: center; gap: 8px; padding: 14px 40px; font-size: 14px; font-weight: 500; background: none; border-top: none; border-left: none; border-right: none; cursor: pointer; margin-bottom: -1px;">
-                    <svg xmlns="http://www.w3.org/2000/svg" style="width:15px;height:15px;flex-shrink:0;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-                        <circle cx="12" cy="7" r="4" />
-                    </svg>
+                    <iconify-icon icon="ph:user" style="font-size: 15px; flex-shrink: 0;"></iconify-icon>
                     Mis clases
                 </button>
                 <button @click="tab = 'disponibles'"
                     :style="tab === 'disponibles' ? 'border-bottom: 2px solid #6b8f6b; color: #4a6b4a;' : 'border-bottom: 2px solid transparent; color: #7a8a7a;'"
                     style="display: inline-flex; align-items: center; gap: 8px; padding: 14px 40px; font-size: 14px; font-weight: 500; background: none; border-top: none; border-left: none; border-right: none; cursor: pointer; margin-bottom: -1px;">
-                    <svg xmlns="http://www.w3.org/2000/svg" style="width:15px;height:15px;flex-shrink:0;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <circle cx="12" cy="12" r="10" />
-                        <line x1="2" y1="12" x2="22" y2="12" />
-                        <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
-                    </svg>
+                    <iconify-icon icon="ph:globe" style="font-size: 15px; flex-shrink: 0;"></iconify-icon>
                     Clases disponibles
                 </button>
             </div>
@@ -49,10 +42,7 @@
 
                 @if($myClasses->isEmpty())
                 <div style="background: #fff; border-radius: 12px; border: 0.5px solid #d4d9cc; padding: 60px; text-align: center;">
-                    <svg xmlns="http://www.w3.org/2000/svg" style="width:40px;height:40px;stroke:#d4d9cc;margin: 0 auto 12px;" fill="none" viewBox="0 0 24 24" stroke-width="1.5">
-                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-                        <circle cx="12" cy="7" r="4" />
-                    </svg>
+                    <iconify-icon icon="ph:user" style="font-size: 40px; color: #d4d9cc; display: block; margin: 0 auto 12px;"></iconify-icon>
                     <p style="font-size: 14px; color: #9aaa9a; margin: 0;">No estás inscrito en ninguna clase todavía.</p>
                 </div>
                 @else
@@ -63,15 +53,9 @@
                 <div>
                     <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 16px;">
                         <div style="display: flex; align-items: center; gap: 8px;">
-                            <svg xmlns="http://www.w3.org/2000/svg" style="width:15px;height:15px;stroke:#7a8a7a;" fill="none" viewBox="0 0 24 24" stroke-width="2">
-                                <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
-                                <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-                            </svg>
+                            <iconify-icon icon="ph:lock-simple" style="font-size: 15px; color: #7a8a7a;"></iconify-icon>
                             <h3 style="font-size: 14px; font-weight: 600; color: #5a6b5a; margin: 0; text-transform: uppercase; letter-spacing: 0.05em;">Privadas</h3>
                         </div>
-                        <span style="padding: 2px 8px; background: #f0f3ee; color: #7a8a7a; border-radius: 20px; font-size: 11px; font-weight: 600;">
-                            {{ $privateClasses->count() }}
-                        </span>
                     </div>
                     <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px;">
                         @foreach($privateClasses as $class)
@@ -87,16 +71,9 @@
                 <div>
                     <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 16px;">
                         <div style="display: flex; align-items: center; gap: 8px;">
-                            <svg xmlns="http://www.w3.org/2000/svg" style="width:15px;height:15px;stroke:#6b8f6b;" fill="none" viewBox="0 0 24 24" stroke-width="2">
-                                <circle cx="12" cy="12" r="10" />
-                                <line x1="2" y1="12" x2="22" y2="12" />
-                                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
-                            </svg>
+                            <iconify-icon icon="ph:globe" style="font-size: 15px; color: #6b8f6b;"></iconify-icon>
                             <h3 style="font-size: 14px; font-weight: 600; color: #4a6b4a; margin: 0; text-transform: uppercase; letter-spacing: 0.05em;">Públicas</h3>
                         </div>
-                        <span style="padding: 2px 8px; background: #e8f0e8; color: #4a6b4a; border-radius: 20px; font-size: 11px; font-weight: 600;">
-                            {{ $publicClasses->count() }}
-                        </span>
                     </div>
                     <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px;">
                         @foreach($publicClasses as $class)
@@ -114,11 +91,7 @@
 
                 @if($availableClasses->isEmpty())
                 <div style="background: #fff; border-radius: 12px; border: 0.5px solid #d4d9cc; padding: 60px; text-align: center;">
-                    <svg xmlns="http://www.w3.org/2000/svg" style="width:40px;height:40px;stroke:#d4d9cc;margin: 0 auto 12px;" fill="none" viewBox="0 0 24 24" stroke-width="1.5">
-                        <circle cx="12" cy="12" r="10" />
-                        <line x1="2" y1="12" x2="22" y2="12" />
-                        <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
-                    </svg>
+                    <iconify-icon icon="ph:globe" style="font-size: 40px; color: #d4d9cc; display: block; margin: 0 auto 12px;"></iconify-icon>
                     <p style="font-size: 14px; color: #9aaa9a; margin: 0;">No hay clases públicas disponibles en este momento.</p>
                 </div>
                 @else
@@ -140,41 +113,23 @@
 
                             <div style="display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px;">
                                 <div style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: #5a6b5a;">
-                                    <svg xmlns="http://www.w3.org/2000/svg" style="width:14px;height:14px;stroke:#6b8f6b;flex-shrink:0;" fill="none" viewBox="0 0 24 24" stroke-width="2">
-                                        <rect x="3" y="4" width="18" height="18" rx="2" />
-                                        <line x1="16" y1="2" x2="16" y2="6" />
-                                        <line x1="8" y1="2" x2="8" y2="6" />
-                                        <line x1="3" y1="10" x2="21" y2="10" />
-                                    </svg>
+                                    <iconify-icon icon="ph:calendar" style="font-size: 14px; color: #6b8f6b; flex-shrink: 0;"></iconify-icon>
                                     {{ \Carbon\Carbon::parse($class->date)->format('d/m/Y') }}
                                 </div>
                                 <div style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: #5a6b5a;">
-                                    <svg xmlns="http://www.w3.org/2000/svg" style="width:14px;height:14px;stroke:#6b8f6b;flex-shrink:0;" fill="none" viewBox="0 0 24 24" stroke-width="2">
-                                        <circle cx="12" cy="12" r="10" />
-                                        <polyline points="12 6 12 12 16 14" />
-                                    </svg>
+                                    <iconify-icon icon="ph:clock" style="font-size: 14px; color: #6b8f6b; flex-shrink: 0;"></iconify-icon>
                                     {{ \Carbon\Carbon::parse($class->start_time)->format('H:i') }} — {{ \Carbon\Carbon::parse($class->end_time)->format('H:i') }}
                                 </div>
                                 <div style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: #5a6b5a;">
-                                    <svg xmlns="http://www.w3.org/2000/svg" style="width:14px;height:14px;stroke:#6b8f6b;flex-shrink:0;" fill="none" viewBox="0 0 24 24" stroke-width="2">
-                                        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
-                                    </svg>
+                                    <iconify-icon icon="ph:house" style="font-size: 14px; color: #6b8f6b; flex-shrink: 0;"></iconify-icon>
                                     {{ $class->court->name }}
                                 </div>
                                 <div style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: #5a6b5a;">
-                                    <svg xmlns="http://www.w3.org/2000/svg" style="width:14px;height:14px;stroke:#6b8f6b;flex-shrink:0;" fill="none" viewBox="0 0 24 24" stroke-width="2">
-                                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-                                        <circle cx="12" cy="7" r="4" />
-                                    </svg>
+                                    <iconify-icon icon="ph:user" style="font-size: 14px; color: #6b8f6b; flex-shrink: 0;"></iconify-icon>
                                     {{ $class->coach->name }}
                                 </div>
                                 <div style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: #5a6b5a;">
-                                    <svg xmlns="http://www.w3.org/2000/svg" style="width:14px;height:14px;stroke:#6b8f6b;flex-shrink:0;" fill="none" viewBox="0 0 24 24" stroke-width="2">
-                                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
-                                        <circle cx="9" cy="7" r="4" />
-                                        <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
-                                        <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-                                    </svg>
+                                    <iconify-icon icon="ph:users" style="font-size: 14px; color: #6b8f6b; flex-shrink: 0;"></iconify-icon>
                                     {{ $class->enrolled_count }}/{{ $class->max_players }} plazas
                                 </div>
                             </div>
@@ -191,9 +146,7 @@
                                 style="width: 100%; display: inline-flex; align-items: center; justify-content: center; gap: 8px; background: #6b8f6b; color: #fff; font-size: 14px; font-weight: 500; padding: 10px; border-radius: 8px; border: none; cursor: pointer;"
                                 onmouseover="this.style.background='#4a6b4a'"
                                 onmouseout="this.style.background='#6b8f6b'">
-                                <svg xmlns="http://www.w3.org/2000/svg" style="width:15px;height:15px;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
-                                </svg>
+                                <iconify-icon icon="ph:check" style="font-size: 15px;"></iconify-icon>
                                 Inscribirme
                             </button>
                         </form>

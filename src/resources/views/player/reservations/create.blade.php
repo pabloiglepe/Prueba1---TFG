@@ -8,10 +8,7 @@
                 style="display: inline-flex; align-items: center; gap: 6px; font-size: 14px; color: #5a6b5a; text-decoration: none;"
                 onmouseover="this.style.color='#2d3b2d'"
                 onmouseout="this.style.color='#5a6b5a'">
-                <svg xmlns="http://www.w3.org/2000/svg" style="width:15px;height:15px;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <line x1="19" y1="12" x2="5" y2="12"/>
-                    <polyline points="12 19 5 12 12 5"/>
-                </svg>
+                <iconify-icon icon="ph:arrow-left" style="font-size: 15px;"></iconify-icon>
                 Mis Reservas
             </a>
         </div>
@@ -40,9 +37,7 @@
                             style="display: inline-flex; align-items: center; gap: 8px; background: #6b8f6b; color: #fff; font-size: 14px; font-weight: 500; padding: 9px 20px; border-radius: 8px; border: none; cursor: pointer; white-space: nowrap;"
                             onmouseover="this.style.background='#4a6b4a'"
                             onmouseout="this.style.background='#6b8f6b'">
-                        <svg xmlns="http://www.w3.org/2000/svg" style="width:15px;height:15px;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
-                        </svg>
+                        <iconify-icon icon="ph:magnifying-glass" style="font-size: 15px;"></iconify-icon>
                         Buscar franjas
                     </button>
                 </div>
@@ -52,12 +47,7 @@
         {{-- AVISO DE LLUVIA --}}
         @if(request('date') && $isRainy)
             <div style="padding: 14px 18px; background: #eaf2fb; border: 0.5px solid #a8c8e8; border-radius: 10px; font-size: 14px; color: #2a5f8a; display: flex; align-items: center; gap: 10px;">
-                <svg xmlns="http://www.w3.org/2000/svg" style="width:18px;height:18px;stroke:#2a5f8a;flex-shrink:0;" fill="none" viewBox="0 0 24 24" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M20 17.58A5 5 0 0 0 18 8h-1.26A8 8 0 1 0 4 16.25"/>
-                    <line x1="8" y1="19" x2="8" y2="21"/><line x1="8" y1="13" x2="8" y2="15"/>
-                    <line x1="12" y1="15" x2="12" y2="17"/><line x1="12" y1="21" x2="12" y2="23"/>
-                    <line x1="16" y1="19" x2="16" y2="21"/><line x1="16" y1="13" x2="16" y2="15"/>
-                </svg>
+                <iconify-icon icon="ph:cloud-rain" style="font-size: 18px; color: #2a5f8a; flex-shrink: 0;"></iconify-icon>
                 <span>
                     <strong>Se prevé lluvia para este día.</strong>
                     Las pistas exteriores no están disponibles. Solo se muestran pistas interiores.
@@ -69,9 +59,7 @@
         @if(request('date'))
             @if($slots->isEmpty())
                 <div style="padding: 16px 20px; background: #fdf6e8; border: 0.5px solid #e8d4a0; border-radius: 10px; font-size: 14px; color: #92650a; display: flex; align-items: center; gap: 10px;">
-                    <svg xmlns="http://www.w3.org/2000/svg" style="width:18px;height:18px;stroke:#b8860b;flex-shrink:0;" fill="none" viewBox="0 0 24 24" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
-                    </svg>
+                    <iconify-icon icon="ph:warning" style="font-size: 18px; color: #b8860b; flex-shrink: 0;"></iconify-icon>
                     No hay franjas disponibles para hoy. El horario de reservas ha finalizado por hoy, prueba con otra fecha.
                 </div>
             @else
@@ -84,25 +72,15 @@
                 {{-- TARIFAS --}}
                 <div style="display: flex; gap: 16px; margin-bottom: 16px; padding-left: 36px; flex-wrap: wrap;">
                     <span style="display: inline-flex; align-items: center; gap: 5px; font-size: 13px; color: #5a6b5a;">
-                        <svg xmlns="http://www.w3.org/2000/svg" style="width:14px;height:14px;stroke:#6b8f6b;" fill="none" viewBox="0 0 24 24" stroke-width="2">
-                            <circle cx="12" cy="12" r="5"/>
-                            <line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
-                            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
-                            <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
-                            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
-                        </svg>
+                        <iconify-icon icon="ph:sun" style="font-size: 14px; color: #6b8f6b;"></iconify-icon>
                         Diurna: <strong style="color: #2d3b2d;">12€</strong>
                     </span>
                     <span style="display: inline-flex; align-items: center; gap: 5px; font-size: 13px; color: #5a6b5a;">
-                        <svg xmlns="http://www.w3.org/2000/svg" style="width:14px;height:14px;stroke:#6b8f6b;" fill="none" viewBox="0 0 24 24" stroke-width="2">
-                            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
-                        </svg>
+                        <iconify-icon icon="ph:moon" style="font-size: 14px; color: #6b8f6b;"></iconify-icon>
                         Nocturna (desde {{ $nightStartTime }}): <strong style="color: #2d3b2d;">16€</strong>
                     </span>
                     <span style="display: inline-flex; align-items: center; gap: 5px; font-size: 13px; color: #5a6b5a;">
-                        <svg xmlns="http://www.w3.org/2000/svg" style="width:14px;height:14px;stroke:#6b8f6b;" fill="none" viewBox="0 0 24 24" stroke-width="2">
-                            <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
-                        </svg>
+                        <iconify-icon icon="ph:clock" style="font-size: 14px; color: #6b8f6b;"></iconify-icon>
                         Duración: <strong style="color: #2d3b2d;">1h 30min</strong>
                     </span>
                 </div>
@@ -132,9 +110,7 @@
         @if(request('start_time'))
             @if($courts->isEmpty())
                 <div style="padding: 16px 20px; background: #fdf6e8; border: 0.5px solid #e8d4a0; border-radius: 10px; font-size: 14px; color: #92650a; display: flex; align-items: center; gap: 10px;">
-                    <svg xmlns="http://www.w3.org/2000/svg" style="width:18px;height:18px;stroke:#b8860b;flex-shrink:0;" fill="none" viewBox="0 0 24 24" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
-                    </svg>
+                    <iconify-icon icon="ph:warning" style="font-size: 18px; color: #b8860b; flex-shrink: 0;"></iconify-icon>
                     No hay pistas disponibles para ese horario. Prueba otra franja.
                 </div>
             @else
@@ -166,23 +142,12 @@
                                             {{-- BADGE INTERIOR / EXTERIOR --}}
                                             @if($court->is_outdoor)
                                                 <span style="display: inline-flex; align-items: center; gap: 3px; padding: 2px 7px; background: #e8f4e8; color: #4a6b4a; border-radius: 20px; font-size: 11px; font-weight: 500;">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" style="width:10px;height:10px;stroke:#4a6b4a;" fill="none" viewBox="0 0 24 24" stroke-width="2">
-                                                        <circle cx="12" cy="12" r="5"/>
-                                                        <line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
-                                                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
-                                                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
-                                                        <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
-                                                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
-                                                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
-                                                    </svg>
+                                                    <iconify-icon icon="ph:sun" style="font-size: 10px; color: #4a6b4a;"></iconify-icon>
                                                     Exterior
                                                 </span>
                                             @else
                                                 <span style="display: inline-flex; align-items: center; gap: 3px; padding: 2px 7px; background: #f0f0f8; color: #5a5a8a; border-radius: 20px; font-size: 11px; font-weight: 500;">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" style="width:10px;height:10px;stroke:#5a5a8a;" fill="none" viewBox="0 0 24 24" stroke-width="2">
-                                                        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
-                                                        <polyline points="9 22 9 12 15 12 15 22"/>
-                                                    </svg>
+                                                    <iconify-icon icon="ph:house" style="font-size: 10px; color: #5a5a8a;"></iconify-icon>
                                                     Interior
                                                 </span>
                                             @endif
@@ -223,9 +188,7 @@
                                     style="display: inline-flex; align-items: center; gap: 8px; background: #6b8f6b; color: #fff; font-size: 14px; font-weight: 500; padding: 11px 24px; border-radius: 8px; border: none; cursor: pointer;"
                                     onmouseover="this.style.background='#4a6b4a'"
                                     onmouseout="this.style.background='#6b8f6b'">
-                                <svg xmlns="http://www.w3.org/2000/svg" style="width:15px;height:15px;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
-                                </svg>
+                                <iconify-icon icon="ph:check" style="font-size: 15px;"></iconify-icon>
                                 Confirmar Reserva
                             </button>
                         </div>

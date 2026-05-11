@@ -9,7 +9,10 @@
         data-week-data="{{ htmlspecialchars(json_encode($weekData), ENT_NOQUOTES) }}"
         data-month-data="{{ htmlspecialchars(json_encode($monthData), ENT_NOQUOTES) }}"
         data-url-week="{{ route('admin.dashboard.week-detail') }}"
-        data-url-month="{{ route('admin.dashboard.month-detail') }}">
+        data-url-month="{{ route('admin.dashboard.month-detail') }}"
+        data-status-paid="{{ $statusPaid }}"
+        data-status-pending="{{ $statusPending }}"
+        data-status-cancelled="{{ $statusCancelled }}">
     </div>
 
     <x-slot name="header">
@@ -108,11 +111,13 @@
                         <p style="font-size: 32px; font-weight: 600; color: #2d3b2d; margin: 0;">{{ $totalPlayers }}</p>
                         <p style="font-size: 12px; color: #9aaa9a; margin: 4px 0 0;">{{ $activePlayersCount }} activos últimos 30 días</p>
                     </div>
-                    <div style="background: #fff; border-radius: 12px; border: 0.5px solid #d4d9cc; padding: 24px;">
-                        <p style="font-size: 12px; color: #7a8a7a; margin: 0 0 8px;">Tasa de cancelación</p>
-                        <p style="font-size: 32px; font-weight: 600; color: #2d3b2d; margin: 0;">{{ $cancellationRate }}%</p>
-                        <p style="font-size: 12px; color: #9aaa9a; margin: 4px 0 0;">{{ $totalCancelled }} reservas canceladas</p>
-                    </div>
+                </div>
+
+                {{-- GRÁFICO ESTADO DE RESERVAS --}}
+                <div style="background: #fff; border-radius: 12px; border: 0.5px solid #d4d9cc; padding: 24px;">
+                    <h3 style="font-size: 15px; font-weight: 600; color: #2d3b2d; margin: 0 0 4px;">Estado de las reservas</h3>
+                    <p style="font-size: 12px; color: #9aaa9a; margin: 0 0 20px;">Distribución global por estado: completadas, pendientes y canceladas</p>
+                    <div id="chart-status" style="height: 280px;"></div>
                 </div>
 
                 {{-- GRÁFICO OCUPACIÓN --}}
@@ -418,25 +423,32 @@
             const urlMonth = element.dataset.urlMonth;
 
             // SELECTORES DE LAS GRÁFICAS EN HTML
-            const occupancy = document.getElementById('chart-occupancy');
-            const revenue = document.getElementById('chart-revenue');
+            const statusPaid      = parseInt(element.dataset.statusPaid);
+            const statusPending   = parseInt(element.dataset.statusPending);
+            const statusCancelled = parseInt(element.dataset.statusCancelled);
 
-            if (!occupancy || !revenue) return;
+            // SELECTORES DE LAS GRÁFICAS EN HTML
+            const occupancy = document.getElementById('chart-occupancy');
+            const revenue   = document.getElementById('chart-revenue');
+            const statusEl  = document.getElementById('chart-status');
+
+            if (!occupancy || !revenue || !statusEl) return;
 
             // LIMPIAR INSTANCIAS ANTERIORES
             const existingOccupancy = echarts.getInstanceByDom(occupancy);
-            const existingRevenue = echarts.getInstanceByDom(revenue);
+            const existingRevenue   = echarts.getInstanceByDom(revenue);
             if (existingOccupancy) existingOccupancy.dispose();
-            if (existingRevenue) existingRevenue.dispose();
+            if (existingRevenue)   existingRevenue.dispose();
 
-            // INICIALIZAR GRÁFICOS
             const chartOccupancy = echarts.init(occupancy);
-            const chartRevenue = echarts.init(revenue);
+            const chartRevenue   = echarts.init(revenue);
+            const chartStatus    = echarts.init(statusEl);
 
             // FORZAMOS RESIZE TRAS INICIALIZAR POR SI EL CONTENEDOR TENÍA DIMENSIONES CERO
             setTimeout(() => {
                 chartOccupancy.resize();
                 chartRevenue.resize();
+                chartStatus.resize();
             }, 50);
 
             // GRÁFICO OCUPACIÓN -> LÍNEAS
@@ -542,12 +554,45 @@
                     .then(data => renderMonthModal(data));
             });
 
+            // GRÁFICO ESTADO DE RESERVAS -> PIE
+            chartStatus.setOption({
+                tooltip: {
+                    trigger: 'item',
+                    formatter: '{b}: {c} ({d}%)'
+                },
+                legend: {
+                    orient: 'vertical',
+                    right: '5%',
+                    top: 'center',
+                    textStyle: { color: '#5a6b5a', fontSize: 13 }
+                },
+                series: [{
+                    name: 'Reservas',
+                    type: 'pie',
+                    radius: ['40%', '70%'],
+                    center: ['40%', '50%'],
+                    avoidLabelOverlap: false,
+                    itemStyle: { borderRadius: 6, borderColor: '#fff', borderWidth: 2 },
+                    label: { show: false },
+                    emphasis: {
+                        label: { show: true, fontSize: 14, fontWeight: 'bold' }
+                    },
+                    labelLine: { show: false },
+                    data: [
+                        { value: statusPaid,      name: 'Completadas', itemStyle: { color: '#6b8f6b' } },
+                        { value: statusPending,   name: 'Pendientes',  itemStyle: { color: '#f0a840' } },
+                        { value: statusCancelled, name: 'Canceladas',  itemStyle: { color: '#c0625e' } }
+                    ]
+                }]
+            });
+
             // RESIZE AL CAMBIAR DE TAB
             document.querySelectorAll('[\\@click]').forEach(btn => {
                 btn.addEventListener('click', () => {
                     setTimeout(() => {
                         chartOccupancy.resize();
                         chartRevenue.resize();
+                        chartStatus.resize();
                     }, 50);
                 });
             });
@@ -556,6 +601,7 @@
             window.addEventListener('resize', () => {
                 chartOccupancy.resize();
                 chartRevenue.resize();
+                chartStatus.resize();
             });
         });
     </script>

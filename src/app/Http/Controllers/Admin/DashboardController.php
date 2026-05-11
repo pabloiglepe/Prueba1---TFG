@@ -93,10 +93,10 @@ class DashboardController extends Controller
             ? round((($revenueThisMonth - $revenuePrevMonth) / $revenuePrevMonth) * 100, 1)
             : null;
 
-        // TASA DE CANCELACIÓN
-        $totalAll        = Reservation::count();
-        $totalCancelled  = Reservation::where('status', 'cancelled')->count();
-        $cancellationRate = $totalAll > 0 ? round(($totalCancelled / $totalAll) * 100, 1) : 0.0;
+        // DISTRIBUCIÓN DE ESTADOS DE RESERVA
+        $statusPaid      = Reservation::where('status', 'paid')->count();
+        $statusPending   = Reservation::where('status', 'pending')->count();
+        $statusCancelled = Reservation::where('status', 'cancelled')->count();
 
 
         // PANEL "HOY": RESERVAS, INGRESOS Y ESTADO DE CADA PISTA AHORA MISMO
@@ -164,8 +164,9 @@ class DashboardController extends Controller
             'coaches',
             'reservationsTrend',
             'revenueTrend',
-            'cancellationRate',
-            'totalCancelled',
+            'statusPaid',
+            'statusPending',
+            'statusCancelled',
             'todayCount',
             'todayRevenue',
             'courtStatusNow'

@@ -87,7 +87,7 @@
                 </div>
 
                 {{-- TARJETAS RESUMEN --}}
-                <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px;">
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
                     <div style="background: #fff; border-radius: 12px; border: 0.5px solid #d4d9cc; padding: 24px;">
                         <p style="font-size: 12px; color: #7a8a7a; margin: 0 0 8px;">Reservas totales</p>
                         <p style="font-size: 32px; font-weight: 600; color: #2d3b2d; margin: 0;">{{ $totalReservations }}</p>

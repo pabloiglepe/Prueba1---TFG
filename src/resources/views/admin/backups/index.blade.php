@@ -1,8 +1,20 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 style="font-size: 20px; font-weight: 600; color: #2d3b2d; margin: 0;">
-            Backups de Base de Datos
-        </h2>
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <h2 style="font-size: 20px; font-weight: 600; color: #2d3b2d; margin: 0;">
+                Backups de Base de Datos
+            </h2>
+            <form action="{{ route('admin.backups.force') }}" method="POST">
+                @csrf
+                <button type="submit"
+                        style="display: inline-flex; align-items: center; gap: 8px; background: #6b8f6b; color: #fff; font-size: 14px; font-weight: 500; padding: 9px 18px; border-radius: 8px; border: none; cursor: pointer;"
+                        onmouseover="this.style.background='#4a6b4a'"
+                        onmouseout="this.style.background='#6b8f6b'">
+                    <iconify-icon icon="ph:database" style="font-size: 16px;"></iconify-icon>
+                    Forzar backup ahora
+                </button>
+            </form>
+        </div>
     </x-slot>
 
     <div class="py-6 max-w-7xl mx-auto sm:px-6 lg:px-8">

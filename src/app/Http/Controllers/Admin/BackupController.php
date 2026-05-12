@@ -38,6 +38,17 @@ class BackupController extends Controller
         return view('admin.backups.index', compact('backups'));
     }
 
+    public function forceBackup()
+    {
+        $exitCode = Artisan::call('db:backup');
+
+        if ($exitCode === 0) {
+            return back()->with('success', 'Backup generado correctamente.');
+        }
+
+        return back()->with('error', 'Error al generar el backup. Revisa los logs del servidor.');
+    }
+
     public function restore(Request $request)
     {
         $request->validate(['file' => 'required|string']);

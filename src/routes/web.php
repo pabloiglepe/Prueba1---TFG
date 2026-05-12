@@ -71,7 +71,8 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::get('export/revenue',      [ExportController::class, 'revenue'])->name('export.revenue');
 
     // RUTAS DE GESTIÓN DE BACKUPS
-    Route::get('backups',         [BackupController::class, 'index'])->name('backups.index');
+    Route::get('backups',          [BackupController::class, 'index'])->name('backups.index');
+    Route::post('backups/force',   [BackupController::class, 'forceBackup'])->name('backups.force');
     Route::post('backups/restore', [BackupController::class, 'restore'])->name('backups.restore');
 });
 

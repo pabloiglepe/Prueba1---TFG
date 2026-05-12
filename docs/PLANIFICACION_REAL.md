@@ -14,44 +14,23 @@ gantt
     dateFormat  YYYY-MM-DD
     axisFormat  %d %b
     section S1 - Infraestructura
-    Configuracion Docker PHP-FPM Nginx MySQL           :active, 2026-03-16, 4d
-    Migraciones iniciales BD                           :active, 2026-03-18, 3d
-    Dockerfile de produccion Railway                   :active, 2026-03-20, 3d
-    section S2 - Autenticacion
-    Login y Registro Bcrypt campos RGPD                :active, 2026-03-23, 4d
-    Middleware de roles y redireccion post-login        :active, 2026-03-25, 4d
+    Docker PHP-FPM Nginx MySQL y migraciones BD        :active, 2026-03-16, 7d
+    section S2 - Autenticacion y Roles
+    Login Registro Bcrypt middleware de roles           :active, 2026-03-23, 7d
     section S3 - Panel Admin y Entrenador
-    CRUD de pistas admin                               :active, 2026-03-30, 3d
-    Gestion de usuarios admin                          :active, 2026-04-01, 2d
-    Panel del entrenador clases individuales grupales  :active, 2026-04-02, 3d
-    Sistema de inscripcion de jugadores                :active, 2026-04-03, 3d
+    CRUD pistas usuarios panel entrenador inscripciones:active, 2026-03-30, 13d
     section S4 - Sprint de integracion
-    Notificaciones en tiempo real                      :active, 2026-04-06, 2d
-    Perfil de usuario tabs Mi Perfil Seguridad         :active, 2026-04-06, 3d
-    Dashboard con tabs y exportacion Excel             :active, 2026-04-08, 2d
-    Rediseno visual completo landing login colores     :active, 2026-04-09, 2d
-    Despliegue en Railway                              :active, 2026-04-10, 2d
-    Recuperacion de contrasenas y Brevo HTTP           :active, 2026-04-11, 2d
+    Dashboard despliegue Railway Brevo email perfil    :active, 2026-04-06, 7d
     section S5 - Scheduler y Home
-    Endpoint run-scheduler y cron-job.org              :active, 2026-04-13, 3d
-    Home autenticada con carrusel Alpine.js por rol    :active, 2026-04-13, 4d
-    Instalacion y configuracion iconify-icon npm       :active, 2026-04-15, 2d
+    Endpoint scheduler cron-job.org y home carrusel    :active, 2026-04-13, 7d
     section S6 - UX y Documentacion
-    UX formularios auth iconos spinner progreso        :active, 2026-04-20, 4d
-    Documentacion tecnica primera version completa     :active, 2026-04-22, 3d
+    Mejoras UX auth iconos spinner documentacion       :active, 2026-04-20, 7d
     section S7 - Calidad y Fiabilidad
-    Integracion Open-Meteo precios y lluvia            :active, 2026-04-27, 4d
-    Plan de pruebas y 51 tests PHPUnit                 :active, 2026-04-30, 3d
-    Sistema de backups db-backup y db-restore          :active, 2026-05-01, 3d
+    Open-Meteo 51 tests PHPUnit sistema de backups     :active, 2026-04-27, 7d
     section S8 - Refinamiento
-    Nuevos KPIs dashboard indicadores tendencia        :active, 2026-05-04, 3d
-    Migracion SVG a iconify-icon Phosphor 16 vistas    :active, 2026-05-05, 4d
-    Rediseno Mis Reservas cards y tabs Alpine.js       :active, 2026-05-07, 3d
+    KPIs tendencia migracion iconos rediseno vistas    :active, 2026-05-04, 7d
     section S9 - Cierre
-    Grafico donut estado de reservas ECharts           :active, 2026-05-11, 1d
-    Reestructuracion Home dashboard a home             :active, 2026-05-11, 2d
-    Panel de backups web admin y forzar backup         :active, 2026-05-12, 1d
-    Documentacion final completa                       :active, 2026-05-12, 1d
+    Grafico donut panel backups admin documentacion    :active, 2026-05-11, 2d
 ```
 
 ---

@@ -60,7 +60,7 @@ gantt
 
 La planificación preliminar estaba estructurada en 6 hitos agrupados en 10 semanas.
 El siguiente diagrama enfrenta lo planificado con lo ejecutado para cada hito:
-las barras en gris representan la estimación original y las barras en verde la ejecución real.
+las barras en naranja representan la estimación original y las barras en verde la ejecución real.
 Las barras en rojo indican hitos con desviación significativa o alcance no completado.
 
 ```mermaid

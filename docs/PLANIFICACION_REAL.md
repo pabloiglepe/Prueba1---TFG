@@ -73,28 +73,28 @@ las barras en gris representan la estimación original y las barras en verde la 
 Las barras en rojo indican hitos con desviación significativa o alcance no completado.
 
 ```mermaid
-%%{init: {'theme': 'base', 'gantt': {'leftPadding': 220, 'barHeight': 22, 'barGap': 6, 'fontSize': 14}, 'themeVariables': {'fontFamily': Impact, 'taskBkgColor': '#e8a020', 'taskBorderColor': '#b07010', 'taskTextColor': '#000000', 'taskTextOutsideColor': '#000000', 'taskTextLightColor': '#000000', 'taskTextDarkColor': '#000000', 'activeTaskBkgColor': '#20c080', 'activeTaskBorderColor': '#108050', 'critBkgColor': '#ff3333', 'critBorderColor': '#cc0000', 'todayLineColor': '#ffffff'}}}%%
+%%{init: {'theme': 'base', 'gantt': {'leftPadding': 220, 'barHeight': 22, 'barGap': 6, 'fontSize': 14}, 'themeVariables': {'fontFamily': 'Impact', 'doneTaskBkgColor': '#e8a020', 'doneTaskBorderColor': '#b07010', 'activeTaskBkgColor': '#20c080', 'activeTaskBorderColor': '#108050', 'critBkgColor': '#ff3333', 'critBorderColor': '#cc0000', 'taskTextColor': '#000000', 'taskTextOutsideColor': '#000000', 'taskTextLightColor': '#000000', 'taskTextDarkColor': '#000000', 'todayLineColor': '#ffffff'}}}%%
 gantt
     title Planificacion Preliminar vs Real - PadelSync
     dateFormat  YYYY-MM-DD
     axisFormat  %d %b
     section H1 - Infra y BD
-    Planificado S1-S2                                  :p1, 2026-03-16, 14d
+    Planificado S1-S2                                  :done, p1, 2026-03-16, 14d
     Real - completado con adelanto                     :active, r1, 2026-03-16, 7d
     section H2 - Auth y Roles
-    Planificado S3                                     :p2, 2026-03-30, 7d
+    Planificado S3                                     :done, p2, 2026-03-30, 7d
     Real - una semana de adelanto                      :active, r2, 2026-03-23, 7d
     section H3 - Admin y Dashboard
-    Planificado S4-S5                                  :p3, 2026-04-06, 14d
+    Planificado S4-S5                                  :done, p3, 2026-04-06, 14d
     Real - mas complejo de lo estimado                 :active, r3, 2026-03-30, 14d
     section H4 - Academia y Reservas
-    Planificado S6-S7                                  :p4, 2026-04-20, 14d
+    Planificado S6-S7                                  :done, p4, 2026-04-20, 14d
     Real - sin modulo de disponibilidad independiente  :crit, r4, 2026-04-02, 10d
     section H5 - Frontend y RGPD
-    Planificado S8-S9                                  :p5, 2026-05-04, 14d
+    Planificado S8-S9                                  :done, p5, 2026-05-04, 14d
     Real - desarrollado en paralelo al backend         :active, r5, 2026-04-06, 36d
     section H6 - Pruebas y Despliegue
-    Planificado S10                                    :p6, 2026-05-18, 7d
+    Planificado S10                                    :done, p6, 2026-05-18, 7d
     Real - sin pruebas E2E Cypress/Playwright          :crit, r6, 2026-04-30, 13d
     section No planificado
     Scheduler y cron-job.org                           :active, np1, 2026-04-13, 3d

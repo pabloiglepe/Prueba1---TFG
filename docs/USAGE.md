@@ -126,22 +126,38 @@ El proceso de creación sigue cuatro pasos:
 
 | Tipo | Visibilidad | Funcionamiento |
 |---|---|---|
-| Individual | `individual` | 1 plaza máxima, precio por sesión |
+| Individual | `individual` | 1 plaza máxima forzada, precio por sesión |
 | Grupal pública | `public` | Los jugadores se inscriben desde su panel |
-| Grupal privada | `private` | El entrenador selecciona los alumnos al crear la clase |
+| Grupal privada | `private` | El entrenador selecciona los alumnos al crear o editar la clase |
 
 > Al crear una clase pública, todos los jugadores reciben una notificación automática.  
-> Al inscribir alumnos en una clase privada, cada alumno recibe una notificación individual.
+> Al inscribir alumnos en una clase privada (en creación o edición), cada alumno recibe una notificación individual.
+
+### Restricciones de inscripción
+
+- **Clase individual**: solo puede tener **1 alumno**. Al seleccionar el tipo "Individual" los checkboxes se comportan como selección única y el campo Plazas máximas se fija automáticamente a 1.
+- **Límite de plazas**: no se pueden marcar más alumnos que el valor indicado en "Plazas máximas". Los checkboxes sobrantes se deshabilitan automáticamente al alcanzar el límite.
+- Ambas restricciones se validan también en el servidor como segunda capa de seguridad.
 
 ### Editar una clase
 
-- Misma lógica de pasos que la creación.
+- Misma lógica de pasos que la creación (fecha, pista, franja, datos).
 - La **visibilidad no puede modificarse** una vez creada la clase.
-- Se muestra el listado de alumnos inscritos con avatar e email.
+- **Clases privadas**: panel de checkboxes editable con los alumnos actualmente inscritos pre-marcados. Marcar un alumno nuevo lo inscribe y le envía una notificación; desmarcar un alumno inscrito cancela su inscripción.
+- **Clases públicas**: lista informativa de inscritos en modo lectura (los jugadores se autoinscriben desde su panel).
+- Se aplican las mismas restricciones de límite de plazas e individual que en la creación.
+
+### Mis Clases — tabs
+
+El listado de clases se organiza en tres pestañas:
+
+- **Programadas**: clases con estado `Programada`. Permiten editar y cancelar.
+- **Completadas**: clases que el scheduler ha marcado como finalizadas. Solo lectura.
+- **Canceladas**: clases canceladas, con paleta visual en rojo apagado. Solo lectura.
 
 ### Cancelar una clase
 
-Desde el listado de clases, el botón "Cancelar" cambia el estado de la clase a `cancelled`.
+Desde el listado, el botón "Cancelar" de la pestaña Programadas cambia el estado de la clase a `cancelled`.
 
 ---
 
@@ -165,10 +181,11 @@ Ruta: `/player/reservations/create`
 
 Ruta: `/player/reservations`
 
-Vista organizada en dos pestañas:
+Vista organizada en tres pestañas (la activa por defecto es **Pendientes**):
 
-- **Activas**: reservas con estado `Pendiente` o `Pagada`. Cada card muestra el día y mes, nombre de pista, interior/exterior, tipo y superficie, horario, estado, precio y botón de cancelar.
-- **Canceladas**: reservas canceladas con el mismo layout en tono grisáceo, sin opción de acción.
+- **Pendientes**: reservas con estado `pending`. Tarjeta blanca con badge ámbar. Permite cancelar la reserva.
+- **Pagadas**: reservas con estado `paid`. Tarjeta en verde claro con badge verde. Solo lectura.
+- **Canceladas**: reservas canceladas. Tarjeta en rojo apagado con badge rojo. Solo lectura.
 
 ### Clases
 

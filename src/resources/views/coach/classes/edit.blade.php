@@ -198,17 +198,25 @@
                             x-on:change="
                                 const max = document.getElementById('max_players');
                                 const maxHidden = document.getElementById('max_players_hidden');
+                                const note = document.getElementById('players-limit-note');
                                 if (type === 'individual') {
                                     max.value = 1; max.disabled = true;
                                     max.style.background = '#f7f8f5'; max.style.color = '#9aaa9a';
                                     maxHidden.value = 1;
+                                    if (note) note.style.display = 'block';
+                                    let kept = false;
+                                    document.querySelectorAll('input[name=\'players[]\']').forEach(cb => {
+                                        if (cb.checked && !kept) { kept = true; } else { cb.checked = false; }
+                                    });
                                 } else {
                                     max.disabled = false;
                                     max.style.background = '#fff'; max.style.color = '#2d3b2d';
                                     max.min = 2;
                                     if (parseInt(max.value) < 2) max.value = 2;
                                     maxHidden.value = max.value;
-                                }"
+                                    if (note) note.style.display = 'none';
+                                }
+                                syncPlayerLimit();"
                             style="width: 100%; padding: 9px 12px; border: 0.5px solid #d4d9cc; border-radius: 8px; font-size: 14px; color: #2d3b2d; outline: none; background: #fff; box-sizing: border-box;"
                             onfocus="this.style.borderColor='#6b8f6b'"
                             onblur="this.style.borderColor='#d4d9cc'">
@@ -257,13 +265,13 @@
                         <input type="hidden" name="max_players" id="max_players_hidden"
                             value="{{ $currentType === 'individual' ? '1' : old('max_players', $class->max_players) }}">
                         <input type="number" id="max_players"
-                            value="{{ old('max_players', $class->max_players) }}" min="1" max="4"
+                            value="{{ old('type', 'individual') === 'individual' ? '1' : old('max_players', 4) }}" min="1" max="4"
                             {{ $currentType === 'individual' ? 'disabled' : '' }}
                             style="width: 100%; padding: 9px 12px; border: 0.5px solid #d4d9cc; border-radius: 8px; font-size: 14px; outline: none; box-sizing: border-box;
                                {{ $currentType === 'individual' ? 'background: #f7f8f5; color: #9aaa9a;' : 'background: #fff; color: #2d3b2d;' }}"
                             onfocus="this.style.borderColor='#6b8f6b'"
                             onblur="this.style.borderColor='#d4d9cc'"
-                            oninput="document.getElementById('max_players_hidden').value = this.value">
+                            oninput="document.getElementById('max_players_hidden').value = this.value; syncPlayerLimit();">
                         @error('max_players')
                         <p style="color: #c0625e; font-size: 12px; margin-top: 5px;">{{ $message }}</p>
                         @enderror
@@ -299,8 +307,39 @@
                     </div>
                 </div>
 
-                {{-- ALUMNOS INSCRITOS --}}
-                @if($class->registered->where('status', 'registered')->count() > 0)
+                {{-- ALUMNOS --}}
+                @if($class->visibility === 'private')
+                <div style="margin-bottom: 24px;">
+                    <div style="border: 0.5px solid #d4d9cc; border-radius: 10px; padding: 16px;">
+                        <label style="display: block; font-size: 13px; font-weight: 500; color: #2d3b2d; margin-bottom: 4px;">Alumnos inscritos</label>
+                        <p style="font-size: 12px; color: #7a8a7a; margin: 0 0 8px;">Marca o desmarca alumnos para gestionar sus inscripciones.</p>
+                        <p id="players-limit-note" style="font-size: 12px; color: #92650a; margin: 0 0 10px; display: {{ $currentType === 'individual' ? 'block' : 'none' }};">
+                            Clase individual: solo puedes inscribir a 1 alumno.
+                        </p>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; max-height: 180px; overflow-y: auto;">
+                            @foreach($players as $player)
+                            <label style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: #2d3b2d; cursor: pointer; padding: 6px 8px; border-radius: 6px;"
+                                onmouseover="this.style.background='#f7f8f5'"
+                                onmouseout="this.style.background='transparent'">
+                                <input type="checkbox" name="players[]" value="{{ $player->id }}"
+                                    {{ in_array($player->id, old('players', $enrolledIds)) ? 'checked' : '' }}
+                                    style="accent-color: #6b8f6b; width: 15px; height: 15px; cursor: pointer;"
+                                    onchange="
+                                        const typeSelect = document.querySelector('select[name=\'type\']');
+                                        if (typeSelect.value === 'individual' && this.checked) {
+                                            document.querySelectorAll('input[name=\'players[]\']').forEach(cb => { if (cb !== this) cb.checked = false; });
+                                        }
+                                        syncPlayerLimit();">
+                                {{ $player->name }}
+                            </label>
+                            @endforeach
+                        </div>
+                        @error('players')
+                        <p style="color: #c0625e; font-size: 12px; margin-top: 8px;">{{ $message }}</p>
+                        @enderror
+                    </div>
+                </div>
+                @elseif($class->registered->where('status', 'registered')->count() > 0)
                 <div style="background: #f7f8f5; border-radius: 10px; border: 0.5px solid #d4d9cc; padding: 18px; margin-bottom: 24px;">
                     <p style="font-size: 11px; font-weight: 600; color: #7a8a7a; text-transform: uppercase; letter-spacing: 0.05em; margin: 0 0 12px;">
                         Alumnos inscritos ({{ $class->registered->where('status', 'registered')->count() }})
@@ -336,6 +375,21 @@
                         Guardar cambios
                     </button>
                 </div>
+
+                <script>
+                function syncPlayerLimit() {
+                    const max = parseInt(document.getElementById('max_players_hidden').value) || 1;
+                    const cbs = document.querySelectorAll('input[name="players[]"]');
+                    let n = Array.from(cbs).filter(c => c.checked).length;
+                    if (n > max) {
+                        let k = 0;
+                        cbs.forEach(cb => { if (cb.checked) { k++; if (k > max) cb.checked = false; } });
+                        n = max;
+                    }
+                    cbs.forEach(cb => { if (!cb.checked) cb.disabled = n >= max; });
+                }
+                document.addEventListener('DOMContentLoaded', syncPlayerLimit);
+                </script>
             </form>
         </div>
 

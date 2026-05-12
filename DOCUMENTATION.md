@@ -255,18 +255,41 @@ Usando la librería `maatwebsite/excel`:
 3. Elegir **franja horaria** disponible (sin solapamiento con otras clases ni reservas).
 4. Rellenar **datos**: título, tipo, nivel, visibilidad, plazas y precio.
 
-#### Validación de solapamiento
+#### Validaciones de integridad en creación y edición
 
-El sistema valida que el horario elegido no se solape con:
-- Otras clases en la misma pista.
-- Reservas de jugadores en la misma pista.
+Además del solapamiento horario, el sistema aplica las siguientes validaciones en `store` y `update`:
 
-Esta validación se aplica tanto en la creación (`store`) como en la edición (`update`), excluyendo la propia clase en el caso de la edición.
+- **Tipo individual**: fuerza `max_players = 1` independientemente del valor enviado.
+- **Individual + privada + >1 alumno**: error de validación con mensaje específico. Se aplica en servidor y en cliente (los checkboxes funcionan como selección única).
+- **Alumnos > plazas máximas**: no se pueden marcar más alumnos que el valor de `max_players`. Validado en servidor y reforzado en cliente con `syncPlayerLimit()`.
+- **Plazas máximas por defecto**: el formulario de creación muestra `1` cuando el tipo es `individual` (no `4` como valor genérico).
+
+La validación de solapamiento se aplica tanto en la creación (`store`) como en la edición (`update`), excluyendo la propia clase en el caso de la edición.
+
+#### Gestión de alumnos en clases privadas
+
+**Creación**: el entrenador selecciona los alumnos mediante checkboxes. Al marcar un alumno, `syncPlayerLimit()` deshabilita los checkboxes restantes si se alcanza el límite de plazas.
+
+**Edición**: las clases privadas muestran un panel de checkboxes editable con los alumnos ya inscritos pre-marcados. Al guardar, el controlador sincroniza las inscripciones:
+- Los alumnos desmarcados pasan a `status = cancelled` en `classes_reservations`.
+- Los alumnos nuevamente marcados se crean o reactivan (`updateOrCreate`) y reciben `ClassRegistrationNotification`.
+
+Las clases públicas muestran la lista de inscritos en modo lectura (los jugadores se autoinscriben desde su panel).
+
+#### Listado de clases — tabs por estado
+
+El listado (`coach/classes/index.blade.php`) organiza las clases en tres tabs independientes:
+
+| Tab | Filtro | Paleta visual |
+|---|---|---|
+| Programadas | `status = registered` | Tarjeta blanca, borde `#d4d9cc` |
+| Completadas | `status = completed` | Tarjeta grisácea `#fafbf9`, badge morado |
+| Canceladas | `status = cancelled` | Tarjeta rojiza apagada `#fdfafa`, badge rojo |
 
 #### Sistema de notificaciones
 
 - **Clase pública**: notificación automática a todos los jugadores al crearla (`PublicClassNotification`).
-- **Clase privada**: notificación individual a cada alumno inscrito (`ClassRegistrationNotification`).
+- **Clase privada**: notificación individual a cada alumno inscrito al crear o al añadirlo en edición (`ClassRegistrationNotification`).
 
 ---
 
@@ -275,7 +298,18 @@ Esta validación se aplica tanto en la creación (`store`) como en la edición (
 **Controladores**: `Player\ReservationController`, `Player\ClassController`  
 **Vistas**: `resources/views/player/`
 
-- **Reservas**: listado con opción de cancelar. Las reservas canceladas muestran el estado pero no permiten más acciones.
+#### Mis Reservas — tabs por estado
+
+El listado de reservas (`player/reservations/index.blade.php`) organiza las reservas en tres tabs:
+
+| Tab | Filtro | Paleta visual |
+|---|---|---|
+| Pendientes | `status = pending` | Tarjeta blanca, badge ámbar |
+| Pagadas | `status = paid` | Tarjeta verde claro `#f4f8f4`, badge verde |
+| Canceladas | `status = cancelled` | Tarjeta rojiza apagada `#fdfafa`, badge rojo |
+
+El tab activo por defecto es **Pendientes**. Las reservas pagadas y canceladas no ofrecen acción; solo las pendientes tienen botón de cancelar.
+
 - **Clases**: dos secciones — clases inscritas (con opción de cancelar inscripción si la clase es futura) y clases públicas disponibles con plazas libres.
 - **Reinscripción**: si un jugador cancela su inscripción y quiere volver a inscribirse, el sistema actualiza el registro existente en lugar de crear uno nuevo, evitando el error de clave duplicada en `classes_reservations`.
 

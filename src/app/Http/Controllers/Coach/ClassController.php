@@ -174,6 +174,20 @@ class ClassController extends Controller
         // SI ES INDIVIDUAL, FORZAMOS MAX_PLAYERS A 1
         if ($validated['type'] === 'individual') {
             $validated['max_players'] = 1;
+
+            // UNA CLASE INDIVIDUAL PRIVADA NO PUEDE TENER MÁS DE 1 ALUMNO
+            if ($validated['visibility'] === 'private' && count($validated['players'] ?? []) > 1) {
+                return back()->withErrors([
+                    'players' => 'Una clase individual solo puede tener 1 alumno.'
+                ])->withInput();
+            }
+        }
+
+        // NO SE PUEDEN INSCRIBIR MÁS ALUMNOS QUE PLAZAS DISPONIBLES
+        if (!empty($validated['players']) && count($validated['players']) > $validated['max_players']) {
+            return back()->withErrors([
+                'players' => "No puedes inscribir más alumnos que las plazas máximas ({$validated['max_players']})."
+            ])->withInput();
         }
 
         $padelClass = PadelClass::create([
@@ -320,6 +334,8 @@ class ClassController extends Controller
             'max_players' => 'required|integer|min:1|max:4',
             'price'       => 'required|numeric|min:0',
             'status'      => 'required|in:registered,cancelled,completed',
+            'players'     => 'nullable|array',
+            'players.*'   => 'exists:users,id',
         ]);
 
         // CALCULAMOS EL END_TIME AUTOMÁTICAMENTE
@@ -371,12 +387,46 @@ class ClassController extends Controller
         // SI ES INDIVIDUAL, FORZAMOS MAX_PLAYERS A 1
         if ($validated['type'] === 'individual') {
             $validated['max_players'] = 1;
+
+            if ($class->visibility === 'private' && count($validated['players'] ?? []) > 1) {
+                return back()->withErrors([
+                    'players' => 'Una clase individual solo puede tener 1 alumno.'
+                ])->withInput();
+            }
+        }
+
+        // NO SE PUEDEN INSCRIBIR MÁS ALUMNOS QUE PLAZAS DISPONIBLES
+        if (!empty($validated['players']) && count($validated['players']) > $validated['max_players']) {
+            return back()->withErrors([
+                'players' => "No puedes inscribir más alumnos que las plazas máximas ({$validated['max_players']})."
+            ])->withInput();
         }
 
         // MANTENEMOS LA VISIBILIDAD ORIGINAL
         $validated['visibility'] = $class->visibility;
 
         $class->update(array_merge($validated, ['end_time' => $endTime]));
+
+        // SINCRONIZAR INSCRIPCIONES EN CLASES PRIVADAS
+        if ($class->visibility === 'private') {
+            $newPlayerIds  = collect($validated['players'] ?? []);
+            $currentIds    = $class->registered->where('status', 'registered')->pluck('user_id');
+
+            // CANCELAR A LOS QUE YA NO ESTÁN EN LA LISTA
+            ClassRegistration::where('class_id', $class->id)
+                ->whereIn('user_id', $currentIds->diff($newPlayerIds))
+                ->update(['status' => 'cancelled']);
+
+            // INSCRIBIR A LOS NUEVOS (O RE-ACTIVAR CANCELADOS) Y NOTIFICAR
+            foreach ($newPlayerIds->diff($currentIds) as $playerId) {
+                ClassRegistration::updateOrCreate(
+                    ['class_id' => $class->id, 'user_id' => $playerId],
+                    ['status'   => 'registered']
+                );
+                $player = User::find($playerId);
+                $player->notify(new ClassRegistrationNotification($class));
+            }
+        }
 
         return redirect()->route('coach.classes.index')
             ->with('success', 'Clase actualizada correctamente.');

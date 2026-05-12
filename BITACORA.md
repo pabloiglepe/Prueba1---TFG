@@ -788,3 +788,104 @@ El controlador sanitiza el nombre del archivo con `basename()` (elimina cualquie
 El filesystem de Railway es efímero: los archivos escritos en `storage/app/backups/` por el scheduler se pierden si el contenedor se reinicia o redespliega antes de que el admin acceda a la vista. En entorno Docker local, los backups persisten mientras el contenedor esté levantado y el volumen montado.
 
 **Lección**: `Artisan::call()` funciona perfectamente dentro de una petición HTTP estándar. El comando `db:restore` con `--force` omite la confirmación interactiva que sería bloqueante en un contexto web. El patrón de generar la UI de administración sobre comandos Artisan existentes es limpio y evita duplicar lógica: el comando ya maneja todos los casos de error y solo hay que interpretar su código de salida.
+
+---
+
+## Hito 26 — Validaciones de lógica de negocio en clases y rediseño de tabs de estado
+
+### Contexto
+
+Con el módulo de clases ya funcional se detectaron varias inconsistencias de lógica de negocio que requerían corrección: el formulario de creación permitía inscribir más alumnos de los que cabían, la edición de clases privadas no permitía gestionar la lista de alumnos, y los listados de clases y reservas mezclaban estados distintos en una sola vista.
+
+---
+
+### Validaciones de creación de clase (coach)
+
+**Problema 1 — Individual + privada sin límite de alumnos**: el formulario de creación mostraba una sección de checkboxes para seleccionar alumnos en clases privadas, pero no impedía marcar más de uno aunque el tipo fuera "individual" (que solo admite 1 plaza).
+
+**Problema 2 — Alumnos > plazas máximas**: no había ninguna restricción que impidiera marcar más alumnos de los que indica el campo "Plazas máximas".
+
+**Problema 3 — Plazas máximas por defecto**: al cargar el formulario con tipo "individual" seleccionado por defecto, el input visible de plazas mostraba `4` en lugar de `1` (el hidden sí era correcto, pero el input visible inducía a error visual).
+
+**Solución — doble capa (frontend + servidor)**:
+
+*Frontend* (`create.blade.php`):
+- Los checkboxes de alumnos tienen un `onchange` que, si el tipo es `individual`, desmarca los demás al marcar uno (comportamiento de radio button).
+- La función `syncPlayerLimit()` se define en un `<script>` al final del form y se llama desde tres puntos: el selector de tipo (`x-on:change`), el input de plazas (`oninput`) y el `onchange` de cada checkbox. Deshabilita los checkboxes no marcados cuando se alcanza el límite, y los reactiva si el límite sube o se desmarca un alumno. Se ejecuta también en `DOMContentLoaded` para aplicar el estado inicial.
+- El selector de tipo muestra un aviso textual "solo puedes inscribir a 1 alumno" cuando el tipo es individual.
+- El input visible de plazas usa `old('type', 'individual') === 'individual' ? '1' : old('max_players', 4)` para mostrar el valor correcto desde el primer render.
+
+*Servidor* (`ClassController@store`):
+- Si `type = individual` y `visibility = private` y `count(players) > 1` → error con mensaje específico.
+- Si `count(players) > max_players` → error con mensaje que incluye el límite actual.
+- Ambas validaciones se aplican después de forzar `max_players = 1` para el tipo individual, por lo que el orden de evaluación es correcto.
+
+---
+
+### Gestión de alumnos en edición de clase (coach)
+
+**Problema**: la vista de edición (`edit.blade.php`) mostraba los alumnos inscritos en una lista de solo lectura. No era posible añadir ni quitar alumnos desde la edición.
+
+**Solución**:
+
+*Frontend* (`edit.blade.php`):
+- El bloque "Alumnos inscritos" se convierte en un panel de checkboxes editable para clases **privadas**, con los alumnos actualmente inscritos pre-marcados (`$enrolledIds`).
+- Aplica las mismas restricciones de límite (`syncPlayerLimit()`) y de clase individual que el formulario de creación.
+- Para clases **públicas** se mantiene la lista informativa de solo lectura (los jugadores se autoinscriben).
+
+*Servidor* (`ClassController@update`):
+- Se añade `players` y `players.*` a las reglas de validación del método `update`.
+- Se añaden las mismas validaciones de límite que en `store`.
+- Tras guardar los datos de la clase, se sincroniza la tabla `classes_reservations`:
+  - Alumnos que estaban inscritos y ya no están en la lista → `status = cancelled`.
+  - Alumnos nuevos en la lista (o previamente cancelados y re-marcados) → `updateOrCreate` con `status = registered` + `ClassRegistrationNotification`.
+
+```php
+// Cancelar los eliminados
+ClassRegistration::where('class_id', $class->id)
+    ->whereIn('user_id', $currentIds->diff($newPlayerIds))
+    ->update(['status' => 'cancelled']);
+
+// Inscribir/reactivar los nuevos
+foreach ($newPlayerIds->diff($currentIds) as $playerId) {
+    ClassRegistration::updateOrCreate(
+        ['class_id' => $class->id, 'user_id' => $playerId],
+        ['status'   => 'registered']
+    );
+    User::find($playerId)->notify(new ClassRegistrationNotification($class));
+}
+```
+
+---
+
+### Separación de tabs en "Mis Clases" del coach
+
+**Problema**: el listado de clases (`coach/classes/index.blade.php`) tenía dos tabs: "Programadas" y un tab mixto "Completadas/Canceladas" que agrupaba ambos estados con el mismo color de badge (condicionado en la vista con un `@if`).
+
+**Solución**: separar `$past` en `$completed` y `$cancelled` en el bloque `@php`. Cada estado tiene ahora su propio tab con paleta visual diferenciada:
+
+| Tab | Estado | Paleta |
+|---|---|---|
+| Programadas | `registered` | Blanco `#fff`, borde verde `#d4d9cc` |
+| Completadas | `completed` | Gris claro `#fafbf9`, badge morado `#f0eaf8` |
+| Canceladas | `cancelled` | Rojizo apagado `#fdfafa`/`#ede0e0`, textos `#b89090`, badge rojo `#fce8e8` |
+
+La paleta de las canceladas (tonos rosados apagados en bloque de fecha, texto e iconos) se define como referencia de color para el estado "cancelado" y se replica en el panel del jugador.
+
+---
+
+### Rediseño de tabs en "Mis Reservas" del player
+
+**Problema**: el listado de reservas (`player/reservations/index.blade.php`) tenía dos tabs: "Activas" (que mezclaba `pending` + `paid`) y "Canceladas". Al mezclar pending y paid en un mismo tab era imposible distinguir visualmente cuáles ya estaban pagadas y cuáles pendientes sin leer el badge individualmente.
+
+**Solución**: separar en tres tabs independientes con paleta unificada con el coach:
+
+| Tab | Estado | Paleta |
+|---|---|---|
+| Pendientes (por defecto) | `pending` | Blanco `#fff`, badge ámbar `#fef9e8` |
+| Pagadas | `paid` | Verde claro `#f4f8f4`, borde `#c8dac8`, badge verde `#e8f0e8` |
+| Canceladas | `cancelled` | Rojizo apagado `#fdfafa`/`#ede0e0`, textos `#9a7a7a`/`#b89090`, badge rojo `#fce8e8` |
+
+El tab activo por defecto pasa de "Activas" a "Pendientes", ya que es el estado más relevante para la acción del jugador (las pendientes son las únicas que admiten cancelación).
+
+**Lección**: mezclar estados distintos en un mismo tab ahorra un tab en la navegación pero obliga al usuario a leer los badges de cada card para entender el estado real. Separar por estado hace la UI más predecible: el jugador sabe que en "Pendientes" solo ve lo que aún puede gestionar, y en "Pagadas" lo que ya está cerrado. La paleta de color por estado (blanco → pendiente, verde → pagado/completado, rojo apagado → cancelado) se convierte en un lenguaje visual consistente en toda la aplicación.

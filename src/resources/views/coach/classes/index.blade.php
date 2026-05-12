@@ -23,8 +23,9 @@
         @endif
 
         @php
-        $scheduled = $classes->where('status', 'registered');
-        $past = $classes->whereIn('status', ['completed', 'cancelled']);
+        $scheduled  = $classes->where('status', 'registered');
+        $completed  = $classes->where('status', 'completed');
+        $cancelled  = $classes->where('status', 'cancelled');
         @endphp
 
         <div x-data="{ tab: 'scheduled' }">
@@ -37,11 +38,17 @@
                     <iconify-icon icon="ph:calendar-check" style="font-size: 15px; flex-shrink: 0;"></iconify-icon>
                     Programadas
                 </button>
-                <button @click="tab = 'past'"
-                    :style="tab === 'past' ? 'border-bottom: 2px solid #6b8f6b; color: #4a6b4a;' : 'border-bottom: 2px solid transparent; color: #7a8a7a;'"
+                <button @click="tab = 'completed'"
+                    :style="tab === 'completed' ? 'border-bottom: 2px solid #6b8f6b; color: #4a6b4a;' : 'border-bottom: 2px solid transparent; color: #7a8a7a;'"
                     style="display: inline-flex; align-items: center; gap: 8px; padding: 14px 40px; font-size: 14px; font-weight: 500; background: none; border-top: none; border-left: none; border-right: none; cursor: pointer; margin-bottom: -1px;">
                     <iconify-icon icon="ph:check-circle" style="font-size: 15px; flex-shrink: 0;"></iconify-icon>
                     Completadas
+                </button>
+                <button @click="tab = 'cancelled'"
+                    :style="tab === 'cancelled' ? 'border-bottom: 2px solid #6b8f6b; color: #4a6b4a;' : 'border-bottom: 2px solid transparent; color: #7a8a7a;'"
+                    style="display: inline-flex; align-items: center; gap: 8px; padding: 14px 40px; font-size: 14px; font-weight: 500; background: none; border-top: none; border-left: none; border-right: none; cursor: pointer; margin-bottom: -1px;">
+                    <iconify-icon icon="ph:x-circle" style="font-size: 15px; flex-shrink: 0;"></iconify-icon>
+                    Canceladas
                 </button>
             </div>
 
@@ -135,10 +142,10 @@
                 </div>
             </div>
 
-            {{-- TAB: COMPLETADAS / CANCELADAS --}}
-            <div x-show="tab === 'past'">
+            {{-- TAB: COMPLETADAS --}}
+            <div x-show="tab === 'completed'">
                 <div style="display: flex; flex-direction: column; gap: 10px;">
-                    @forelse($past as $class)
+                    @forelse($completed as $class)
                     @php $enrolled = $class->registered->where('status', 'registered')->count(); @endphp
                     <div style="background: #fafbf9; border-radius: 12px; border: 0.5px solid #e4e9e0; padding: 20px 24px; display: flex; align-items: center; gap: 20px;">
 
@@ -187,11 +194,7 @@
                                 @else
                                 <span style="padding: 3px 9px; background: #f0f3ee; color: #9aaa9a; border-radius: 20px; font-size: 11px; font-weight: 500;">Privada</span>
                                 @endif
-                                @if($class->status === 'completed')
                                 <span style="padding: 3px 9px; background: #f0eaf8; color: #6b4a8f; border-radius: 20px; font-size: 11px; font-weight: 500;">Completada</span>
-                                @else
-                                <span style="padding: 3px 9px; background: #fce8e8; color: #9b4444; border-radius: 20px; font-size: 11px; font-weight: 500;">Cancelada</span>
-                                @endif
                             </div>
                             <p style="font-size: 13px; font-weight: 600; color: #9aaa9a; margin: 0;">
                                 {{ $enrolled }}/{{ $class->max_players }} plazas
@@ -202,6 +205,74 @@
                     @empty
                     <div style="background: #fff; border-radius: 12px; border: 0.5px solid #d4d9cc; padding: 48px 20px; text-align: center;">
                         <p style="font-size: 14px; color: #9aaa9a; margin: 0;">No hay clases completadas todavía.</p>
+                    </div>
+                    @endforelse
+                </div>
+            </div>
+
+            {{-- TAB: CANCELADAS --}}
+            <div x-show="tab === 'cancelled'">
+                <div style="display: flex; flex-direction: column; gap: 10px;">
+                    @forelse($cancelled as $class)
+                    @php $enrolled = $class->registered->where('status', 'registered')->count(); @endphp
+                    <div style="background: #fdfafa; border-radius: 12px; border: 0.5px solid #ede0e0; padding: 20px 24px; display: flex; align-items: center; gap: 20px;">
+
+                        {{-- BLOQUE FECHA --}}
+                        <div style="flex-shrink: 0; width: 52px; text-align: center; background: #f5eeee; border-radius: 10px; padding: 10px 6px;">
+                            <p style="font-size: 22px; font-weight: 700; color: #b89090; margin: 0; line-height: 1;">
+                                {{ \Carbon\Carbon::parse($class->date)->format('d') }}
+                            </p>
+                            <p style="font-size: 11px; font-weight: 600; color: #d4b0b0; text-transform: uppercase; margin: 3px 0 0; letter-spacing: 0.05em;">
+                                {{ \Carbon\Carbon::parse($class->date)->translatedFormat('M') }}
+                            </p>
+                        </div>
+
+                        {{-- INFO CENTRAL --}}
+                        <div style="flex: 1; min-width: 0;">
+                            <p style="font-size: 15px; font-weight: 600; color: #9a7a7a; margin: 0 0 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                {{ $class->title }}
+                            </p>
+                            <p style="font-size: 12px; color: #b89090; margin: 0 0 9px; text-transform: capitalize;">
+                                {{ $class->type }} · {{ match($class->level) {
+                                'initiation'   => 'Iniciación',
+                                'intermediate' => 'Intermedio',
+                                'advanced'     => 'Avanzado',
+                                default        => $class->level
+                            } }}
+                            </p>
+                            <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                                <span style="font-size: 13px; color: #b89090;">{{ $class->court->name }}</span>
+                                @if($class->court->is_outdoor)
+                                <span style="padding: 2px 7px; background: #e0eef8; color: #2b6691; border-radius: 20px; font-size: 11px; font-weight: 500;">Exterior</span>
+                                @else
+                                <span style="padding: 2px 7px; background: #f0f0f8; color: #5a5a8a; border-radius: 20px; font-size: 11px; font-weight: 500;">Interior</span>
+                                @endif
+                                <span style="font-size: 12px; color: #d4b0b0;">·</span>
+                                <span style="font-size: 13px; color: #b89090;">
+                                    {{ \Carbon\Carbon::parse($class->start_time)->format('H:i') }} — {{ \Carbon\Carbon::parse($class->end_time)->format('H:i') }}
+                                </span>
+                            </div>
+                        </div>
+
+                        {{-- BADGES Y PLAZAS --}}
+                        <div style="flex-shrink: 0; display: flex; flex-direction: column; align-items: flex-end; gap: 8px;">
+                            <div style="display: flex; gap: 6px;">
+                                @if($class->visibility === 'public')
+                                <span style="padding: 3px 9px; background: #f5eeee; color: #b89090; border-radius: 20px; font-size: 11px; font-weight: 500;">Pública</span>
+                                @else
+                                <span style="padding: 3px 9px; background: #f5eeee; color: #b89090; border-radius: 20px; font-size: 11px; font-weight: 500;">Privada</span>
+                                @endif
+                                <span style="padding: 3px 9px; background: #fce8e8; color: #9b4444; border-radius: 20px; font-size: 11px; font-weight: 500;">Cancelada</span>
+                            </div>
+                            <p style="font-size: 13px; font-weight: 600; color: #b89090; margin: 0;">
+                                {{ $enrolled }}/{{ $class->max_players }} plazas
+                            </p>
+                            <span style="color: #d4b0b0; font-size: 13px;">—</span>
+                        </div>
+                    </div>
+                    @empty
+                    <div style="background: #fff; border-radius: 12px; border: 0.5px solid #d4d9cc; padding: 48px 20px; text-align: center;">
+                        <p style="font-size: 14px; color: #9aaa9a; margin: 0;">No hay clases canceladas.</p>
                     </div>
                     @endforelse
                 </div>

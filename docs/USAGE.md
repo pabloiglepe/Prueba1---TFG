@@ -91,6 +91,7 @@ Sección exclusiva del administrador para gestionar las copias de seguridad de l
 
 - Listado de archivos `.sql` disponibles en `storage/app/backups/`, ordenados del más reciente al más antiguo.
 - Cada card muestra el nombre del archivo, la fecha y hora de generación y el tamaño del archivo. El backup más reciente aparece marcado con un badge "Más reciente".
+- Botón **"Forzar backup ahora"** en la cabecera: genera un backup nuevo al instante sin necesidad de esperar al scheduler ni acceder por CLI. Útil para forzar un backup antes de una restauración o un cambio importante.
 - Botón **Restaurar** en cada card: reemplaza todos los datos actuales de la base de datos con los del backup seleccionado. El sistema pide confirmación antes de proceder.
 - Si no hay ningún backup disponible, la vista muestra un mensaje informativo indicando que el backup automático se ejecuta diariamente a las 03:00.
 

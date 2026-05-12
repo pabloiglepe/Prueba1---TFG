@@ -764,8 +764,11 @@ return match ($request->user()->role->name) {
 **Rutas** (dentro del grupo `middleware(['auth', 'role:admin'])`):
 ```php
 Route::get('backups',          [BackupController::class, 'index'])->name('backups.index');
+Route::post('backups/force',   [BackupController::class, 'forceBackup'])->name('backups.force');
 Route::post('backups/restore', [BackupController::class, 'restore'])->name('backups.restore');
 ```
+
+El método `forceBackup()` ejecuta `Artisan::call('db:backup')` y redirige con mensaje de éxito o error según el código de salida. El botón **"Forzar backup ahora"** en la cabecera de la vista llama a esta ruta, resolviendo el problema de no tener backups disponibles en producción sin acceso al CLI de Railway.
 
 **Vista** `resources/views/admin/backups/index.blade.php`:
 - Cards con el mismo estilo que la vista de reservas del jugador: bloque de fecha (día/mes) a la izquierda, nombre del archivo, fecha completa, hora y tamaño en el centro, botón "Restaurar" a la derecha.

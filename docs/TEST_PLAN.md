@@ -220,11 +220,12 @@ Los siguientes flujos no son automatizables por depender de renderizado visual, 
 | ID | Acción | Resultado esperado | Estado |
 |---|---|---|---|
 | M-19 | Acceder a `/admin/backups` sin backups generados | Mensaje "No hay backups disponibles" con indicación de que se generan a las 03:00 | ✅ OK |
-| M-20 | Ejecutar `php artisan db:backup` y recargar `/admin/backups` | Card con fecha, hora y tamaño del backup generado; badge "Más reciente" | ✅ OK |
-| M-21 | Pulsar "Restaurar" en un backup → cancelar el confirm | No se realiza ninguna restauración; la BD permanece intacta | ✅ OK |
-| M-22 | Pulsar "Restaurar" en un backup → confirmar | BD restaurada; mensaje de éxito en la vista; datos vuelven al estado del backup | ✅ OK |
-| M-23 | Intentar acceder a `/admin/backups` como `player` | HTTP 403 Forbidden | ✅ OK |
-| M-24 | Intentar acceder a `/admin/backups` como `coach` | HTTP 403 Forbidden | ✅ OK |
+| M-20 | Pulsar "Forzar backup ahora" | Nuevo archivo `.sql` aparece en el listado con badge "Más reciente" y mensaje de éxito | ✅ OK |
+| M-21 | Pulsar "Forzar backup ahora" varias veces | Cada pulsación genera un archivo nuevo; los más antiguos se eliminan automáticamente al superar 7 | ✅ OK |
+| M-22 | Pulsar "Restaurar" en un backup → cancelar el confirm | No se realiza ninguna restauración; la BD permanece intacta | ✅ OK |
+| M-23 | Pulsar "Restaurar" en un backup → confirmar | BD restaurada; mensaje de éxito en la vista; datos vuelven al estado del backup | ✅ OK |
+| M-24 | Intentar acceder a `/admin/backups` como `player` | HTTP 403 Forbidden | ✅ OK |
+| M-25 | Intentar acceder a `/admin/backups` como `coach` | HTTP 403 Forbidden | ✅ OK |
 
 ### 5.5 Navegación y roles en producción (Railway)
 

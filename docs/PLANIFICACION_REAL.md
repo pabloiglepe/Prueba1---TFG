@@ -75,39 +75,32 @@ Las barras en rojo indican hitos con desviación significativa o alcance no comp
 ```mermaid
 %%{init: {'theme': 'base', 'gantt': {'leftPadding': 220, 'barHeight': 22, 'barGap': 6, 'fontSize': 13}, 'themeVariables': {'fontFamily': '"Arial Black", sans-serif', 'taskBkgColor': '#e8a020', 'taskBorderColor': '#b07010', 'taskTextColor': '#000000', 'taskTextOutsideColor': '#000000', 'taskTextLightColor': '#000000', 'taskTextDarkColor': '#000000', 'activeTaskBkgColor': '#20c080', 'activeTaskBorderColor': '#108050', 'critBkgColor': '#ff3333', 'critBorderColor': '#cc0000', 'todayLineColor': '#ffffff'}}}%%
 gantt
-    title Planificación Preliminar vs Real — PadelSync
+    title Planificacion Preliminar vs Real - PadelSync
     dateFormat  YYYY-MM-DD
     axisFormat  %d %b
-
-    section H1 · Infra y BD
-    Planificado (S1–S2)                                :p1, 2026-03-16, 14d
-    Real · completado con adelanto                     :active, r1, 2026-03-16, 7d
-
-    section H2 · Auth y Roles
-    Planificado (S3)                                   :p2, 2026-03-30, 7d
-    Real · una semana de adelanto                      :active, r2, 2026-03-23, 7d
-
-    section H3 · Admin y Dashboard
-    Planificado (S4–S5)                                :p3, 2026-04-06, 14d
-    Real · más complejo de lo estimado                 :active, r3, 2026-03-30, 14d
-
-    section H4 · Academia y Reservas
-    Planificado (S6–S7)                                :p4, 2026-04-20, 14d
-    Real · sin módulo de disponibilidad independiente  :crit, r4, 2026-04-02, 10d
-
-    section H5 · Frontend y RGPD
-    Planificado (S8–S9)                                :p5, 2026-05-04, 14d
-    Real · desarrollado en paralelo al backend         :active, r5, 2026-04-06, 36d
-
-    section H6 · Pruebas y Despliegue
-    Planificado (S10)                                  :p6, 2026-05-18, 7d
-    Real · sin pruebas E2E (Cypress/Playwright)        :crit, r6, 2026-04-30, 13d
-
-    section Funcionalidades no planificadas
-    Scheduler + cron-job.org                           :active, np1, 2026-04-13, 3d
-    Open-Meteo · precios dinámicos + pistas exteriores :active, np2, 2026-04-27, 4d
-    Sistema de backups web (CLI + panel admin)         :active, np3, 2026-05-01, 12d
-    Migración completa de iconos (16 vistas)           :active, np4, 2026-05-05, 4d
+    section H1 - Infra y BD
+    Planificado S1-S2                                  :p1, 2026-03-16, 14d
+    Real - completado con adelanto                     :active, r1, 2026-03-16, 7d
+    section H2 - Auth y Roles
+    Planificado S3                                     :p2, 2026-03-30, 7d
+    Real - una semana de adelanto                      :active, r2, 2026-03-23, 7d
+    section H3 - Admin y Dashboard
+    Planificado S4-S5                                  :p3, 2026-04-06, 14d
+    Real - mas complejo de lo estimado                 :active, r3, 2026-03-30, 14d
+    section H4 - Academia y Reservas
+    Planificado S6-S7                                  :p4, 2026-04-20, 14d
+    Real - sin modulo de disponibilidad independiente  :crit, r4, 2026-04-02, 10d
+    section H5 - Frontend y RGPD
+    Planificado S8-S9                                  :p5, 2026-05-04, 14d
+    Real - desarrollado en paralelo al backend         :active, r5, 2026-04-06, 36d
+    section H6 - Pruebas y Despliegue
+    Planificado S10                                    :p6, 2026-05-18, 7d
+    Real - sin pruebas E2E Cypress/Playwright          :crit, r6, 2026-04-30, 13d
+    section No planificado
+    Scheduler y cron-job.org                           :active, np1, 2026-04-13, 3d
+    Open-Meteo precios dinamicos y pistas exteriores   :active, np2, 2026-04-27, 4d
+    Sistema de backups web CLI y panel admin           :active, np3, 2026-05-01, 12d
+    Migracion completa de iconos 16 vistas             :active, np4, 2026-05-05, 4d
 ```
 
 ### Análisis de coherencia y causas de las desviaciones

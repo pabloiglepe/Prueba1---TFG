@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\CourtController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\ExportController;
+use App\Http\Controllers\Admin\BackupController;
 use App\Http\Controllers\Player\ReservationController;
 use App\Http\Controllers\Coach\ClassController;
 
@@ -68,6 +69,10 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     // RUTAS DE EXPORTACIÓN DE DATOS
     Route::get('export/reservations', [ExportController::class, 'reservations'])->name('export.reservations');
     Route::get('export/revenue',      [ExportController::class, 'revenue'])->name('export.revenue');
+
+    // RUTAS DE GESTIÓN DE BACKUPS
+    Route::get('backups',         [BackupController::class, 'index'])->name('backups.index');
+    Route::post('backups/restore', [BackupController::class, 'restore'])->name('backups.restore');
 });
 
 

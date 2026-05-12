@@ -73,7 +73,7 @@ las barras en gris representan la estimación original y las barras en verde la 
 Las barras en rojo indican hitos con desviación significativa o alcance no completado.
 
 ```mermaid
-%%{init: {'theme': 'base', 'gantt': {'leftPadding': 220, 'barHeight': 22, 'barGap': 6}, 'themeVariables': {'taskBkgColor': '#a8bfd4', 'taskBorderColor': '#6b94c0', 'activeTaskBkgColor': '#6b8f6b', 'activeTaskBorderColor': '#3d5c3d', 'critBkgColor': '#e05c5c', 'critBorderColor': '#b03030', 'todayLineColor': '#e05c5c'}}}%%
+%%{init: {'theme': 'base', 'gantt': {'leftPadding': 220, 'barHeight': 22, 'barGap': 6}, 'themeVariables': {'taskBkgColor': '#e8a020', 'taskBorderColor': '#b07010', 'taskTextColor': '#000000', 'activeTaskBkgColor': '#20c080', 'activeTaskBorderColor': '#108050', 'activeTaskTextColor': '#000000', 'critBkgColor': '#ff3333', 'critBorderColor': '#cc0000', 'todayLineColor': '#ffffff'}}}%%
 gantt
     title Planificación Preliminar vs Real — PadelSync
     dateFormat  YYYY-MM-DD

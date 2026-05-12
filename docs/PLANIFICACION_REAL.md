@@ -73,7 +73,7 @@ las barras en gris representan la estimación original y las barras en verde la 
 Las barras en rojo indican hitos con desviación significativa o alcance no completado.
 
 ```mermaid
-%%{init: {'theme': 'base', 'gantt': {'leftPadding': 220, 'barHeight': 22, 'barGap': 6, 'fontSize': 13}, 'themeVariables': {'fontFamily': '"Arial Black", sans-serif', 'taskBkgColor': '#e8a020', 'taskBorderColor': '#b07010', 'taskTextColor': '#000000', 'taskTextOutsideColor': '#000000', 'taskTextLightColor': '#000000', 'taskTextDarkColor': '#000000', 'activeTaskBkgColor': '#20c080', 'activeTaskBorderColor': '#108050', 'critBkgColor': '#ff3333', 'critBorderColor': '#cc0000', 'todayLineColor': '#ffffff'}}}%%
+%%{init: {'theme': 'base', 'gantt': {'leftPadding': 220, 'barHeight': 22, 'barGap': 6, 'fontSize': 14}, 'themeVariables': {'fontFamily': 'Impact', 'taskBkgColor': '#e8a020', 'taskBorderColor': '#b07010', 'taskTextColor': '#000000', 'taskTextOutsideColor': '#000000', 'taskTextLightColor': '#000000', 'taskTextDarkColor': '#000000', 'activeTaskBkgColor': '#20c080', 'activeTaskBorderColor': '#108050', 'critBkgColor': '#ff3333', 'critBorderColor': '#cc0000', 'todayLineColor': '#ffffff'}}}%%
 gantt
     title Planificacion Preliminar vs Real - PadelSync
     dateFormat  YYYY-MM-DD
@@ -102,7 +102,6 @@ gantt
     Sistema de backups web CLI y panel admin           :active, np3, 2026-05-01, 12d
     Migracion completa de iconos 16 vistas             :active, np4, 2026-05-05, 4d
 ```
-
 ### Análisis de coherencia y causas de las desviaciones
 
 **Grado de coherencia global: alto en el qué, bajo en el cómo y el cuándo.**

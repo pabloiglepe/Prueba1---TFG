@@ -685,3 +685,66 @@ El menú hamburguesa (un SVG con dos rutas que alternaban con Alpine.js `:class`
 ```
 
 **Lección**: nunca combinar `x-show` con `display: flex` en el mismo elemento. Usar siempre un wrapper externo para Alpine y un div interno para el layout flex/grid. Este mismo patrón se aplica con `x-if`, `x-transition` y cualquier directiva Alpine que gestione visibilidad.
+
+---
+
+## Hito 24 — Mejora del Dashboard admin y reestructuración de la Home autenticada
+
+### Dashboard admin — Panel "Hoy" y nuevo gráfico de estados
+
+**Problema**: el dashboard carecía de información en tiempo real sobre el estado actual del club y no mostraba la distribución de reservas por estado de forma visual.
+
+**Mejoras implementadas**:
+
+**Panel "Hoy"** (parte superior del tab Resumen)  
+Nuevo bloque que muestra el día actual con la actividad en tiempo real:
+- Número total de reservas del día e ingresos generados hasta el momento.
+- Estado de cada pista activa: **Ocupada** (con la hora de fin y el nombre del jugador) o **Libre**.
+- Los datos se calculan en `DashboardController@index` y se pasan a la vista como `$todayReservations`, `$todayCount`, `$todayRevenue` y `$courtStatusNow`.
+
+**Indicadores de tendencia en KPIs**  
+Las tarjetas de Reservas totales e Ingresos totales muestran ahora un indicador ▲/▼ con el porcentaje de variación respecto al mes anterior. Esto permite al administrador detectar de un vistazo si el negocio está creciendo o decreciendo.
+
+**Nuevo gráfico circular — Estado de las reservas** (`chart-status`)  
+Gráfico de tipo donut (ECharts) que muestra la distribución global de reservas por estado:
+- **Completadas** (verde) — reservas en estado `paid`
+- **Pendientes** (amarillo) — reservas en estado `pending`
+- **Canceladas** (rojo) — reservas en estado `cancelled`
+
+Los valores se pasan desde PHP como atributos `data-status-paid`, `data-status-pending` y `data-status-cancelled` en el div `#dashboard-data`, siguiendo el mismo patrón de atributos `data-` establecido en Hito 6.
+
+---
+
+### Reestructuración de la Home autenticada
+
+**Decisión**: separar la funcionalidad de "bienvenida" y "redirección por rol" de la home, y crear una página de inicio enriquecida para el jugador.
+
+**Cambio de arquitectura**:
+
+| Ruta | Antes | Después |
+|---|---|---|
+| `/dashboard` | Carrusel de bienvenida | `RedirectController` → redirige por rol al panel principal |
+| `/home` | No existía | `HomeController` → carrusel + panel de actividad del jugador |
+
+La ruta `/home` es accesible desde el enlace "Inicio" de la barra de navegación para todos los roles.
+
+**`HomeController@index`** calcula para el jugador autenticado:
+- `upcomingReservations`: próximas 5 reservas activas (ordenadas por fecha y hora).
+- `upcomingClasses`: próximas 3 clases inscritas (estado `registered`, no canceladas).
+- `monthReservationCount`: número de reservas no canceladas del mes en curso.
+- `monthSpent`: gasto total (reservas) del mes en curso.
+
+Para coaches y admins, `$playerData` es `null` y la vista solo muestra el carrusel con accesos rápidos a sus secciones.
+
+**`RedirectController@home`** actualizado: ya no renderiza la vista del carrusel sino que redirige directamente al panel de rol:
+
+```php
+return match ($request->user()->role->name) {
+    'admin'  => redirect()->route('admin.dashboard'),
+    'coach'  => redirect()->route('coach.classes.index'),
+    'player' => redirect()->route('player.reservations.index'),
+    default  => redirect()->route('login'),
+};
+```
+
+**Lección**: separar la página de bienvenida de la redirección post-login mejora la experiencia porque el jugador puede acceder a su resumen personalizado cuando quiera sin que sea obligatoria al iniciar sesión. El panel de actividad con datos reales (próximas reservas y clases) es mucho más útil que un carrusel estático como punto de entrada frecuente.

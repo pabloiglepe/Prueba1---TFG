@@ -176,47 +176,53 @@ docker exec -it padel-app php artisan test tests/Feature/SchedulerEndpointTest.p
 
 Los siguientes flujos no son automatizables por depender de renderizado visual, interacciones JavaScript o servicios externos.
 
-### 5.1 Dashboard admin — Gráficos ECharts
+### 5.1 Dashboard admin — Panel "Hoy", KPIs y Gráficos ECharts
 
 | ID | Acción | Resultado esperado | Estado |
 |---|---|---|---|
-| M-01 | Acceder a `/admin/dashboard` | Gráfico de líneas (ocupación semanal) y gráfico de barras (ingresos mensuales) se renderizan sin errores | ✅ OK |
-| M-02 | Clic en semana del gráfico de líneas | Aparece listado de reservas de esa semana | ✅ OK |
-| M-03 | Clic en mes del gráfico de barras | Aparece desglose por pista y listado de reservas | ✅ OK |
+| M-01 | Acceder a `/admin/dashboard` | Panel "Hoy" muestra estado de pistas (Libre/Ocupada), los 3 gráficos se renderizan sin errores | ✅ OK |
+| M-01a | Pista con reserva activa en el panel "Hoy" | Badge rojo con "Ocupada hasta HH:MM (Nombre jugador)" | ✅ OK |
+| M-01b | KPI "Reservas totales" con datos de dos meses | Indicador ▲/▼ muestra el % correcto vs mes anterior | ✅ OK |
+| M-01c | Gráfico circular "Estado de reservas" | Segmentos proporcionales a Completadas/Pendientes/Canceladas | ✅ OK |
+| M-02 | Clic en semana del gráfico de líneas | Aparece modal con listado de reservas de esa semana | ✅ OK |
+| M-03 | Clic en mes del gráfico de barras | Aparece modal con desglose por pista y listado de reservas | ✅ OK |
 
-### 5.2 Home autenticada — Carrusel Alpine.js
+### 5.2 Home autenticada — Carrusel y panel de actividad (`/home`)
 
 | ID | Acción | Resultado esperado | Estado |
 |---|---|---|---|
-| M-04 | Login como `admin` | Home muestra carrusel con slides e iconos de acceso rápido de admin | ✅ OK |
-| M-05 | Login como `coach` | Home muestra slides adaptados al rol de entrenador | ✅ OK |
-| M-06 | Login como `player` | Home muestra slides adaptados al rol de jugador | ✅ OK |
+| M-04 | Login como `admin` → pulsar "Inicio" | Home muestra carrusel con slides de admin y accesos rápidos a Dashboard, Pistas y Usuarios | ✅ OK |
+| M-05 | Login como `coach` → pulsar "Inicio" | Home muestra slides adaptados al entrenador y accesos rápidos | ✅ OK |
+| M-06 | Login como `player` → pulsar "Inicio" | Home muestra carrusel + panel de próximas reservas y clases con datos reales | ✅ OK |
 | M-07 | Clic en flechas de navegación del carrusel | Slides avanzan/retroceden correctamente | ✅ OK |
+| M-08-a | Login como `admin` | Redirige directamente a `/admin/dashboard` (no a `/home`) | ✅ OK |
+| M-08-b | Login como `coach` | Redirige directamente a `/coach/classes` | ✅ OK |
+| M-08-c | Login como `player` | Redirige directamente a `/player/reservations` | ✅ OK |
 
 ### 5.3 Sistema de email — Forgot password
 
 | ID | Acción | Resultado esperado | Estado |
 |---|---|---|---|
-| M-08 | Solicitar reset de contraseña en local | Email enviado vía SMTP Brevo, recibido en bandeja | ✅ OK |
-| M-09 | Solicitar reset de contraseña en Railway | Email enviado vía HTTP API Brevo (puerto 443), recibido en bandeja | ✅ OK |
-| M-10 | Usar enlace de reset con token expirado | Pantalla de error, no permite el cambio | ✅ OK |
+| M-09 | Solicitar reset de contraseña en local | Email enviado vía SMTP Brevo, recibido en bandeja | ✅ OK |
+| M-10 | Solicitar reset de contraseña en Railway | Email enviado vía HTTP API Brevo (puerto 443), recibido en bandeja | ✅ OK |
+| M-11 | Usar enlace de reset con token expirado | Pantalla de error, no permite el cambio | ✅ OK |
 
 ### 5.4 Scheduler — cron-job.org
 
 | ID | Acción | Resultado esperado | Estado |
 |---|---|---|---|
-| M-11 | cron-job.org llama a `/run-scheduler` cada 15 min | Railway responde 200, log de Railway muestra ejecución | ✅ OK |
-| M-12 | Reserva cuya hora ha pasado | Scheduler la marca como `paid` automáticamente | ✅ OK |
-| M-13 | Clase cuya hora ha pasado | Scheduler la marca como `completed` automáticamente | ✅ OK |
+| M-12 | cron-job.org llama a `/run-scheduler` | Railway responde 200, log de Railway muestra ejecución | ✅ OK |
+| M-13 | Reserva cuya hora ha pasado | Scheduler la marca como `paid` automáticamente | ✅ OK |
+| M-14 | Clase cuya hora ha pasado | Scheduler la marca como `completed` automáticamente | ✅ OK |
 
 ### 5.5 Navegación y roles en producción (Railway)
 
 | ID | Acción | Resultado esperado | Estado |
 |---|---|---|---|
-| M-14 | Login como admin en Railway | Acceso a panel admin, dashboard con gráficos | ✅ OK |
-| M-15 | Login como coach en Railway | Acceso a gestión de clases, sin panel admin | ✅ OK |
-| M-16 | Login como player en Railway | Acceso a reservas y clases, sin panel admin | ✅ OK |
-| M-17 | Intentar acceder a `/admin` como player | Pantalla de error 403 | ✅ OK |
+| M-15 | Login como admin en Railway | Redirige a dashboard admin con gráficos y panel Hoy | ✅ OK |
+| M-16 | Login como coach en Railway | Acceso a gestión de clases, sin panel admin | ✅ OK |
+| M-17 | Login como player en Railway | Acceso a reservas y clases, sin panel admin | ✅ OK |
+| M-18 | Intentar acceder a `/admin` como player | Pantalla de error 403 | ✅ OK |
 
 ---
 

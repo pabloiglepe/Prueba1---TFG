@@ -200,7 +200,7 @@ docker exec -it padel-app php artisan db:restore padelsync_backup_2026-05-03_191
 docker exec -it padel-app php artisan db:restore --force
 ```
 
-> El backup automático semanal se ejecuta cada domingo a las 03:00 vía el scheduler (en producción, disparado por cron-job.org). Para el **código fuente**, Git + GitHub actúa como sistema de backup versionado — cada `git push` es un backup completo.
+> El backup automático se ejecuta diariamente a las 03:00 vía el scheduler (en producción, disparado por cron-job.org). Para el **código fuente**, Git + GitHub actúa como sistema de backup versionado — cada `git push` es un backup completo.
 
 ---
 

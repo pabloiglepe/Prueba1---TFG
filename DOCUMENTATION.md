@@ -42,7 +42,7 @@
 | Runtime PHP | PHP-FPM | 8.2 |
 | Compilación assets | Vite + Tailwind CSS | — |
 | Gráficos | ECharts | 5.6.0 (npm) |
-| Iconos | Heroicons / FontAwesome / iconify-icon | SVG inline / npm |
+| Iconos | iconify-icon (Phosphor Icons `ph:`) | npm |
 | Alertas | SweetAlert2 | CDN |
 | Exportación Excel | maatwebsite/excel | 3.1 |
 | Datos meteorológicos | Open-Meteo API | Gratuita, sin API key |
@@ -208,21 +208,30 @@ Permite al administrador crear, editar, activar/desactivar y eliminar pistas. La
 
 El dashboard se organiza en tres pestañas: Resumen, Entrenadores y Exportar.
 
+#### Panel "Hoy"
+
+El dashboard muestra en la parte superior un panel en tiempo real con la actividad del día actual:
+
+- Número de reservas del día y los ingresos generados hasta el momento.
+- Estado de cada pista activa: **Ocupada** (con la hora hasta la que está reservada y el nombre del jugador) o **Libre**.
+
 #### KPIs
 
 | KPI | Descripción |
 |---|---|
-| Reservas totales | Total de reservas no canceladas |
-| Ingresos totales | Suma de `total_price` de reservas no canceladas |
-| Jugadores registrados | Total de usuarios con rol `player` |
-| Jugadores activos | Players con al menos 1 reserva en los últimos 30 días |
+| Reservas totales | Total de reservas no canceladas, con indicador de tendencia vs mes anterior |
+| Ingresos totales | Suma de `total_price` de reservas no canceladas, con indicador de tendencia vs mes anterior |
+| Jugadores registrados | Total de usuarios con rol `player`, con recuento de activos en los últimos 30 días |
+
+Los indicadores de tendencia (▲/▼ porcentaje) se calculan comparando el mes actual con el mes anterior.
 
 #### Gráficos interactivos (ECharts)
 
+- **Estado de las reservas**: gráfico circular (donut) con la distribución global de reservas por estado: Completadas, Pendientes y Canceladas.
 - **Ocupación de pistas**: reservas por semana (4 semanas pasadas + 4 futuras). Al pulsar en un punto se abre un modal con el detalle de esa semana.
 - **Ingresos por mes**: ingresos de los últimos 6 meses. Al pulsar en una barra se abre un modal con el desglose por pista y listado de reservas.
 
-Los datos del gráfico se cargan desde atributos `data-` del HTML para evitar conflictos de redeclaración con Livewire Navigate.
+Los datos de los gráficos se cargan desde atributos `data-` del HTML para evitar conflictos de redeclaración con Livewire Navigate.
 
 #### Exportación Excel
 
@@ -359,7 +368,7 @@ El sistema tiene tres comandos Artisan registrados en el scheduler:
 | Comando | Acción | Frecuencia |
 |---|---|---|
 | `classes:complete-finished` | Marca como `completed` las clases cuya hora de fin ha pasado | Cada 15 min |
-| `reservations:mark-paid` | Marca como `paid` las reservas pasadas en estado `pending` | Cada 15 min |
+| `reservations:complete-finished` | Marca como `paid` las reservas pasadas en estado `pending` | Cada 15 min |
 | `weather:fetch` | Obtiene datos meteorológicos de Open-Meteo para los próximos 14 días | Diaria (06:00) |
 
 #### Ejecución en local
@@ -398,27 +407,51 @@ Route::get('/run-scheduler', function () {
 
 ---
 
-### 5.10 Home autenticada con carrusel Alpine.js
+### 5.10 Home autenticada con carrusel Alpine.js y panel de actividad
 
-**Vista**: `resources/views/dashboard.blade.php`  
-**Ruta**: `/dashboard`
+**Controlador**: `App\Http\Controllers\HomeController`  
+**Vista**: `resources/views/home.blade.php`  
+**Ruta**: `/home`
 
-Tras el login, todos los roles acceden a una página de bienvenida unificada que presenta un **carrusel de slides adaptado al rol del usuario**. Cada slide incluye imagen de pádel, título, descripción y botón de acceso rápido.
+La ruta `/home` (accesible desde el enlace "Inicio" de la barra de navegación) presenta una **página de inicio unificada** con un carrusel de bienvenida adaptado al rol y, para los jugadores, un panel de actividad personalizado con datos en tiempo real.
 
-#### Slides por rol
+#### Redirección tras login
+
+Tras autenticarse, el sistema redirige al usuario directamente a su sección principal según su rol (mediante `RedirectController`), no a la home:
+
+| Rol | Redirección tras login |
+|---|---|
+| Admin | `/admin/dashboard` |
+| Coach | `/coach/classes` |
+| Player | `/player/reservations` |
+
+La ruta `/home` es accesible en cualquier momento desde el enlace "Inicio" de la barra de navegación.
+
+#### Carrusel de slides por rol
 
 | Rol | Slides |
 |---|---|
 | Admin | Bienvenida · Acceso al Dashboard · Gestión de pistas · Gestión de usuarios |
-| Coach | Bienvenida · Mis clases · Crear nueva clase |
-| Player | Bienvenida · Reservar pista · Mis clases · Mi perfil |
+| Coach | Bienvenida · Mis clases · Estadísticas del perfil |
+| Player | Bienvenida · Reservar pista · Mejorar nivel con clases · Tu club en tu mano |
+
+El carrusel avanza automáticamente cada 4 segundos y es navegable con flechas y puntos de posición.
+
+#### Panel de actividad del jugador
+
+Cuando el usuario tiene el rol `player`, la home muestra adicionalmente:
+
+- **Próximas reservas**: listado de las próximas 5 reservas activas con nombre de pista, fecha/hora, precio y estado. Contador de reservas del mes actual.
+- **Próximas clases**: listado de las próximas 3 clases inscritas con título, fecha y entrenador. Gasto total del mes.
+- **Accesos rápidos**: tarjetas de acceso directo a Reservar pista, Clases disponibles y Mi perfil.
+
+Para coaches y admins, la home muestra únicamente el carrusel y las tarjetas de acceso rápido a sus secciones principales.
 
 #### Implementación técnica
 
 - **Librería**: Alpine.js (incluido con Livewire, sin dependencias adicionales).
-- **Navegación**: puntos de posición y flechas anterior/siguiente.
-- **Imágenes**: fotografías reales de pádel servidas desde `public/images/`.
-- **Adaptación por rol**: las slides se renderizan condicionalmente con `@if (auth()->user()->role->name === '...')` en la vista Blade.
+- **Imágenes**: fotografías reales de pádel servidas desde `public/images/padel/`.
+- **Datos del jugador**: calculados en `HomeController@index` — filtro de reservas futuras, clases inscritas futuras y sumatorios del mes en curso.
 
 ---
 
@@ -617,8 +650,8 @@ Se optó por Livewire Volt para mantener toda la lógica reactiva dentro del eco
 ### Scheduler en producción via endpoint HTTP protegido
 Railway no soporta cron jobs nativos en el plan gratuito. Se implementó un endpoint `GET /run-scheduler` protegido con el header `X-Cron-Secret` que dispara `php artisan schedule:run`. El servicio externo **cron-job.org** llama a este endpoint cada 30 minutos, simulando el comportamiento de un cron job.
 
-### Home autenticada con carrusel Alpine.js
-En lugar de redirigir directamente al panel de rol tras el login, se creó una home unificada en `/dashboard` con un carrusel de accesos rápidos adaptado al rol. Esto mejora la orientación del usuario y centraliza el punto de entrada a la aplicación.
+### Home autenticada en `/home` con panel de actividad del jugador
+La ruta `/home` (servida por `HomeController`) centraliza la bienvenida del usuario con un carrusel adaptado al rol y, para los jugadores, un panel en tiempo real con sus próximas reservas y clases e indicadores del mes. La ruta `/dashboard` redirige directamente al panel de rol (admin → dashboard, coach → clases, player → reservas) para que el acceso más frecuente sea inmediato. El usuario puede consultar la home en cualquier momento desde el enlace "Inicio" de la navegación.
 
 ### Spinner `padel-spin` definido en los layouts
 La animación de carga se define una única vez en `app.blade.php` y `guest.blade.php`, garantizando disponibilidad en todas las vistas sin duplicar código. Se activa con `wire:loading` en los botones de submit de los formularios de autenticación para prevenir envíos duplicados y dar feedback inmediato al usuario.

@@ -19,30 +19,34 @@ Si el usuario no recuerda su contraseña puede recuperarla desde la pantalla de 
 
 ## Home autenticada
 
-Ruta: `/dashboard` (accesible para todos los roles)
+Ruta: `/home` (accesible para todos los roles desde el enlace "Inicio" de la barra de navegación)
 
-Al iniciar sesión, todos los usuarios acceden a una página de bienvenida común con un **carrusel de slides** adaptado a su rol. Cada slide incluye una imagen de pádel, un título descriptivo y un botón de acceso directo a la sección correspondiente.
+### Redirección tras login
 
-### Slides por rol
+Tras autenticarse, el sistema redirige al usuario directamente a su sección principal:
+- **Administrador** → `/admin/dashboard`
+- **Entrenador** → `/coach/classes`
+- **Jugador** → `/player/reservations`
 
-**Administrador**
-- Bienvenida general al sistema.
-- Acceso directo al Dashboard de analíticas.
-- Gestión de pistas.
-- Gestión de usuarios.
+La ruta `/home` está disponible en todo momento pulsando "Inicio" en la navegación.
 
-**Entrenador**
-- Bienvenida general al sistema.
-- Mis clases (listado y gestión).
-- Crear nueva clase.
+### Carrusel de slides
 
-**Jugador**
-- Bienvenida general al sistema.
-- Reservar una pista.
-- Mis clases (inscritas y disponibles).
-- Mi perfil.
+La home muestra un **carrusel de slides** adaptado al rol del usuario, con avance automático cada 4 segundos. Cada slide incluye una imagen de pádel, un título descriptivo y un botón de acceso directo.
 
-El carrusel se navega mediante las flechas laterales o los puntos de posición en la parte inferior.
+**Administrador**: Bienvenida · Dashboard · Gestión de pistas · Gestión de usuarios  
+**Entrenador**: Bienvenida · Mis clases · Estadísticas del perfil  
+**Jugador**: Bienvenida · Reservar pista · Mejorar nivel con clases · Tu club en tu mano
+
+El carrusel se navega también con las flechas laterales o los puntos de posición.
+
+### Panel de actividad (solo jugador)
+
+Debajo del carrusel, los jugadores ven un panel personalizado con sus datos en tiempo real:
+
+- **Próximas reservas**: listado de las próximas reservas activas con pista, fecha/hora, precio y estado. Muestra el total de reservas del mes.
+- **Próximas clases**: listado de las próximas clases inscritas con título, fecha y entrenador. Muestra el gasto del mes.
+- **Accesos rápidos**: tarjetas de acceso directo a Reservar pista, Clases disponibles y Mi perfil.
 
 ---
 
@@ -55,15 +59,17 @@ El administrador tiene acceso total a la aplicación. Su panel principal es el *
 El dashboard se organiza en tres pestañas:
 
 **Resumen**
-- Tarjetas con KPIs: reservas totales, ingresos totales y jugadores registrados.
-- Gráfico de líneas con la ocupación de pistas (4 semanas pasadas + 4 futuras). Al pulsar en un punto se abre un modal con el detalle de reservas de esa semana.
-- Gráfico de barras con los ingresos de los últimos 6 meses. Al pulsar en una barra se abre un modal con el desglose por pista.
+- **Panel "Hoy"**: estado en tiempo real de todas las pistas activas (Libre / Ocupada hasta HH:MM por nombre del jugador), número de reservas del día e ingresos generados hasta el momento.
+- **Tarjetas KPI**: reservas totales, ingresos totales y jugadores registrados. Cada tarjeta de reservas e ingresos incluye un indicador de tendencia (▲/▼ porcentaje) comparando el mes actual con el mes anterior.
+- **Gráfico de estados** (circular/donut): distribución global de reservas por estado — Completadas, Pendientes y Canceladas.
+- **Gráfico de ocupación** (líneas): reservas por semana (4 semanas pasadas + 4 futuras). Al pulsar en un punto se abre un modal con el listado de reservas de esa semana.
+- **Gráfico de ingresos** (barras): ingresos de los últimos 6 meses. Al pulsar en una barra se abre un modal con el desglose por pista y el listado de reservas del mes.
 
 **Entrenadores**
-- Listado de entrenadores con sus clases activas y número de alumnos inscritos.
-- Acceso directo al perfil de cada entrenador.
+- Listado de entrenadores con sus clases activas, número de alumnos inscritos, nivel y visibilidad de cada clase.
+- Acceso directo al perfil completo de cada entrenador.
 
-**Exportar**
+**Exportar Informes**
 - Exportación de reservas en formato `.xlsx` filtradas por rango de fechas.
 - Exportación de ingresos en formato `.xlsx` filtrados por mes.
 

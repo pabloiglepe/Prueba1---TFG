@@ -67,7 +67,7 @@ La aplicación sigue el patrón **MVC** de Laravel con la siguiente organizació
 app/Http/Controllers/
 ├── Admin/
 │   ├── CourtController.php       # CRUD de pistas
-│   ├── DashboardController.php   # KPIs y gráficos
+│   ├── DashboardController.php   # KPIs, gráficos, panel hoy
 │   ├── UserController.php        # Gestión de usuarios
 │   └── ExportController.php      # Exportación Excel
 ├── Coach/
@@ -75,8 +75,9 @@ app/Http/Controllers/
 ├── Player/
 │   ├── ReservationController.php # Motor de reservas
 │   └── ClassController.php       # Inscripción a clases
+├── HomeController.php            # Home /home: carrusel + datos jugador
 ├── ProfileController.php         # Perfil de usuario
-└── RedirectController.php        # Redirección por rol
+└── RedirectController.php        # Redirección por rol tras login
 ```
 
 ---
@@ -191,7 +192,8 @@ Ver `docs/TEST_PLAN.md` para el plan de pruebas completo con casos manuales y au
 │   │       ├── coach/          # classes/
 │   │       ├── player/         # reservations/, classes/
 │   │       ├── livewire/       # auth/, layout/
-│   │       ├── dashboard.blade.php   # Home autenticada con carrusel Alpine.js
+│   │       ├── home.blade.php        # Home autenticada: carrusel + panel jugador (/home)
+│   │       ├── dashboard.blade.php   # Landing post-login: redirige por rol (/dashboard)
 │   │       ├── profile.blade.php
 │   │       └── welcome.blade.php
 │   ├── routes/

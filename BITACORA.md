@@ -748,3 +748,40 @@ return match ($request->user()->role->name) {
 ```
 
 **Lección**: separar la página de bienvenida de la redirección post-login mejora la experiencia porque el jugador puede acceder a su resumen personalizado cuando quiera sin que sea obligatoria al iniciar sesión. El panel de actividad con datos reales (próximas reservas y clases) es mucho más útil que un carrusel estático como punto de entrada frecuente.
+
+---
+
+## Hito 25 — Panel de gestión de backups para el administrador
+
+**Contexto**: los backups generados automáticamente por `db:backup` (Hito 21) solo eran accesibles por CLI. Se añade una interfaz web en el panel admin para listar los backups disponibles y restaurar uno con un botón.
+
+### Implementación
+
+**Controlador** `app/Http/Controllers/Admin/BackupController.php`:
+- `index()`: lee `storage/app/backups/padelsync_backup_*.sql` con `glob()`, ordena por nombre descendente (más reciente primero), extrae fecha/hora del nombre del archivo y tamaño, y pasa el listado a la vista.
+- `restore(Request $request)`: valida que el nombre del archivo empiece por `padelsync_backup_` y exista en disco, luego ejecuta `Artisan::call('db:restore', ['file' => $fileName, '--force' => true])`. Devuelve un mensaje de éxito o error según el código de salida del comando (0 = éxito).
+
+**Rutas** (dentro del grupo `middleware(['auth', 'role:admin'])`):
+```php
+Route::get('backups',          [BackupController::class, 'index'])->name('backups.index');
+Route::post('backups/restore', [BackupController::class, 'restore'])->name('backups.restore');
+```
+
+**Vista** `resources/views/admin/backups/index.blade.php`:
+- Cards con el mismo estilo que la vista de reservas del jugador: bloque de fecha (día/mes) a la izquierda, nombre del archivo, fecha completa, hora y tamaño en el centro, botón "Restaurar" a la derecha.
+- Badge "Más reciente" en la primera card.
+- Aviso de advertencia en la parte superior recordando que la restauración es destructiva e irreversible.
+- Confirmación nativa del navegador antes de ejecutar la restauración.
+- Estado vacío con iconify-icon y texto explicativo si no hay archivos.
+
+**Navegación**: enlace "Backups" añadido al menú del administrador (escritorio y menú responsive).
+
+### Decisión de seguridad
+
+El controlador sanitiza el nombre del archivo con `basename()` (elimina cualquier componente de ruta) y comprueba que comience por `padelsync_backup_` antes de pasarlo al comando Artisan. Esto previene path traversal en caso de que se manipule el campo `file` del formulario.
+
+### Limitación en producción (Railway)
+
+El filesystem de Railway es efímero: los archivos escritos en `storage/app/backups/` por el scheduler se pierden si el contenedor se reinicia o redespliega antes de que el admin acceda a la vista. En entorno Docker local, los backups persisten mientras el contenedor esté levantado y el volumen montado.
+
+**Lección**: `Artisan::call()` funciona perfectamente dentro de una petición HTTP estándar. El comando `db:restore` con `--force` omite la confirmación interactiva que sería bloqueante en un contexto web. El patrón de generar la UI de administración sobre comandos Artisan existentes es limpio y evita duplicar lógica: el comando ya maneja todos los casos de error y solo hay que interpretar su código de salida.

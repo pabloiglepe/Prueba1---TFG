@@ -215,6 +215,17 @@ Los siguientes flujos no son automatizables por depender de renderizado visual, 
 | M-13 | Reserva cuya hora ha pasado | Scheduler la marca como `paid` automáticamente | ✅ OK |
 | M-14 | Clase cuya hora ha pasado | Scheduler la marca como `completed` automáticamente | ✅ OK |
 
+### 5.6 Gestión de backups — Panel admin
+
+| ID | Acción | Resultado esperado | Estado |
+|---|---|---|---|
+| M-19 | Acceder a `/admin/backups` sin backups generados | Mensaje "No hay backups disponibles" con indicación de que se generan a las 03:00 | ✅ OK |
+| M-20 | Ejecutar `php artisan db:backup` y recargar `/admin/backups` | Card con fecha, hora y tamaño del backup generado; badge "Más reciente" | ✅ OK |
+| M-21 | Pulsar "Restaurar" en un backup → cancelar el confirm | No se realiza ninguna restauración; la BD permanece intacta | ✅ OK |
+| M-22 | Pulsar "Restaurar" en un backup → confirmar | BD restaurada; mensaje de éxito en la vista; datos vuelven al estado del backup | ✅ OK |
+| M-23 | Intentar acceder a `/admin/backups` como `player` | HTTP 403 Forbidden | ✅ OK |
+| M-24 | Intentar acceder a `/admin/backups` como `coach` | HTTP 403 Forbidden | ✅ OK |
+
 ### 5.5 Navegación y roles en producción (Railway)
 
 | ID | Acción | Resultado esperado | Estado |

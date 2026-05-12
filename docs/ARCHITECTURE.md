@@ -69,7 +69,8 @@ app/Http/Controllers/
 │   ├── CourtController.php       # CRUD de pistas
 │   ├── DashboardController.php   # KPIs, gráficos, panel hoy
 │   ├── UserController.php        # Gestión de usuarios
-│   └── ExportController.php      # Exportación Excel
+│   ├── ExportController.php      # Exportación Excel
+│   └── BackupController.php      # Listado y restauración de backups
 ├── Coach/
 │   └── ClassController.php       # Gestión de clases
 ├── Player/
@@ -188,7 +189,7 @@ Ver `docs/TEST_PLAN.md` para el plan de pruebas completo con casos manuales y au
 │   │   └── seeders/
 │   ├── resources/
 │   │   └── views/
-│   │       ├── admin/          # courts/, users/, dashboard.blade.php
+│   │       ├── admin/          # courts/, users/, backups/, dashboard.blade.php
 │   │       ├── coach/          # classes/
 │   │       ├── player/         # reservations/, classes/
 │   │       ├── livewire/       # auth/, layout/

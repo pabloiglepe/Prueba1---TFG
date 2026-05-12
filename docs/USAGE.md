@@ -83,6 +83,19 @@ Ruta: `/admin/courts`
 - Una pista con reservas futuras no puede desactivarse hasta que finalicen.
 - La vista de edición muestra estadísticas de la pista: reservas totales, ingresos generados y fecha de la última reserva.
 
+### Gestión de Backups
+
+Ruta: `/admin/backups`
+
+Sección exclusiva del administrador para gestionar las copias de seguridad de la base de datos generadas automáticamente por el scheduler cada noche a las 03:00.
+
+- Listado de archivos `.sql` disponibles en `storage/app/backups/`, ordenados del más reciente al más antiguo.
+- Cada card muestra el nombre del archivo, la fecha y hora de generación y el tamaño del archivo. El backup más reciente aparece marcado con un badge "Más reciente".
+- Botón **Restaurar** en cada card: reemplaza todos los datos actuales de la base de datos con los del backup seleccionado. El sistema pide confirmación antes de proceder.
+- Si no hay ningún backup disponible, la vista muestra un mensaje informativo indicando que el backup automático se ejecuta diariamente a las 03:00.
+
+> Esta funcionalidad es útil principalmente en entorno local (Docker). En Railway el filesystem del contenedor es efímero, por lo que los backups pueden perderse si el contenedor se reinicia.
+
 ### Gestión de Usuarios
 
 Ruta: `/admin/users`

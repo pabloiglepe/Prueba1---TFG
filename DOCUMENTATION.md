@@ -612,6 +612,18 @@ app(Schedule::class)->command('db:backup')->dailyAt('03:00');
 
 En producción, cron-job.org llama al endpoint `/run-scheduler` y Laravel ejecuta el backup cuando le corresponde según el schedule.
 
+#### Gestión de backups desde el panel admin
+
+El administrador dispone de una interfaz web para gestionar los backups generados por el scheduler, accesible desde el menú de navegación ("Backups"):
+
+**Controlador**: `App\Http\Controllers\Admin\BackupController`  
+**Rutas**: `GET /admin/backups` (`admin.backups.index`) · `POST /admin/backups/restore` (`admin.backups.restore`)  
+**Vista**: `resources/views/admin/backups/index.blade.php`
+
+La vista lista todos los archivos `.sql` disponibles en `storage/app/backups/` como cards con el mismo estilo que las reservas (bloque de fecha, nombre del archivo, tamaño y hora de generación). El backup más reciente aparece marcado con un badge. Cada card incluye un botón "Restaurar" que, previa confirmación del navegador, llama a `Artisan::call('db:restore', ['file' => $fileName, '--force' => true])`.
+
+> La restauración es una operación destructiva. El controlador valida que el nombre del archivo empiece por `padelsync_backup_` y exista en el directorio antes de ejecutar el comando.
+
 #### Backup del código fuente
 
 El código fuente no requiere un sistema adicional: **Git + GitHub** actúa como backup versionado. Cada `git push` es un backup completo del código. `db:backup` cubre exclusivamente los **datos de la BD** que no están en el repositorio.

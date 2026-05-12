@@ -202,6 +202,8 @@ docker exec -it padel-app php artisan db:restore --force
 
 > El backup automático se ejecuta diariamente a las 03:00 vía el scheduler (en producción, disparado por cron-job.org). Para el **código fuente**, Git + GitHub actúa como sistema de backup versionado — cada `git push` es un backup completo.
 
+> El administrador puede también listar y restaurar backups directamente desde el panel web en `/admin/backups`, sin necesidad de acceder por CLI.
+
 ---
 
 ## Sincronizar base de datos local con Railway

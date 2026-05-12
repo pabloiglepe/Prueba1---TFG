@@ -8,7 +8,7 @@ El desarrollo arrancó el **16 de marzo de 2026** y se cerró el **12 de mayo de
 **8 semanas efectivas** frente a las 10 semanas estimadas en la planificación preliminar.
 
 ```mermaid
-%%{init: {'theme': 'base', 'gantt': {'leftPadding': 200, 'barHeight': 22, 'barGap': 6}, 'themeVariables': {'taskBkgColor': '#6b8f6b', 'taskBorderColor': '#3d5c3d', 'activeTaskBkgColor': '#4a6b4a', 'activeTaskBorderColor': '#2d3b2d', 'critBkgColor': '#e05c5c', 'critBorderColor': '#b03030', 'todayLineColor': '#e05c5c'}}}%%
+%%{init: {'theme': 'base', 'gantt': {'leftPadding': 220, 'barHeight': 22, 'barGap': 6, 'fontSize': 14}, 'themeVariables': {'fontFamily': 'Arial Black', 'doneTaskBkgColor': '#e8a020', 'doneTaskBorderColor': '#b07010', 'activeTaskBkgColor': '#20c080', 'activeTaskBorderColor': '#108050', 'critBkgColor': '#ff3333', 'critBorderColor': '#cc0000', 'taskTextColor': '#000000', 'taskTextOutsideColor': '#000000', 'taskTextLightColor': '#000000', 'taskTextDarkColor': '#000000', 'todayLineColor': '#ffffff'}}}%%
 gantt
     title PadelSync — Planificación Final Real
     dateFormat  YYYY-MM-DD

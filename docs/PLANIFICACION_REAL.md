@@ -8,58 +8,59 @@ El desarrollo arrancó el **16 de marzo de 2026** y se cerró el **12 de mayo de
 **8 semanas efectivas** frente a las 10 semanas estimadas en la planificación preliminar.
 
 ```mermaid
+%%{init: {'theme': 'base', 'gantt': {'leftPadding': 200, 'barHeight': 22, 'barGap': 6}, 'themeVariables': {'sectionBkgColor': '#e8f0e8', 'altSectionBkgColor': '#f5f8f5', 'taskBkgColor': '#6b8f6b', 'taskBorderColor': '#3d5c3d', 'activeTaskBkgColor': '#4a6b4a', 'activeTaskBorderColor': '#2d3b2d', 'critBkgColor': '#e05c5c', 'critBorderColor': '#b03030', 'todayLineColor': '#e05c5c', 'gridColor': '#d0d8d0'}}}%%
 gantt
     title PadelSync — Planificación Final Real
     dateFormat  YYYY-MM-DD
     axisFormat  %d %b
 
     section S1 · Infraestructura
-    Configuración Docker (PHP-FPM, Nginx, MySQL)      :done, 2026-03-16, 4d
-    Migraciones iniciales (BD)                         :done, 2026-03-18, 3d
-    Dockerfile de producción (Railway)                 :done, 2026-03-20, 3d
+    Configuración Docker (PHP-FPM, Nginx, MySQL)       :2026-03-16, 4d
+    Migraciones iniciales (BD)                          :2026-03-18, 3d
+    Dockerfile de producción (Railway)                  :2026-03-20, 3d
 
     section S2 · Autenticación
-    Login / Registro (Bcrypt + campos RGPD)           :done, 2026-03-23, 4d
-    Middleware de roles + redirección post-login       :done, 2026-03-25, 4d
+    Login / Registro (Bcrypt + campos RGPD)            :2026-03-23, 4d
+    Middleware de roles + redirección post-login        :2026-03-25, 4d
 
     section S3 · Panel Admin y Entrenador
-    CRUD de pistas (admin)                             :done, 2026-03-30, 3d
-    Gestión de usuarios admin                          :done, 2026-04-01, 2d
-    Panel del entrenador (clases individuales/grupales):done, 2026-04-02, 3d
-    Sistema de inscripción de jugadores                :done, 2026-04-03, 3d
+    CRUD de pistas (admin)                              :2026-03-30, 3d
+    Gestión de usuarios admin                           :2026-04-01, 2d
+    Panel del entrenador (clases individuales/grupales) :2026-04-02, 3d
+    Sistema de inscripción de jugadores                 :2026-04-03, 3d
 
     section S4 · Sprint de integración
-    Notificaciones en tiempo real                      :done, 2026-04-06, 2d
-    Perfil de usuario (tabs Mi Perfil / Seguridad)    :done, 2026-04-06, 3d
-    Dashboard con tabs + exportación Excel             :done, 2026-04-08, 2d
-    Rediseño visual completo (landing, login, colores) :done, 2026-04-09, 2d
-    Despliegue en Railway                              :done, 2026-04-10, 2d
-    Recuperación de contraseñas + Brevo HTTP           :done, 2026-04-11, 2d
+    Notificaciones en tiempo real                       :2026-04-06, 2d
+    Perfil de usuario (tabs Mi Perfil / Seguridad)     :2026-04-06, 3d
+    Dashboard con tabs + exportación Excel              :2026-04-08, 2d
+    Rediseño visual completo (landing, login, colores)  :2026-04-09, 2d
+    Despliegue en Railway                               :2026-04-10, 2d
+    Recuperación de contraseñas + Brevo HTTP            :2026-04-11, 2d
 
     section S5 · Scheduler y Home
-    Endpoint /run-scheduler + cron-job.org             :done, 2026-04-13, 3d
-    Home autenticada con carrusel Alpine.js por rol    :done, 2026-04-13, 4d
-    Instalación y configuración iconify-icon (npm)     :done, 2026-04-15, 2d
+    Endpoint /run-scheduler + cron-job.org              :2026-04-13, 3d
+    Home autenticada con carrusel Alpine.js por rol     :2026-04-13, 4d
+    Instalación y configuración iconify-icon (npm)      :2026-04-15, 2d
 
     section S6 · UX y Documentación
-    UX formularios auth (iconos, spinner, progreso)    :done, 2026-04-20, 4d
-    Documentación técnica (primera versión completa)   :done, 2026-04-22, 3d
+    UX formularios auth (iconos, spinner, progreso)     :2026-04-20, 4d
+    Documentación técnica (primera versión completa)    :2026-04-22, 3d
 
     section S7 · Calidad y Fiabilidad
-    Integración Open-Meteo (precios + lluvia)          :done, 2026-04-27, 4d
-    Plan de pruebas + 51 tests PHPUnit                 :done, 2026-04-30, 3d
-    Sistema de backups (db:backup / db:restore)        :done, 2026-05-01, 3d
+    Integración Open-Meteo (precios + lluvia)           :2026-04-27, 4d
+    Plan de pruebas + 51 tests PHPUnit                  :2026-04-30, 3d
+    Sistema de backups (db:backup / db:restore)         :2026-05-01, 3d
 
     section S8 · Refinamiento
-    Nuevos KPIs dashboard (indicadores ▲/▼)           :done, 2026-05-04, 3d
-    Migración SVG → iconify-icon/Phosphor (16 vistas)  :done, 2026-05-05, 4d
-    Rediseño Mis Reservas (cards + tabs Alpine.js)     :done, 2026-05-07, 3d
+    Nuevos KPIs dashboard (indicadores ▲/▼)            :2026-05-04, 3d
+    Migración SVG → iconify-icon/Phosphor (16 vistas)   :2026-05-05, 4d
+    Rediseño Mis Reservas (cards + tabs Alpine.js)      :2026-05-07, 3d
 
     section S9 · Cierre
-    Gráfico donut estado de reservas (ECharts)         :done, 2026-05-11, 1d
-    Reestructuración Home (/dashboard → /home)         :done, 2026-05-11, 2d
-    Panel de backups web admin + forzar backup         :done, 2026-05-12, 1d
-    Documentación final completa                       :done, 2026-05-12, 1d
+    Gráfico donut estado de reservas (ECharts)          :2026-05-11, 1d
+    Reestructuración Home (/dashboard → /home)          :2026-05-11, 2d
+    Panel de backups web admin + forzar backup          :2026-05-12, 1d
+    Documentación final completa                        :2026-05-12, 1d
 ```
 
 ---
@@ -72,6 +73,7 @@ las barras en gris representan la estimación original y las barras en verde la 
 Las barras en rojo indican hitos con desviación significativa o alcance no completado.
 
 ```mermaid
+%%{init: {'theme': 'base', 'gantt': {'leftPadding': 220, 'barHeight': 22, 'barGap': 6}, 'themeVariables': {'sectionBkgColor': '#e8f0e8', 'altSectionBkgColor': '#f5f8f5', 'taskBkgColor': '#a8bfd4', 'taskBorderColor': '#6b94c0', 'activeTaskBkgColor': '#6b8f6b', 'activeTaskBorderColor': '#3d5c3d', 'critBkgColor': '#e05c5c', 'critBorderColor': '#b03030', 'todayLineColor': '#e05c5c', 'gridColor': '#d0d8d0'}}}%%
 gantt
     title Planificación Preliminar vs Real — PadelSync
     dateFormat  YYYY-MM-DD
@@ -101,7 +103,7 @@ gantt
     Planificado (S10)                                  :p6, 2026-05-18, 7d
     Real · sin pruebas E2E (Cypress/Playwright)        :crit, r6, 2026-04-30, 13d
 
-    section No planificado
+    section Funcionalidades no planificadas
     Scheduler + cron-job.org                           :active, np1, 2026-04-13, 3d
     Open-Meteo · precios dinámicos + pistas exteriores :active, np2, 2026-04-27, 4d
     Sistema de backups web (CLI + panel admin)         :active, np3, 2026-05-01, 12d

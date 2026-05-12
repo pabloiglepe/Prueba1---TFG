@@ -8,59 +8,50 @@ El desarrollo arrancó el **16 de marzo de 2026** y se cerró el **12 de mayo de
 **8 semanas efectivas** frente a las 10 semanas estimadas en la planificación preliminar.
 
 ```mermaid
-%%{init: {'theme': 'base', 'gantt': {'leftPadding': 220, 'barHeight': 22, 'barGap': 6, 'fontSize': 14}, 'themeVariables': {'fontFamily': 'Arial Black', 'doneTaskBkgColor': '#e8a020', 'doneTaskBorderColor': '#b07010', 'activeTaskBkgColor': '#20c080', 'activeTaskBorderColor': '#108050', 'critBkgColor': '#ff3333', 'critBorderColor': '#cc0000', 'taskTextColor': '#000000', 'taskTextOutsideColor': '#000000', 'taskTextLightColor': '#000000', 'taskTextDarkColor': '#000000', 'todayLineColor': '#ffffff'}}}%%
+%%{init: {'theme': 'base', 'gantt': {'leftPadding': 200, 'barHeight': 22, 'barGap': 6, 'fontSize': 14}, 'themeVariables': {'fontFamily': 'Arial Black', 'doneTaskBkgColor': '#e8a020', 'doneTaskBorderColor': '#b07010', 'activeTaskBkgColor': '#20c080', 'activeTaskBorderColor': '#108050', 'critBkgColor': '#ff3333', 'critBorderColor': '#cc0000', 'taskTextColor': '#000000', 'taskTextOutsideColor': '#000000', 'taskTextLightColor': '#000000', 'taskTextDarkColor': '#000000', 'todayLineColor': '#ffffff'}}}%%
 gantt
-    title PadelSync — Planificación Final Real
+    title PadelSync - Planificacion Final Real
     dateFormat  YYYY-MM-DD
     axisFormat  %d %b
-
-    section S1 · Infraestructura
-    Configuración Docker (PHP-FPM, Nginx, MySQL)       :2026-03-16, 4d
-    Migraciones iniciales (BD)                          :2026-03-18, 3d
-    Dockerfile de producción (Railway)                  :2026-03-20, 3d
-
-    section S2 · Autenticación
-    Login / Registro (Bcrypt + campos RGPD)            :2026-03-23, 4d
-    Middleware de roles + redirección post-login        :2026-03-25, 4d
-
-    section S3 · Panel Admin y Entrenador
-    CRUD de pistas (admin)                              :2026-03-30, 3d
-    Gestión de usuarios admin                           :2026-04-01, 2d
-    Panel del entrenador (clases individuales/grupales) :2026-04-02, 3d
-    Sistema de inscripción de jugadores                 :2026-04-03, 3d
-
-    section S4 · Sprint de integración
-    Notificaciones en tiempo real                       :2026-04-06, 2d
-    Perfil de usuario (tabs Mi Perfil / Seguridad)     :2026-04-06, 3d
-    Dashboard con tabs + exportación Excel              :2026-04-08, 2d
-    Rediseño visual completo (landing, login, colores)  :2026-04-09, 2d
-    Despliegue en Railway                               :2026-04-10, 2d
-    Recuperación de contraseñas + Brevo HTTP            :2026-04-11, 2d
-
-    section S5 · Scheduler y Home
-    Endpoint /run-scheduler + cron-job.org              :2026-04-13, 3d
-    Home autenticada con carrusel Alpine.js por rol     :2026-04-13, 4d
-    Instalación y configuración iconify-icon (npm)      :2026-04-15, 2d
-
-    section S6 · UX y Documentación
-    UX formularios auth (iconos, spinner, progreso)     :2026-04-20, 4d
-    Documentación técnica (primera versión completa)    :2026-04-22, 3d
-
-    section S7 · Calidad y Fiabilidad
-    Integración Open-Meteo (precios + lluvia)           :2026-04-27, 4d
-    Plan de pruebas + 51 tests PHPUnit                  :2026-04-30, 3d
-    Sistema de backups (db:backup / db:restore)         :2026-05-01, 3d
-
-    section S8 · Refinamiento
-    Nuevos KPIs dashboard (indicadores ▲/▼)            :2026-05-04, 3d
-    Migración SVG → iconify-icon/Phosphor (16 vistas)   :2026-05-05, 4d
-    Rediseño Mis Reservas (cards + tabs Alpine.js)      :2026-05-07, 3d
-
-    section S9 · Cierre
-    Gráfico donut estado de reservas (ECharts)          :2026-05-11, 1d
-    Reestructuración Home (/dashboard → /home)          :2026-05-11, 2d
-    Panel de backups web admin + forzar backup          :2026-05-12, 1d
-    Documentación final completa                        :2026-05-12, 1d
+    section S1 - Infraestructura
+    Configuracion Docker PHP-FPM Nginx MySQL           :active, 2026-03-16, 4d
+    Migraciones iniciales BD                           :active, 2026-03-18, 3d
+    Dockerfile de produccion Railway                   :active, 2026-03-20, 3d
+    section S2 - Autenticacion
+    Login y Registro Bcrypt campos RGPD                :active, 2026-03-23, 4d
+    Middleware de roles y redireccion post-login        :active, 2026-03-25, 4d
+    section S3 - Panel Admin y Entrenador
+    CRUD de pistas admin                               :active, 2026-03-30, 3d
+    Gestion de usuarios admin                          :active, 2026-04-01, 2d
+    Panel del entrenador clases individuales grupales  :active, 2026-04-02, 3d
+    Sistema de inscripcion de jugadores                :active, 2026-04-03, 3d
+    section S4 - Sprint de integracion
+    Notificaciones en tiempo real                      :active, 2026-04-06, 2d
+    Perfil de usuario tabs Mi Perfil Seguridad         :active, 2026-04-06, 3d
+    Dashboard con tabs y exportacion Excel             :active, 2026-04-08, 2d
+    Rediseno visual completo landing login colores     :active, 2026-04-09, 2d
+    Despliegue en Railway                              :active, 2026-04-10, 2d
+    Recuperacion de contrasenas y Brevo HTTP           :active, 2026-04-11, 2d
+    section S5 - Scheduler y Home
+    Endpoint run-scheduler y cron-job.org              :active, 2026-04-13, 3d
+    Home autenticada con carrusel Alpine.js por rol    :active, 2026-04-13, 4d
+    Instalacion y configuracion iconify-icon npm       :active, 2026-04-15, 2d
+    section S6 - UX y Documentacion
+    UX formularios auth iconos spinner progreso        :active, 2026-04-20, 4d
+    Documentacion tecnica primera version completa     :active, 2026-04-22, 3d
+    section S7 - Calidad y Fiabilidad
+    Integracion Open-Meteo precios y lluvia            :active, 2026-04-27, 4d
+    Plan de pruebas y 51 tests PHPUnit                 :active, 2026-04-30, 3d
+    Sistema de backups db-backup y db-restore          :active, 2026-05-01, 3d
+    section S8 - Refinamiento
+    Nuevos KPIs dashboard indicadores tendencia        :active, 2026-05-04, 3d
+    Migracion SVG a iconify-icon Phosphor 16 vistas    :active, 2026-05-05, 4d
+    Rediseno Mis Reservas cards y tabs Alpine.js       :active, 2026-05-07, 3d
+    section S9 - Cierre
+    Grafico donut estado de reservas ECharts           :active, 2026-05-11, 1d
+    Reestructuracion Home dashboard a home             :active, 2026-05-11, 2d
+    Panel de backups web admin y forzar backup         :active, 2026-05-12, 1d
+    Documentacion final completa                       :active, 2026-05-12, 1d
 ```
 
 ---

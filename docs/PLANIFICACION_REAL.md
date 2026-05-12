@@ -8,12 +8,7 @@ El desarrollo arrancó el **16 de marzo de 2026** y se cerró el **12 de mayo de
 **8 semanas efectivas** frente a las 10 semanas estimadas en la planificación preliminar.
 
 ```mermaid
-<<<<<<< HEAD
 %%{init: {'theme': 'base', 'gantt': {'leftPadding': 200, 'barHeight': 22, 'barGap': 6}, 'themeVariables': {'taskBkgColor': '#6b8f6b', 'taskBorderColor': '#3d5c3d', 'activeTaskBkgColor': '#4a6b4a', 'activeTaskBorderColor': '#2d3b2d', 'critBkgColor': '#e05c5c', 'critBorderColor': '#b03030', 'todayLineColor': '#e05c5c'}}}%%
-||||||| cdd7769
-=======
-%%{init: {'theme': 'base', 'gantt': {'leftPadding': 200, 'barHeight': 22, 'barGap': 6}, 'themeVariables': {'sectionBkgColor': '#e8f0e8', 'altSectionBkgColor': '#f5f8f5', 'taskBkgColor': '#6b8f6b', 'taskBorderColor': '#3d5c3d', 'activeTaskBkgColor': '#4a6b4a', 'activeTaskBorderColor': '#2d3b2d', 'critBkgColor': '#e05c5c', 'critBorderColor': '#b03030', 'todayLineColor': '#e05c5c', 'gridColor': '#d0d8d0'}}}%%
->>>>>>> ea72a4525a695536d56ecd7586cd3a987df8b0ba
 gantt
     title PadelSync — Planificación Final Real
     dateFormat  YYYY-MM-DD
@@ -78,12 +73,7 @@ las barras en gris representan la estimación original y las barras en verde la 
 Las barras en rojo indican hitos con desviación significativa o alcance no completado.
 
 ```mermaid
-<<<<<<< HEAD
 %%{init: {'theme': 'base', 'gantt': {'leftPadding': 220, 'barHeight': 22, 'barGap': 6}, 'themeVariables': {'taskBkgColor': '#a8bfd4', 'taskBorderColor': '#6b94c0', 'activeTaskBkgColor': '#6b8f6b', 'activeTaskBorderColor': '#3d5c3d', 'critBkgColor': '#e05c5c', 'critBorderColor': '#b03030', 'todayLineColor': '#e05c5c'}}}%%
-||||||| cdd7769
-=======
-%%{init: {'theme': 'base', 'gantt': {'leftPadding': 220, 'barHeight': 22, 'barGap': 6}, 'themeVariables': {'sectionBkgColor': '#e8f0e8', 'altSectionBkgColor': '#f5f8f5', 'taskBkgColor': '#a8bfd4', 'taskBorderColor': '#6b94c0', 'activeTaskBkgColor': '#6b8f6b', 'activeTaskBorderColor': '#3d5c3d', 'critBkgColor': '#e05c5c', 'critBorderColor': '#b03030', 'todayLineColor': '#e05c5c', 'gridColor': '#d0d8d0'}}}%%
->>>>>>> ea72a4525a695536d56ecd7586cd3a987df8b0ba
 gantt
     title Planificación Preliminar vs Real — PadelSync
     dateFormat  YYYY-MM-DD

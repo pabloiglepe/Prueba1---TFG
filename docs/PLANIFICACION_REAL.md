@@ -108,7 +108,7 @@ gantt
     Open-Meteo · precios dinámicos + pistas exteriores :active, np2, 2026-04-27, 4d
     Sistema de backups web (CLI + panel admin)         :active, np3, 2026-05-01, 12d
     Migración completa de iconos (16 vistas)           :active, np4, 2026-05-05, 4d
-``
+```
 
 ### Análisis de coherencia y causas de las desviaciones
 

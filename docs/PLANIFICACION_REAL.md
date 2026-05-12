@@ -14,23 +14,23 @@ gantt
     dateFormat  YYYY-MM-DD
     axisFormat  %d %b
     section S1 - Infraestructura
-    Docker PHP-FPM Nginx MySQL y migraciones BD        :active, 2026-03-16, 7d
+    Docker PHP-FPM · Nginx · MySQL · migraciones BD        :active, 2026-03-16, 7d
     section S2 - Autenticacion y Roles
-    Login Registro Bcrypt middleware de roles           :active, 2026-03-23, 7d
+    Login · Registro · Bcrypt · middleware de roles           :active, 2026-03-23, 7d
     section S3 - Panel Admin y Entrenador
     CRUD pistas usuarios panel entrenador inscripciones:active, 2026-03-30, 13d
     section S4 - Sprint de integracion
-    Dashboard despliegue Railway Brevo email perfil    :active, 2026-04-06, 7d
+    Dashboard· despliegue Railway · Brevo email · perfil    :active, 2026-04-06, 7d
     section S5 - Scheduler y Home
-    Endpoint scheduler cron-job.org y home carrusel    :active, 2026-04-13, 7d
+    Endpoint scheduler cron-job.org · home carrusel    :active, 2026-04-13, 7d
     section S6 - UX y Documentacion
-    Mejoras UX auth iconos spinner documentacion       :active, 2026-04-20, 7d
+    Mejoras UX auth · iconos · spinner · documentacion       :active, 2026-04-20, 7d
     section S7 - Calidad y Fiabilidad
-    Open-Meteo 51 tests PHPUnit sistema de backups     :active, 2026-04-27, 7d
+    Open-Meteo · tests PHPUnit · sistema de backups     :active, 2026-04-27, 7d
     section S8 - Refinamiento
-    KPIs tendencia migracion iconos rediseno vistas    :active, 2026-05-04, 7d
+    KPIs tendencia · migracion iconos · rediseno vistas    :active, 2026-05-04, 7d
     section S9 - Cierre
-    Grafico donut panel backups admin documentacion    :active, 2026-05-11, 2d
+    Grafico donut · panel backups admin · documentacion    :active, 2026-05-11, 2d
 ```
 
 ---

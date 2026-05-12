@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Player;
 
 use App\Http\Controllers\Controller;
+use App\Models\ClubSetting;
 use App\Models\Reservation;
 use App\Models\Court;
 use App\Models\WeatherCache;
@@ -11,9 +12,6 @@ use Illuminate\Http\Request;
 
 class ReservationController extends Controller
 {
-
-    // CONSTANTE QUE DETERMINA LA DURACIÓN FIJA DE UNA RESERVA EN MINUTOS
-    const DURATION = 90;
 
     /**
      * LISTADO DE RESERVA DE JUGADORES
@@ -50,14 +48,16 @@ class ReservationController extends Controller
             $weather = WeatherCache::forDate($request->date);
             $isRainy = $weather ? $weather->isRainy() : false;
 
-            // DEFINICIÓN Y GENERACIÓN DE LAS FRANJAS HORARIAS DISPONIBLES (09:00 - 22:00 CADA 30 MIN)
-            $openingTime = Carbon::createFromFormat('H:i', '09:00');
-            $closingTime = Carbon::createFromFormat('H:i', '22:00');
+            // DEFINICIÓN Y GENERACIÓN DE LAS FRANJAS HORARIAS DISPONIBLES
+            $duration    = (int) ClubSetting::get('reservation_duration', 90);
+            $slotStep    = (int) ClubSetting::get('slot_interval', 30);
+            $openingTime = Carbon::createFromFormat('H:i', ClubSetting::get('opening_time', '09:00'));
+            $closingTime = Carbon::createFromFormat('H:i', ClubSetting::get('closing_time', '22:00'));
             $current     = $openingTime->copy();
 
-            while ($current->copy()->addMinutes(self::DURATION)->lte($closingTime)) {
+            while ($current->copy()->addMinutes($duration)->lte($closingTime)) {
                 $slots->push($current->format('H:i'));
-                $current->addMinutes(30);
+                $current->addMinutes($slotStep);
             }
 
             // SI LA FECHA ES HOY, FILTRAMOS LAS FRANJAS QUE YA HAN PASADO
@@ -76,7 +76,7 @@ class ReservationController extends Controller
 
                 $startTime = $request->start_time;
                 $endTime   = Carbon::createFromFormat('H:i', $startTime)
-                    ->addMinutes(self::DURATION)
+                    ->addMinutes($duration)
                     ->format('H:i');
 
 
@@ -99,7 +99,11 @@ class ReservationController extends Controller
             ? $this->getNightStartTime($request->date)->format('H:i')
             : '20:00';
 
-        return view('player.reservations.create', compact('slots', 'courts', 'nightStartTime', 'isRainy'));
+        $priceDay   = (float) ClubSetting::get('price_day', 12.00);
+        $priceNight = (float) ClubSetting::get('price_night', 16.00);
+        $duration   = $request->filled('date') ? $duration : (int) ClubSetting::get('reservation_duration', 90);
+
+        return view('player.reservations.create', compact('slots', 'courts', 'nightStartTime', 'isRainy', 'priceDay', 'priceNight', 'duration'));
     }
 
     /**
@@ -115,7 +119,7 @@ class ReservationController extends Controller
 
         $startTime = $validated['start_time'];
         $endTime   = Carbon::createFromFormat('H:i', $startTime)
-            ->addMinutes(self::DURATION)
+            ->addMinutes((int) ClubSetting::get('reservation_duration', 90))
             ->format('H:i');
 
         // DOBLE COMPROBACIÓN DE SOLAPAMIENTO EN EL SERVIDOR
@@ -206,7 +210,9 @@ class ReservationController extends Controller
         $start      = Carbon::createFromFormat('H:i', $startTime);
         $nightStart = $this->getNightStartTime($date);
 
-        return $start->gte($nightStart) ? 16.00 : 12.00;
+        return $start->gte($nightStart)
+            ? (float) ClubSetting::get('price_night', 16.00)
+            : (float) ClubSetting::get('price_day', 12.00);
     }
 
     /**

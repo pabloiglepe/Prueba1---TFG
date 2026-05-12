@@ -74,6 +74,13 @@ new class extends Component
                         onmouseout="if(!{{ request()->routeIs('admin.backups.*') ? 'true' : 'false' }})this.style.background='transparent'">
                         Backups
                     </a>
+                    <a href="{{ route('admin.settings.index') }}" wire:navigate
+                        style="font-size: 14px; font-weight: 500; padding: 6px 14px; border-radius: 8px; text-decoration: none; transition: background 0.15s;
+                           {{ request()->routeIs('admin.settings.*') ? 'background: #e8f0e8; color: #4a6b4a;' : 'color: #5a6b5a;' }}"
+                        onmouseover="if(!{{ request()->routeIs('admin.settings.*') ? 'true' : 'false' }})this.style.background='#f7f8f5'"
+                        onmouseout="if(!{{ request()->routeIs('admin.settings.*') ? 'true' : 'false' }})this.style.background='transparent'">
+                        Ajustes
+                    </a>
                     @elseif($role === 'coach')
                     <a href="{{ route('home') }}" wire:navigate
                         style="font-size: 14px; font-weight: 500; padding: 6px 14px; border-radius: 8px; text-decoration: none;
@@ -222,6 +229,8 @@ new class extends Component
                 style="display: block; padding: 10px 12px; font-size: 14px; color: #2d3b2d; text-decoration: none; border-radius: 8px;">Usuarios</a>
             <a href="{{ route('admin.backups.index') }}" wire:navigate
                 style="display: block; padding: 10px 12px; font-size: 14px; color: #2d3b2d; text-decoration: none; border-radius: 8px;">Backups</a>
+            <a href="{{ route('admin.settings.index') }}" wire:navigate
+                style="display: block; padding: 10px 12px; font-size: 14px; color: #2d3b2d; text-decoration: none; border-radius: 8px;">Ajustes</a>
             @elseif($role === 'coach')
             <a href="{{ route('coach.classes.index') }}" wire:navigate
                 style="display: block; padding: 10px 12px; font-size: 14px; color: #2d3b2d; text-decoration: none; border-radius: 8px;">Mis Clases</a>

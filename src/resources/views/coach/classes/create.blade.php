@@ -112,7 +112,7 @@
             <div style="display: flex; gap: 16px; margin-bottom: 16px; padding-left: 36px;">
                 <span style="display: inline-flex; align-items: center; gap: 5px; font-size: 13px; color: #5a6b5a;">
                     <iconify-icon icon="ph:clock" style="font-size: 14px; color: #6b8f6b;"></iconify-icon>
-                    Duración: <strong style="color: #2d3b2d;">1h 30min</strong>
+                    Duración: <strong style="color: #2d3b2d;">{{ $duration }} min</strong>
                 </span>
                 <span style="display: inline-flex; align-items: center; gap: 5px; font-size: 13px; color: #5a6b5a;">
                     <iconify-icon icon="ph:currency-eur" style="font-size: 14px; color: #6b8f6b;"></iconify-icon>
@@ -167,7 +167,7 @@
                     <div>
                         <p style="font-size: 12px; color: #7a8a7a; margin: 0 0 3px;">Horario</p>
                         <p style="font-size: 14px; font-weight: 500; color: #2d3b2d; margin: 0;">
-                            {{ request('start_time') }} — {{ \Carbon\Carbon::createFromFormat('H:i', request('start_time'))->addMinutes(90)->format('H:i') }}
+                            {{ request('start_time') }} — {{ \Carbon\Carbon::createFromFormat('H:i', request('start_time'))->addMinutes($duration)->format('H:i') }}
                         </p>
                     </div>
                 </div>

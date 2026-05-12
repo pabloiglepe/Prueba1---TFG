@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\ClubSetting;
 use App\Models\Court;
 use App\Models\Role;
 use App\Models\User;
@@ -98,5 +99,19 @@ class DatabaseSeeder extends Seeder
                 'is_active' => false
             ]
         );
+
+        // CONFIGURACIÓN DEL CLUB (VALORES POR DEFECTO)
+        $defaults = [
+            'opening_time'         => '09:00',
+            'closing_time'         => '22:00',
+            'slot_interval'        => '30',
+            'reservation_duration' => '90',
+            'price_day'            => '12.00',
+            'price_night'          => '16.00',
+        ];
+
+        foreach ($defaults as $key => $value) {
+            ClubSetting::firstOrCreate(['key' => $key], ['value' => $value]);
+        }
     }
 }

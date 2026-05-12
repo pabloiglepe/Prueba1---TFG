@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\ExportController;
 use App\Http\Controllers\Admin\BackupController;
+use App\Http\Controllers\Admin\SettingsController;
 use App\Http\Controllers\Player\ReservationController;
 use App\Http\Controllers\Coach\ClassController;
 
@@ -74,6 +75,10 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::get('backups',          [BackupController::class, 'index'])->name('backups.index');
     Route::post('backups/force',   [BackupController::class, 'forceBackup'])->name('backups.force');
     Route::post('backups/restore', [BackupController::class, 'restore'])->name('backups.restore');
+
+    // RUTAS DE CONFIGURACIÓN DEL CLUB
+    Route::get('settings',  [SettingsController::class, 'index'])->name('settings.index');
+    Route::patch('settings', [SettingsController::class, 'update'])->name('settings.update');
 });
 
 

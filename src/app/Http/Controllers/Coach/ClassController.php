@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Coach;
 
 use App\Http\Controllers\Controller;
 use App\Models\ClassRegistration;
+use App\Models\ClubSetting;
 use App\Models\Court;
 use App\Models\PadelClass;
 use App\Models\User;
@@ -53,22 +54,24 @@ class ClassController extends Controller
         $selectedCourt = null;
         $courtId       = null;
         $date          = null;
+        $duration      = (int) ClubSetting::get('reservation_duration', 90);
+        $slotStep      = (int) ClubSetting::get('slot_interval', 30);
 
         if ($request->filled('court_id') && $request->filled('date')) {
 
             $selectedCourt = Court::find($request->court_id);
             $date          = $request->date;
             $courtId       = $request->court_id;
-            $duration      = 90;
 
-            // GENERAMOS TODAS LAS FRANJAS DE 09:00 A 20:30 (LA ÚLTIMA TERMINARÁ A 22:00)
+            // GENERAMOS TODAS LAS FRANJAS DESDE APERTURA HASTA (CIERRE - DURACIÓN)
             $allHours = [];
-            $start = \Carbon\Carbon::createFromTime(9, 0);
-            $end   = \Carbon\Carbon::createFromTime(20, 30);
+            $start = \Carbon\Carbon::createFromFormat('H:i', ClubSetting::get('opening_time', '09:00'));
+            $end   = \Carbon\Carbon::createFromFormat('H:i', ClubSetting::get('closing_time', '22:00'))
+                         ->subMinutes($duration);
 
             while ($start->lte($end)) {
                 $allHours[] = $start->format('H:i');
-                $start->addMinutes(30);
+                $start->addMinutes($slotStep);
             }
 
             // FILTRAMOS LAS OCUPADAS POR RESERVAS O CLASES
@@ -104,7 +107,7 @@ class ClassController extends Controller
             }
         }
 
-        return view('coach.classes.create', compact('courts', 'players', 'slots', 'selectedCourt', 'courtId', 'date', 'isRainy'));
+        return view('coach.classes.create', compact('courts', 'players', 'slots', 'selectedCourt', 'courtId', 'date', 'isRainy', 'duration'));
     }
 
     /**
@@ -128,7 +131,7 @@ class ClassController extends Controller
 
         // CALCULAMOS EL END_TIME AUTOMÁTICAMENTE
         $endTime = \Carbon\Carbon::createFromFormat('H:i', $validated['start_time'])
-            ->addMinutes(90)
+            ->addMinutes((int) ClubSetting::get('reservation_duration', 90))
             ->format('H:i');
 
         // SOLAPAMIENTO CON OTRAS CLASES
@@ -268,19 +271,22 @@ class ClassController extends Controller
 
         $slots         = collect();
         $selectedCourt = Court::find($courtId);
+        $duration      = (int) ClubSetting::get('reservation_duration', 90);
+        $slotStep      = (int) ClubSetting::get('slot_interval', 30);
 
         $allSlots = [];
-        $start = \Carbon\Carbon::createFromTime(9, 0);
-        $end   = \Carbon\Carbon::createFromTime(20, 30);
+        $start = \Carbon\Carbon::createFromFormat('H:i', ClubSetting::get('opening_time', '09:00'));
+        $end   = \Carbon\Carbon::createFromFormat('H:i', ClubSetting::get('closing_time', '22:00'))
+                     ->subMinutes($duration);
 
         while ($start->lte($end)) {
             $allSlots[] = $start->format('H:i');
-            $start->addMinutes(30);
+            $start->addMinutes($slotStep);
         }
 
-        $slots = collect($allSlots)->filter(function ($slot) use ($date, $courtId, $class) {
+        $slots = collect($allSlots)->filter(function ($slot) use ($date, $courtId, $class, $duration) {
             $slotStart = \Carbon\Carbon::createFromFormat('H:i', $slot);
-            $slotEnd   = $slotStart->copy()->addMinutes(90);
+            $slotEnd   = $slotStart->copy()->addMinutes($duration);
 
             $reservationOverlap = \App\Models\Reservation::where('court_id', $courtId)
                 ->where('reservation_date', $date)
@@ -310,7 +316,7 @@ class ClassController extends Controller
             })->values();
         }
 
-        return view('coach.classes.edit', compact('class', 'courts', 'players', 'enrolledIds', 'slots', 'selectedCourt', 'courtId', 'date', 'isRainy'));
+        return view('coach.classes.edit', compact('class', 'courts', 'players', 'enrolledIds', 'slots', 'selectedCourt', 'courtId', 'date', 'isRainy', 'duration'));
     }
 
     /**
@@ -340,7 +346,7 @@ class ClassController extends Controller
 
         // CALCULAMOS EL END_TIME AUTOMÁTICAMENTE
         $endTime = \Carbon\Carbon::createFromFormat('H:i', $validated['start_time'])
-            ->addMinutes(90)
+            ->addMinutes((int) ClubSetting::get('reservation_duration', 90))
             ->format('H:i');
 
         // SOLAPAMIENTO CON OTRAS CLASES (EXCLUYENDO LA PROPIA)

@@ -73,15 +73,15 @@
                 <div style="display: flex; gap: 16px; margin-bottom: 16px; padding-left: 36px; flex-wrap: wrap;">
                     <span style="display: inline-flex; align-items: center; gap: 5px; font-size: 13px; color: #5a6b5a;">
                         <iconify-icon icon="ph:sun" style="font-size: 14px; color: #6b8f6b;"></iconify-icon>
-                        Diurna: <strong style="color: #2d3b2d;">12€</strong>
+                        Diurna: <strong style="color: #2d3b2d;">{{ number_format($priceDay, 2) }}€</strong>
                     </span>
                     <span style="display: inline-flex; align-items: center; gap: 5px; font-size: 13px; color: #5a6b5a;">
                         <iconify-icon icon="ph:moon" style="font-size: 14px; color: #6b8f6b;"></iconify-icon>
-                        Nocturna (desde {{ $nightStartTime }}): <strong style="color: #2d3b2d;">16€</strong>
+                        Nocturna (desde {{ $nightStartTime }}): <strong style="color: #2d3b2d;">{{ number_format($priceNight, 2) }}€</strong>
                     </span>
                     <span style="display: inline-flex; align-items: center; gap: 5px; font-size: 13px; color: #5a6b5a;">
                         <iconify-icon icon="ph:clock" style="font-size: 14px; color: #6b8f6b;"></iconify-icon>
-                        Duración: <strong style="color: #2d3b2d;">1h 30min</strong>
+                        Duración: <strong style="color: #2d3b2d;">{{ $duration }} min</strong>
                     </span>
                 </div>
 
@@ -171,13 +171,13 @@
                                 <div>
                                     <p style="font-size: 12px; color: #7a8a7a; margin: 0 0 3px;">Horario</p>
                                     <p style="font-size: 14px; font-weight: 500; color: #2d3b2d; margin: 0;">
-                                        {{ request('start_time') }} — {{ \Carbon\Carbon::createFromFormat('H:i', request('start_time'))->addMinutes(90)->format('H:i') }}
+                                        {{ request('start_time') }} — {{ \Carbon\Carbon::createFromFormat('H:i', request('start_time'))->addMinutes($duration)->format('H:i') }}
                                     </p>
                                 </div>
                                 <div>
                                     <p style="font-size: 12px; color: #7a8a7a; margin: 0 0 3px;">Precio</p>
                                     <p style="font-size: 18px; font-weight: 600; color: #6b8f6b; margin: 0;">
-                                        {{ \Carbon\Carbon::createFromFormat('H:i', request('start_time'))->gte(\Carbon\Carbon::createFromFormat('H:i', $nightStartTime)) ? '16€' : '12€' }}
+                                        {{ \Carbon\Carbon::createFromFormat('H:i', request('start_time'))->gte(\Carbon\Carbon::createFromFormat('H:i', $nightStartTime)) ? number_format($priceNight, 2).'€' : number_format($priceDay, 2).'€' }}
                                     </p>
                                 </div>
                             </div>

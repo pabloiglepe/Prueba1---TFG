@@ -7,37 +7,106 @@
 El desarrollo arrancó el **16 de marzo de 2026** y se cerró el **12 de mayo de 2026**:
 **8 semanas efectivas** frente a las 10 semanas estimadas en la planificación preliminar.
 
-### Cronograma real por semanas
+```mermaid
+gantt
+    title PadelSync — Planificación Final Real
+    dateFormat  YYYY-MM-DD
+    axisFormat  %d %b
 
-| Semana | Fechas | Trabajo realizado | Desviación notable |
-|---|---|---|---|
-| **1** | 16–22 mar | Instalación del proyecto Laravel desde cero. Configuración de contenedores Docker (PHP-FPM, Nginx, MySQL). Migraciones iniciales (users, roles, courts, reservations, classes). Resolución del error 500 por permisos en `storage` y `bootstrap/cache`. | Primer commit el 16-mar. Configuración del Dockerfile de producción (Railway) ya en esta semana, no prevista hasta el final. |
-| **2** | 23–29 mar | Sistema de autenticación completo: login, registro, middleware de roles, redirección post-login por rol. Fix del error de enum SQL (`pendiente` → `pending`/`paid`/`cancelled`). | Auth completada una semana antes de lo planificado. Los valores del enum en inglés se decidieron en esta fase, no en el diseño inicial. |
-| **3** | 30 mar–5 abr | CRUD completo de pistas (admin) · gestión básica de usuarios · estructura base del panel del entrenador (clases individuales, grupales y privadas) · sistema de inscripción de jugadores en clases. | Fase de desarrollo backend sin commits intermedios publicados; el trabajo se consolidó localmente antes de hacer push al repositorio. |
-| **4** | 6–12 abr | Notificaciones en tiempo real · perfil de usuario con tabs (Mi Perfil / Seguridad) · dashboard con tabs y exportación Excel · rediseño visual completo (landing, colores, login/registro) · **despliegue en Railway** · fix error 500 en perfil coach · fix inscripción duplicada · sistema de recuperación de contraseñas · transporte Brevo HTTP para email en producción. | El despliegue en Railway y la resolución de sus restricciones (SMTP bloqueado, errores de configuración en producción) concentraron más tiempo del previsto y retrasaron el cierre visual de la semana. |
-| **5** | 13–19 abr | Scheduler de producción: endpoint `/run-scheduler` + integración cron-job.org. Home autenticada con carrusel Alpine.js por rol. Instalación de iconify-icon (npm). Corrección de timezone (`Europe/Madrid`) en el contenedor Docker. | El scheduler externo (cron-job.org) fue una solución no prevista para superar la limitación de Railway con los cron jobs. |
-| **6** | 20–26 abr | Mejoras de UX en formularios de autenticación: iconos Phosphor, spinner `wire:loading`, barra de progreso verde de Livewire. Revisión del `.gitignore`. Actualizaciones de documentación. | Semana de pulido visual, sin features nuevas. |
-| **7** | 27 abr–3 may | **Integración Open-Meteo**: API de tiempo real para ocaso (tarifa nocturna dinámica), precipitación (bloqueo automático de pistas exteriores), tabla `weather_cache` y comando `weather:fetch`. **Plan de pruebas**: 51 tests PHPUnit en 6 archivos + checklist manual. **Sistema de backups**: comandos `db:backup` y `db:restore` en PHP puro, sin `mysqldump`. | Open-Meteo no estaba en el plan inicial. Los tests se desarrollaron muy tarde (semana 7 de 8), lo que generó 6 incidencias que requirieron refactorizar código ya en producción. |
-| **8** | 4–10 may | Nuevos KPIs del dashboard (indicadores ▲/▼ de tendencia mensual) · migración completa de todos los SVGs inline a iconify-icon/Phosphor (16 vistas) · rediseño de "Mis Reservas" con cards y tabs Alpine.js · mejoras generales de vistas. | La migración de iconos fue más costosa de lo esperado: 16 vistas revisadas manualmente. |
-| **9** | 11–12 may | Nuevo gráfico de estado de reservas (donut ECharts) · reestructuración de la Home (separación `/dashboard` → redirect / `/home` → panel de actividad del jugador) · panel de gestión de backups web para admin (`/admin/backups`) · botón "Forzar backup ahora" · documentación final completa. | La UI de backups surgió de una necesidad real en producción (Railway sin acceso CLI). No estaba planificada. |
+    section S1 · Infraestructura
+    Configuración Docker (PHP-FPM, Nginx, MySQL)      :done, 2026-03-16, 4d
+    Migraciones iniciales (BD)                         :done, 2026-03-18, 3d
+    Dockerfile de producción (Railway)                 :done, 2026-03-20, 3d
+
+    section S2 · Autenticación
+    Login / Registro (Bcrypt + campos RGPD)           :done, 2026-03-23, 4d
+    Middleware de roles + redirección post-login       :done, 2026-03-25, 4d
+
+    section S3 · Panel Admin y Entrenador
+    CRUD de pistas (admin)                             :done, 2026-03-30, 3d
+    Gestión de usuarios admin                          :done, 2026-04-01, 2d
+    Panel del entrenador (clases individuales/grupales):done, 2026-04-02, 3d
+    Sistema de inscripción de jugadores                :done, 2026-04-03, 3d
+
+    section S4 · Sprint de integración
+    Notificaciones en tiempo real                      :done, 2026-04-06, 2d
+    Perfil de usuario (tabs Mi Perfil / Seguridad)    :done, 2026-04-06, 3d
+    Dashboard con tabs + exportación Excel             :done, 2026-04-08, 2d
+    Rediseño visual completo (landing, login, colores) :done, 2026-04-09, 2d
+    Despliegue en Railway                              :done, 2026-04-10, 2d
+    Recuperación de contraseñas + Brevo HTTP           :done, 2026-04-11, 2d
+
+    section S5 · Scheduler y Home
+    Endpoint /run-scheduler + cron-job.org             :done, 2026-04-13, 3d
+    Home autenticada con carrusel Alpine.js por rol    :done, 2026-04-13, 4d
+    Instalación y configuración iconify-icon (npm)     :done, 2026-04-15, 2d
+
+    section S6 · UX y Documentación
+    UX formularios auth (iconos, spinner, progreso)    :done, 2026-04-20, 4d
+    Documentación técnica (primera versión completa)   :done, 2026-04-22, 3d
+
+    section S7 · Calidad y Fiabilidad
+    Integración Open-Meteo (precios + lluvia)          :done, 2026-04-27, 4d
+    Plan de pruebas + 51 tests PHPUnit                 :done, 2026-04-30, 3d
+    Sistema de backups (db:backup / db:restore)        :done, 2026-05-01, 3d
+
+    section S8 · Refinamiento
+    Nuevos KPIs dashboard (indicadores ▲/▼)           :done, 2026-05-04, 3d
+    Migración SVG → iconify-icon/Phosphor (16 vistas)  :done, 2026-05-05, 4d
+    Rediseño Mis Reservas (cards + tabs Alpine.js)     :done, 2026-05-07, 3d
+
+    section S9 · Cierre
+    Gráfico donut estado de reservas (ECharts)         :done, 2026-05-11, 1d
+    Reestructuración Home (/dashboard → /home)         :done, 2026-05-11, 2d
+    Panel de backups web admin + forzar backup         :done, 2026-05-12, 1d
+    Documentación final completa                       :done, 2026-05-12, 1d
+```
 
 ---
 
 ## 2. Comparación con la planificación preliminar
 
 La planificación preliminar estaba estructurada en 6 hitos agrupados en 10 semanas.
-A continuación se analiza cada hito comparando lo planificado con lo ejecutado.
+El siguiente diagrama enfrenta lo planificado con lo ejecutado para cada hito:
+las barras en gris representan la estimación original y las barras en verde la ejecución real.
+Las barras en rojo indican hitos con desviación significativa o alcance no completado.
 
-### Tabla comparativa por hito
+```mermaid
+gantt
+    title Planificación Preliminar vs Real — PadelSync
+    dateFormat  YYYY-MM-DD
+    axisFormat  %d %b
 
-| Hito preliminar | Planificado | Ejecutado | Coherencia |
-|---|---|---|---|
-| **H1 · Infra y BD** (S1–S2) | Docker (Nginx + PHP-FPM + MySQL), migraciones base | Docker operativo en S1, migraciones en S1–S2, Dockerfile de Railway también en S1 | ✅ Cumplido con adelanto parcial |
-| **H2 · Auth, Roles y Seguridad** (S3) | Login/registro con Bcrypt, middleware de roles | Completado en S2; añadidos campos RGPD (`phone_number`, `rgpd_consent`) no previstos | ✅ Cumplido; más completo que lo planificado |
-| **H3 · Admin: Pistas y Dashboard** (S4–S5) | CRUD de pistas + dashboard con 3 KPIs (ocupación, ingresos, alumnos) | CRUD completo + dashboard con **3 gráficos ECharts**, Panel "Hoy", KPIs con indicadores de tendencia, exportación Excel, pestaña de entrenadores | ⚠️ Cumplido y superado ampliamente. El dashboard resultó mucho más complejo de lo estimado |
-| **H4 · Academia y Reservas** (S6–S7) | Disponibilidad del entrenador + motor de reservas con anti-solapamiento | Motor de reservas completo ✅. Clases individual/grupal pública/privada ✅. **La gestión de disponibilidad como módulo independiente no se implementó**: los horarios se gestionan directamente al crear la clase | ⚠️ Parcialmente cumplido; el requisito de "definir disponibilidad" quedó integrado de forma implícita |
-| **H5 · Frontend y RGPD** (S8–S9) | Vistas Blade/Alpine.js + consentimiento + borrado lógico + exportación de datos | RGPD completo (consent, soft delete, JSON export) ✅. Añadidos: home con carrusel, rediseño de Mis Reservas con cards, migración completa a iconify-icon, UX de auth | ✅ Cumplido; el frontend se desarrolló en paralelo con el backend, no al final |
-| **H6 · Pruebas y Despliegue** (S10) | PHPUnit unitarios + **Cypress/Playwright E2E** + manual de usuario + despliegue documentado | PHPUnit 51 tests ✅; **Cypress/Playwright: no implementados** ❌; checklist de pruebas manuales ✅; despliegue en Railway ✅; documentación técnica completa ✅ | ⚠️ Las pruebas E2E no se ejecutaron; compensadas con mayor cobertura manual documentada |
+    section H1 · Infra y BD
+    Planificado (S1–S2)                               :p1, 2026-03-16, 14d
+    Real · completado con adelanto                    :done, r1, 2026-03-16, 7d
+
+    section H2 · Auth y Roles
+    Planificado (S3)                                  :p2, 2026-03-30, 7d
+    Real · una semana de adelanto                     :done, r2, 2026-03-23, 7d
+
+    section H3 · Admin y Dashboard
+    Planificado (S4–S5)                               :p3, 2026-04-06, 14d
+    Real · más complejo de lo estimado                :done, r3, 2026-03-30, 14d
+
+    section H4 · Academia y Reservas
+    Planificado (S6–S7)                               :p4, 2026-04-20, 14d
+    Real · sin módulo de disponibilidad independiente :crit, r4, 2026-04-02, 10d
+
+    section H5 · Frontend y RGPD
+    Planificado (S8–S9)                               :p5, 2026-05-04, 14d
+    Real · desarrollado en paralelo al backend        :done, r5, 2026-04-06, 36d
+
+    section H6 · Pruebas y Despliegue
+    Planificado (S10)                                 :p6, 2026-05-18, 7d
+    Real · sin pruebas E2E (Cypress/Playwright)       :crit, r6, 2026-04-30, 13d
+
+    section No planificado
+    Scheduler + cron-job.org                          :done, np1, 2026-04-13, 3d
+    Open-Meteo · precios dinámicos + pistas exteriores:done, np2, 2026-04-27, 4d
+    Sistema de backups web (CLI + panel admin)        :done, np3, 2026-05-01, 12d
+    Migración completa de iconos (16 vistas)          :done, np4, 2026-05-05, 4d
+```
 
 ### Análisis de coherencia y causas de las desviaciones
 
@@ -90,6 +159,7 @@ configuración para el alcance de un proyecto individual.
 Documentar cada problema con su causa, solución y lección aprendida en el momento en que
 ocurre es la práctica de mayor valor de todo el proyecto. Al llegar a la semana 7, fue posible
 reconstruir exactamente qué decisiones se tomaron y por qué sin depender de la memoria.
+Para un proyecto en solitario, la bitácora sustituye a las revisiones de código del equipo.
 
 **Iteraciones cortas backend + frontend.**
 Desarrollar cada funcionalidad de principio a fin (modelo → controlador → vista) en la misma
@@ -117,9 +187,11 @@ separación desde el primer archivo de configuración en cualquier proyecto sigu
 ### 3.2 Errores que no volvería a cometer
 
 **No hacer ninguna planificación al inicio.**
-El proyecto arrancó directamente con código sin definir estructura robusta, prioridades ni estimaciones.
+El proyecto arrancó directamente con código sin definir estructura, prioridades ni estimaciones.
 Eso derivó en la semana 3 sin commits, en el scope creep de Open-Meteo y el panel de
-backups, y en las pruebas E2E que quedaron sin implementar. Una planificación más profesional y detallada habría detectado las restricciones de Railway antes del despliegue y habría distribuido el trabajo de forma más uniforme.
+backups, y en las pruebas E2E que quedaron sin implementar. Una planificación ligera de dos
+horas al inicio habría detectado las restricciones de Railway antes del despliegue y habría
+distribuido el trabajo de forma más uniforme.
 
 **Dejar los tests para el final.**
 En la semana 7 los tests revelaron 6 incidencias que requirieron modificar código de
@@ -146,7 +218,7 @@ para versiones estables; `develop` para el trabajo diario.
 
 **Mejora 1 — Introducir una capa de servicios (Service Layer)**
 
-En la versión actual, los controladores contienen lógica de negocio compleja, ej: el
+En la versión actual, los controladores contienen lógica de negocio compleja: el
 `ReservationController` valida la disponibilidad horaria, consulta el tiempo, calcula la tarifa
 y guarda la reserva en el mismo método. En una v2, toda esa lógica se extraería a clases de
 servicio (`ReservationService`, `PricingService`, `WeatherService`). Los controladores
@@ -166,7 +238,7 @@ Esto convertiría PadelSync en un sistema operativo real y no solo de gestión.
 
 El sistema actual de backups es local al contenedor de Railway, que es efímero: si el
 contenedor se reinicia, los backups se pierden. En una v2 se integraría el almacenamiento de
-backups en un servicio externo (Cloudflare, AWS o similar): el comando
+backups en un servicio de objeto externo (Cloudflare R2, AWS S3 o similar): el comando
 `db:backup` generaría el `.sql` y lo subiría al bucket; el `BackupController` listaría y
 restauraría desde ahí. Esto resolvería definitivamente la limitación documentada en el Hito 25
 y haría el sistema de backups fiable en producción.

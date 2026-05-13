@@ -13,12 +13,7 @@ class RedirectController extends Controller
             return view('welcome');
         }
 
-        // SI ESTÁ AUTENTICADO, REDIRIGE SEGÚN SU ROL
-        return match ($request->user()->role->name) {
-            'admin'  => redirect()->route('admin.dashboard'),
-            'coach'  => redirect()->route('coach.classes.index'),
-            'player' => redirect()->route('player.reservations.index'),
-            default  => redirect()->route('login'),
-        };
+        // SI ESTÁ AUTENTICADO, REDIRIGE SIEMPRE A LA HOME CON CARRUSEL
+        return redirect()->route('home');
     }
 }

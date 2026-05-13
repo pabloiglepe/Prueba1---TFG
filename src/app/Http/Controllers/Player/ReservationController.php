@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Player;
 
 use App\Http\Controllers\Controller;
 use App\Models\ClubSetting;
+use App\Models\PadelClass;
 use App\Models\Reservation;
 use App\Models\Court;
 use App\Models\WeatherCache;
@@ -39,6 +40,10 @@ class ReservationController extends Controller
         $weather = null;
         $isRainy = false;
 
+        // CONFIGURACIÓN DEL CLUB (DINÁMICA) -> SIEMPRE DISPONIBLE PARA LA VISTA
+        $duration = (int) ClubSetting::get('reservation_duration', 90);
+        $slotStep = (int) ClubSetting::get('slot_interval', 30);
+
         if ($request->filled('date')) {
             $request->validate([
                 'date' => 'required|date|after_or_equal:today',
@@ -49,8 +54,6 @@ class ReservationController extends Controller
             $isRainy = $weather ? $weather->isRainy() : false;
 
             // DEFINICIÓN Y GENERACIÓN DE LAS FRANJAS HORARIAS DISPONIBLES
-            $duration    = (int) ClubSetting::get('reservation_duration', 90);
-            $slotStep    = (int) ClubSetting::get('slot_interval', 30);
             $openingTime = Carbon::createFromFormat('H:i', ClubSetting::get('opening_time', '09:00'));
             $closingTime = Carbon::createFromFormat('H:i', ClubSetting::get('closing_time', '22:00'));
             $current     = $openingTime->copy();
@@ -68,6 +71,36 @@ class ReservationController extends Controller
                 });
             }
 
+            // PRE-FILTRAMOS LAS FRANJAS: SOLO MANTENEMOS LAS QUE TIENEN ≥1 PISTA LIBRE
+            // (CONSIDERANDO RESERVAS + CLASES Y RESPETANDO LA REGLA DE LLUVIA)
+            $activeCourtIds = Court::where('is_active', true)
+                ->when($isRainy, fn($q) => $q->where('is_outdoor', false))
+                ->pluck('id');
+
+            $dayReservations = Reservation::where('reservation_date', $request->date)
+                ->where('status', '!=', 'cancelled')
+                ->get(['court_id', 'start_time', 'end_time']);
+
+            $dayClasses = PadelClass::where('date', $request->date)
+                ->where('status', '!=', 'cancelled')
+                ->get(['court_id', 'start_time', 'end_time']);
+
+            $slots = $slots->filter(function ($slot) use ($activeCourtIds, $dayReservations, $dayClasses, $duration) {
+                $slotStart = Carbon::createFromFormat('H:i', $slot)->format('H:i:s');
+                $slotEnd   = Carbon::createFromFormat('H:i', $slot)->addMinutes($duration)->format('H:i:s');
+
+                $overlapsSlot = fn($busy) => $busy->start_time < $slotEnd && $busy->end_time > $slotStart;
+
+                foreach ($activeCourtIds as $courtId) {
+                    $hasReservation = $dayReservations->where('court_id', $courtId)->contains($overlapsSlot);
+                    $hasClass       = $dayClasses->where('court_id', $courtId)->contains($overlapsSlot);
+                    if (!$hasReservation && !$hasClass) {
+                        return true; // hay al menos una pista libre en esta franja
+                    }
+                }
+                return false;
+            })->values();
+
             // SI TAMBIÉN HAY FRANJA SELECCIONADA, BUSCAMOS PISTAS LIBRES
             if ($request->filled('start_time')) {
                 $request->validate([
@@ -80,8 +113,16 @@ class ReservationController extends Controller
                     ->format('H:i');
 
 
+                // PISTAS OCUPADAS POR CLASES EN ESA FRANJA -> SE EXCLUYEN
+                $busyCourtIdsByClass = PadelClass::where('date', $request->date)
+                    ->where('status', '!=', 'cancelled')
+                    ->where('start_time', '<', $endTime)
+                    ->where('end_time', '>', $startTime)
+                    ->pluck('court_id');
+
                 $courts = Court::where('is_active', true)
                     ->when($isRainy, fn($q) => $q->where('is_outdoor', false)) // SI HAY LLUVIA, EXCLUIMOS PISTAS EXTERIORES
+                    ->whereNotIn('id', $busyCourtIdsByClass)
                     ->whereDoesntHave('reservations', function ($query) use ($request, $startTime, $endTime) {
                         $query->where('reservation_date', $request->date)
                             ->where('status', '!=', 'cancelled')
@@ -101,7 +142,6 @@ class ReservationController extends Controller
 
         $priceDay   = (float) ClubSetting::get('price_day', 12.00);
         $priceNight = (float) ClubSetting::get('price_night', 16.00);
-        $duration   = $request->filled('date') ? $duration : (int) ClubSetting::get('reservation_duration', 90);
 
         return view('player.reservations.create', compact('slots', 'courts', 'nightStartTime', 'isRainy', 'priceDay', 'priceNight', 'duration'));
     }
@@ -122,8 +162,8 @@ class ReservationController extends Controller
             ->addMinutes((int) ClubSetting::get('reservation_duration', 90))
             ->format('H:i');
 
-        // DOBLE COMPROBACIÓN DE SOLAPAMIENTO EN EL SERVIDOR
-        $overlap = Reservation::where('court_id', $validated['court_id'])
+        // DOBLE COMPROBACIÓN DE SOLAPAMIENTO EN EL SERVIDOR -> RESERVAS
+        $reservationOverlap = Reservation::where('court_id', $validated['court_id'])
             ->where('reservation_date', $validated['date'])
             ->where('status', '!=', 'cancelled')
             ->where(function ($query) use ($startTime, $endTime) {
@@ -132,9 +172,25 @@ class ReservationController extends Controller
             })
             ->exists();
 
-        if ($overlap) {
+        if ($reservationOverlap) {
             return back()->withErrors([
                 'court_id' => 'Esta pista ya está reservada en ese horario.'
+            ])->withInput();
+        }
+
+        // DOBLE COMPROBACIÓN DE SOLAPAMIENTO EN EL SERVIDOR -> CLASES
+        $classOverlap = PadelClass::where('court_id', $validated['court_id'])
+            ->where('date', $validated['date'])
+            ->where('status', '!=', 'cancelled')
+            ->where(function ($query) use ($startTime, $endTime) {
+                $query->where('start_time', '<', $endTime)
+                    ->where('end_time', '>', $startTime);
+            })
+            ->exists();
+
+        if ($classOverlap) {
+            return back()->withErrors([
+                'court_id' => 'Esta pista tiene una clase programada en ese horario.'
             ])->withInput();
         }
 

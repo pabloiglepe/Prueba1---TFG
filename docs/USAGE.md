@@ -23,12 +23,7 @@ Ruta: `/home` (accesible para todos los roles desde el enlace "Inicio" de la bar
 
 ### Redirección tras login
 
-Tras autenticarse, el sistema redirige al usuario directamente a su sección principal:
-- **Administrador** → `/admin/dashboard`
-- **Entrenador** → `/coach/classes`
-- **Jugador** → `/player/reservations`
-
-La ruta `/home` está disponible en todo momento pulsando "Inicio" en la navegación.
+Tras autenticarse, el sistema redirige a todos los roles directamente a la **home autenticada** (`/home`) con el carrusel de bienvenida. Desde ahí cada usuario accede a su sección principal mediante el menú de navegación o los accesos rápidos del carrusel.
 
 ### Carrusel de slides
 
@@ -83,6 +78,25 @@ Ruta: `/admin/courts`
 - Una pista con reservas futuras no puede desactivarse hasta que finalicen.
 - La vista de edición muestra estadísticas de la pista: reservas totales, ingresos generados y fecha de la última reserva.
 
+### Ajustes del Club
+
+Ruta: `/admin/settings`
+
+Sección exclusiva del administrador para configurar los parámetros operativos del club. Todos los valores se almacenan en la tabla `club_settings` y se aplican en tiempo real sin necesidad de modificar código.
+
+| Campo | Descripción | Valores permitidos |
+|---|---|---|
+| Hora de apertura | Inicio de la jornada (primer slot disponible) | Formato HH:MM |
+| Hora de cierre | Fin de la jornada | Formato HH:MM (debe ser posterior a apertura) |
+| Intervalo de franjas | Separación entre slots horarios | 15, 30 o 60 minutos |
+| Duración de la reserva/clase | Duración fija de cada reserva y clase | 60, 90 o 120 minutos |
+| Tarifa diurna | Precio de reserva en horario diurno | Valor numérico (€) |
+| Tarifa nocturna | Precio de reserva en horario nocturno | Valor numérico (€) |
+
+> Los cambios afectan inmediatamente a la generación de franjas horarias en la creación de reservas y clases, a la validación de solapamientos y a los precios mostrados al jugador.
+
+---
+
 ### Gestión de Backups
 
 Ruta: `/admin/backups`
@@ -119,7 +133,7 @@ El proceso de creación sigue cuatro pasos:
 
 1. **Seleccionar fecha**: si hay lluvia prevista, se muestra un aviso y solo se muestran pistas cubiertas.
 2. **Seleccionar pista** disponible para esa fecha.
-3. **Elegir franja horaria**: se muestran solo las franjas disponibles (sin solapamiento con otras clases ni reservas de jugadores). Duración fija de 1h 30min.
+3. **Elegir franja horaria**: se muestran solo las franjas disponibles (sin solapamiento con otras clases ni reservas de jugadores). La duración, el intervalo entre franjas y el horario de operación se obtienen de los ajustes configurados por el administrador.
 4. **Rellenar datos de la clase**: título, tipo, nivel, visibilidad, plazas máximas y precio.
 
 ### Tipos de clase
@@ -169,13 +183,13 @@ Ruta: `/player/reservations/create`
 
 1. Seleccionar una **fecha**.
 2. Si hay lluvia prevista, aparece un aviso informativo y las pistas exteriores no están disponibles.
-3. El sistema muestra las **franjas horarias disponibles** (09:00 - 22:00, cada 30 minutos).
-4. Al seleccionar una franja, se muestran las **pistas libres** (interiores siempre; exteriores solo si no llueve).
+3. El sistema muestra las **franjas horarias disponibles** según el horario de apertura/cierre e intervalo configurados por el administrador. Solo se muestran franjas con al menos una pista libre (sin reservas ni clases activas en ese tramo).
+4. Al seleccionar una franja, se muestran las **pistas libres** (interiores siempre; exteriores solo si no llueve, y excluidas las que tengan una clase programada en ese horario).
 5. Elegir pista y confirmar la reserva.
 
 **Tarifa dinámica**:
-- Tarifa diurna: **12 €**
-- Tarifa nocturna: **16 €** (calculada con la hora de ocaso real obtenida de Open-Meteo; fallback estático por mes si no hay dato disponible)
+- Tarifa diurna y nocturna configurables desde el panel de administración (`/admin/settings`).
+- La hora de transición diurna/nocturna se calcula con la hora de ocaso real obtenida de Open-Meteo; fallback estático por mes si no hay dato disponible.
 
 ### Mis Reservas
 

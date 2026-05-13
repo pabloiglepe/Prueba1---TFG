@@ -70,7 +70,8 @@ app/Http/Controllers/
 │   ├── DashboardController.php   # KPIs, gráficos, panel hoy
 │   ├── UserController.php        # Gestión de usuarios
 │   ├── ExportController.php      # Exportación Excel
-│   └── BackupController.php      # Listado y restauración de backups
+│   ├── BackupController.php      # Listado y restauración de backups
+│   └── SettingsController.php    # Configuración dinámica del club (horarios, tarifas, franjas)
 ├── Coach/
 │   └── ClassController.php       # Gestión de clases
 ├── Player/
@@ -78,7 +79,7 @@ app/Http/Controllers/
 │   └── ClassController.php       # Inscripción a clases
 ├── HomeController.php            # Home /home: carrusel + datos jugador
 ├── ProfileController.php         # Perfil de usuario
-└── RedirectController.php        # Redirección por rol tras login
+└── RedirectController.php        # Redirección a /home tras login (todos los roles)
 ```
 
 ---
@@ -178,7 +179,7 @@ Ver `docs/TEST_PLAN.md` para el plan de pruebas completo con casos manuales y au
 │   │   │       └── CheckRole.php
 │   │   ├── Mail/
 │   │   │   └── BrevoTransport.php   # Transport HTTP personalizado para emails en Railway
-│   │   ├── Models/             # User, Court, Reservation, PadelClass, ClassRegistration, Role, WeatherCache
+│   │   ├── Models/             # User, Court, Reservation, PadelClass, ClassRegistration, Role, WeatherCache, ClubSetting
 │   │   └── Notifications/      # ClassRegistrationNotification, PublicClassNotification
 │   ├── config/
 │   │   └── padelsync.php       # Configuración propia del proyecto (cron_secret)
@@ -189,7 +190,7 @@ Ver `docs/TEST_PLAN.md` para el plan de pruebas completo con casos manuales y au
 │   │   └── seeders/
 │   ├── resources/
 │   │   └── views/
-│   │       ├── admin/          # courts/, users/, backups/, dashboard.blade.php
+│   │       ├── admin/          # courts/, users/, backups/, settings/, dashboard.blade.php
 │   │       ├── coach/          # classes/
 │   │       ├── player/         # reservations/, classes/
 │   │       ├── livewire/       # auth/, layout/

@@ -1,4 +1,5 @@
 <?php
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Password;
 use Livewire\Attributes\Layout;
 use Livewire\Volt\Component;
@@ -7,18 +8,24 @@ new #[Layout('layouts.guest')] class extends Component
 {
     public string $email = '';
 
-    /**
-     * Send a password reset link to the provided email address.
-     */
     public function sendPasswordResetLink(): void
     {
         $this->validate([
             'email' => ['required', 'string', 'email'],
         ]);
 
-        $status = Password::sendResetLink(
-            $this->only('email')
-        );
+        try {
+            $status = Password::sendResetLink(
+                $this->only('email')
+            );
+        } catch (\Throwable $e) {
+            Log::error('Password reset mail failed', [
+                'email' => $this->email,
+                'error' => $e->getMessage(),
+            ]);
+            $this->addError('email', 'No se pudo enviar el correo. Inténtalo de nuevo más tarde.');
+            return;
+        }
 
         if ($status != Password::RESET_LINK_SENT) {
             $this->addError('email', __($status));

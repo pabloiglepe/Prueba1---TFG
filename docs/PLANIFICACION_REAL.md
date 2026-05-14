@@ -198,11 +198,8 @@ ninguna transacción real. En una v2, integrar Stripe Checkout añadiría el flu
 jugador paga al reservar, se genera un recibo, el admin ve los ingresos reales verificados.
 Esto convertiría PadelSync en un sistema operativo real y no solo de gestión.
 
-**Mejora 3 — Persistencia de backups en almacenamiento externo**
+**Mejora 3 — Sistema de Nivel Dinámico y Algoritmo de Ranking**
 
-El sistema actual de backups es local al contenedor de Railway, que es efímero: si el
-contenedor se reinicia, los backups se pierden. En una v2 se integraría el almacenamiento de
-backups en un servicio de objeto externo (Cloudflare R2, AWS S3 o similar): el comando
-`db:backup` generaría el `.sql` y lo subiría al bucket; el `BackupController` listaría y
-restauraría desde ahí. Esto resolvería definitivamente la limitación documentada en el Hito 25
-y haría el sistema de backups fiable en producción.
+El sistema actual de niveles es estático (asignado manualmente). En la V2, se integraría un
+**algoritmo de cálculo de nivel dinámico** basado en los resultados de los partidos, similar
+al sistema utilizado en el ranking de ELO de ajedrez..

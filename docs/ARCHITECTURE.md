@@ -29,7 +29,7 @@ La aplicación se divide en cuatro servicios interconectados mediante la red int
 │                padel-network                │
 │                                             │
 │  ┌──────────┐    ┌──────────┐    ┌────────┐ │
-│  │  Nginx   │───▶│ PHP-FPM  │───▶│ MySQL  │ │
+│  │  Nginx   │───▶│ PHP-FPM  │───▶│ MySQL │ │
 │  │(padel-web│    │(padel-app│    │(padel- │ │
 │  │ :8000)   │    │ :9000)   │    │ db)    │ │
 │  └──────────┘    └──────────┘    └────────┘ │

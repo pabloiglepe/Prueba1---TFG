@@ -210,6 +210,7 @@ Ver `docs/TEST_PLAN.md` para el plan de pruebas completo con casos manuales y au
 ├── docs/
 │   ├── ARCHITECTURE.md
 │   ├── INSTALL.md
+│   ├── PLANIFICACION_REAL.md
 │   ├── USAGE.md
 │   └── TEST_PLAN.md            # Plan de pruebas con casos y resultados
 ├── docker-compose.yml

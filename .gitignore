@@ -8,6 +8,7 @@ Thumbs.db
 .idea/
 backup*.sql
 .claude
+.src/e
 
 
 # --- LARAVEL ---

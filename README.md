@@ -65,6 +65,7 @@ Accede en [http://localhost:8000](http://localhost:8000)
 |---|---|
 | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | Arquitectura del sistema y stack tecnológico |
 | [docs/INSTALL.md](docs/INSTALL.md) | Guía de instalación detallada |
+| [docs/PLANIFICACION_REAL.md](docs/PLANIFICACION_REAL.md) | Planificación real de la aplicación |
 | [docs/USAGE.md](docs/USAGE.md) | Manual de uso por roles |
 | [docs/TEST_PLAN.md](docs/TEST_PLAN.md) | Plan de pruebas y resultados de ejecución |
 | [DOCUMENTATION.md](DOCUMENTATION.md) | Documentación técnica completa |
